@@ -15,7 +15,7 @@ export function BottomTabs() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-t border-gray-200 bg-white/95 backdrop-blur-lg pb-safe">
+    <nav className="border-t border-[#E8EAE7] bg-[#F7F8F6]/95 backdrop-blur pb-safe">
       <div className="flex h-16 items-stretch">
         {tabs.map(({ href, label, icon: Icon }) => {
           // Exact match for Chat ("/"), Graph ("/vault/graph")
@@ -36,21 +36,21 @@ export function BottomTabs() {
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-1 transition-colors",
                 isActive
-                  ? "text-[#6B8F71]"
-                  : "text-gray-400 active:text-gray-500",
+                  ? "text-[#0B6B3A]"
+                  : "text-[#6B6B6B] active:text-[#1C1C1C]",
               )}
             >
-              <Icon className="h-6 w-6" strokeWidth={isActive ? 2.2 : 1.5} />
+              <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />
               <span
                 className={cn(
                   "text-[10px] leading-none",
-                  isActive ? "font-semibold" : "font-medium",
+                  isActive ? "font-medium" : "font-normal",
                 )}
               >
                 {label}
               </span>
               {isActive && (
-                <div className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+8px)] h-1 w-1 rounded-full bg-[#6B8F71]" />
+                <div className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+8px)] h-1 w-1 rounded-full bg-[#0B6B3A]" />
               )}
             </Link>
           );

@@ -22,7 +22,7 @@ function renderContent(content: string): React.ReactNode {
         <Link
           key={i}
           href={`/vault/${target.trim()}`}
-          className="text-[#6B8F71] underline decoration-[#6B8F71]/30 transition-colors hover:text-[#4A6B4F]"
+          className="text-[#0B6B3A] underline decoration-[#0B6B3A]/30 transition-colors hover:text-[#0F7A43]"
         >
           {display?.trim() || target.trim()}
         </Link>
@@ -38,7 +38,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-16 text-gray-400">
+      <div className="flex items-center justify-center py-16 text-[15px] text-[#6B6B6B]">
         Loading note...
       </div>
     );
@@ -47,11 +47,11 @@ export function NoteViewer({ path }: NoteViewerProps) {
   if (error || !content) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <FileText className="mb-4 h-12 w-12 text-gray-300" />
-        <p className="text-gray-500">Note not found</p>
+        <FileText className="mb-4 h-12 w-12 text-[#C7CCC6]" />
+        <p className="text-[15px] text-[#6B6B6B]">Note not found</p>
         <Link
           href="/vault"
-          className="mt-4 text-sm text-[#6B8F71] hover:text-[#4A6B4F]"
+          className="mt-4 text-[15px] text-[#0B6B3A] hover:text-[#0F7A43]"
         >
           ← Back to vault
         </Link>
@@ -65,25 +65,25 @@ export function NoteViewer({ path }: NoteViewerProps) {
     bodyStart > 0 ? content.slice(bodyStart + 3).trim() : content;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl px-6 py-8">
       {/* Header */}
-      <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5">
+      <div className="mb-8 rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
         <Link
           href="/vault"
-          className="mb-4 inline-flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-gray-600"
+          className="mb-4 inline-flex items-center gap-1 text-[13px] text-[#6B6B6B] transition-colors hover:text-[#1C1C1C]"
         >
           <ArrowLeft className="h-3 w-3" />
           Back to vault
         </Link>
 
-        <h1 className="mb-2 text-xl font-bold text-neutral-900">
+        <h1 className="mb-3 text-[24px] font-medium text-[#1C1C1C]">
           {frontmatter?.title || path.split("/").pop()?.replace(".md", "")}
         </h1>
 
         {/* Metadata */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400">
+        <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#6B6B6B]">
           {frontmatter?.type && (
-            <span className="rounded-full bg-gray-100 px-2.5 py-0.5 font-medium capitalize text-gray-600">
+            <span className="rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-2.5 py-1 font-medium capitalize text-[#1C1C1C]">
               {frontmatter.type}
             </span>
           )}
@@ -98,11 +98,11 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
         {/* Tags */}
         {frontmatter?.tags && frontmatter.tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="mt-4 flex flex-wrap gap-2">
             {frontmatter.tags.map((tag: string) => (
               <span
                 key={tag}
-                className="inline-flex items-center gap-1 rounded-full bg-[#E8F0E9] px-2.5 py-0.5 text-xs font-medium text-[#4A6B4F]"
+                className="inline-flex items-center gap-1 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-2.5 py-1 text-[13px] font-medium text-[#0B6B3A]"
               >
                 <Tag className="h-2.5 w-2.5" />
                 {tag}
@@ -113,16 +113,16 @@ export function NoteViewer({ path }: NoteViewerProps) {
       </div>
 
       {/* Content */}
-      <div className="prose prose-sm max-w-none rounded-2xl border border-gray-200 bg-gray-50 p-5">
-        <div className="whitespace-pre-wrap leading-relaxed text-gray-700">
+      <div className="max-w-none rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+        <div className="whitespace-pre-wrap text-[15px] leading-[1.6] text-[#1C1C1C]">
           {renderContent(body)}
         </div>
       </div>
 
       {/* Wikilinks */}
       {wikilinks.length > 0 && (
-        <div className="mt-6 border-t border-gray-200 pt-5">
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+        <div className="mt-8 border-t border-[#E8EAE7] pt-6">
+          <h3 className="mb-3 text-[18px] font-medium text-[#1C1C1C]">
             Links ({wikilinks.length})
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -130,7 +130,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
               <Link
                 key={link}
                 href={`/vault/${link}`}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-[#6B8F71]/40 hover:text-[#4A6B4F]"
+                className="rounded-[8px] border border-[#E8EAE7] bg-white px-3 py-1.5 text-[13px] font-medium text-[#6B6B6B] transition-colors hover:border-[#0B6B3A]/40 hover:text-[#1C1C1C]"
               >
                 {link}
               </Link>

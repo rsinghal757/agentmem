@@ -7,14 +7,14 @@ import * as d3 from "d3";
 import type { GraphNode, GraphEdge } from "@/types/vault";
 
 const TYPE_COLORS: Record<string, string> = {
-  concept: "#8b5cf6",     // violet
-  person: "#22c55e",      // green
-  project: "#f97316",     // orange
-  decision: "#eab308",    // yellow
-  daily: "#9ca3af",       // gray
-  fleeting: "#a855f7",    // purple
-  reference: "#06b6d4",   // cyan
-  "core-memory": "#ef4444", // red
+  concept: "#7B77A8",
+  person: "#3D8A63",
+  project: "#B9825C",
+  decision: "#B3A252",
+  daily: "#8E948E",
+  fleeting: "#9677A8",
+  reference: "#5F95A1",
+  "core-memory": "#AF6666",
 };
 
 interface SimNode extends d3.SimulationNodeDatum {
@@ -88,9 +88,9 @@ export function GraphView() {
         .selectAll("line")
         .data(simLinks)
         .join("line")
-        .attr("stroke", "#D1D5DB")
-        .attr("stroke-width", 1)
-        .attr("stroke-opacity", 0.8);
+        .attr("stroke", "#D3D8D2")
+        .attr("stroke-width", 0.9)
+        .attr("stroke-opacity", 0.75);
 
       // Nodes
       const node = g
@@ -175,7 +175,7 @@ export function GraphView() {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center text-gray-400">
+      <div className="flex h-full items-center justify-center text-[15px] text-[#6B6B6B]">
         Loading graph...
       </div>
     );
@@ -185,8 +185,8 @@ export function GraphView() {
     return (
       <div className="flex h-full flex-col items-center justify-center">
         <div className="mb-4 text-4xl">🕸️</div>
-        <p className="text-sm text-gray-500">No notes in the vault yet.</p>
-        <p className="text-xs text-gray-400">
+        <p className="text-[15px] text-[#1C1C1C]">No notes in the vault yet.</p>
+        <p className="text-[13px] text-[#6B6B6B]">
           Start chatting to build your knowledge graph!
         </p>
       </div>
@@ -198,12 +198,12 @@ export function GraphView() {
       <svg
         ref={svgRef}
         className="h-full w-full"
-        style={{ background: "#FAFAFA", borderRadius: "0" }}
+        style={{ background: "#F7F8F6", borderRadius: "0" }}
       />
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 rounded-xl border border-gray-200 bg-white/95 p-3 shadow-sm backdrop-blur">
-        <div className="mb-2 text-xs font-semibold text-gray-500">
+      <div className="absolute bottom-6 left-6 rounded-[10px] border border-[#E8EAE7] bg-white/95 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur">
+        <div className="mb-3 text-[13px] font-medium text-[#6B6B6B]">
           Node Types
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
@@ -213,7 +213,7 @@ export function GraphView() {
                 className="h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-xs capitalize text-gray-500">
+              <span className="text-[13px] capitalize text-[#6B6B6B]">
                 {type.replace("-", " ")}
               </span>
             </div>
