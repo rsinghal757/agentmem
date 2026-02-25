@@ -25,12 +25,12 @@ export function createAgent(userId: string) {
       const lastUserMessage = getLastUserMessage(messages);
 
       // Build enriched system prompt with memory context
-      const instructions = await buildSystemPromptWithMemory({
+      const systemPrompt = await buildSystemPromptWithMemory({
         userId,
         lastUserMessage,
       });
 
-      return { model, instructions };
+      return { model, prompt: systemPrompt };
     },
   });
 }

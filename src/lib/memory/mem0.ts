@@ -16,14 +16,14 @@ function getClient(): MemoryClient | null {
 
 /**
  * Retrieve relevant memories for a query.
- * Returns empty array if Mem0 is not configured.
+ * Returns empty array if Mem0 is not configured or query is empty.
  */
 export async function retrieveMemories(
   query: string,
   options: { user_id: string; limit?: number },
 ): Promise<Mem0Memory[]> {
   const mem0 = getClient();
-  if (!mem0) {
+  if (!mem0 || !query.trim()) {
     return [];
   }
 
