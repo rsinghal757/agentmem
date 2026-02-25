@@ -20,10 +20,21 @@ export function createAgent(userId: string) {
     tools,
     stopWhen: stepCountIs(MAX_STEPS),
 
-    prepareCall: async ({ messages }) => {
-      console.log("[Agent prepareCall] Called with messages:", messages?.length);
-      // Extract the last user message for memory retrieval
-      const lastUserMessage = getLastUserMessage(messages);
+    prepareCall: async (options) => {
+      console.log("[Agent prepareCall] Called with options:", Object.keys(options));
+      console.log("[Agent prepareCall] Has prompt:", 'prompt' in options);
+      console.log("[Agent prepareCall] Has messages:", 'messages' in options);
+      
+      // Extract the last user message from prompt or messages
+      const promptOrMessages = 'prompt' in options ? options.prompt : options.messages;
+      let lastUserMessage = "";
+      
+      if (Array.isArray(promptOrMessages)) {
+        lastUserMessage = getLastUserMessageFromArray(promptOrMessages);
+      } else if (typeof promptOrMessages === 'string') {
+        lastUserMessage = promptOrMessages;
+      }
+      
       console.log("[Agent prepareCall] Last user message:", lastUserMessage);
 
       // Build enriched system prompt with memory context
@@ -38,8 +49,8 @@ export function createAgent(userId: string) {
   });
 }
 
-/** Extract the last user message text from the message array */
-function getLastUserMessage(
+/** Extract the last user message text from the message array (for AI SDK v6 options) */
+function getLastUserMessageFromArray(
   messages: readonly ModelMessage[] | undefined,
 ): string {
   if (!messages) return "";
@@ -62,4 +73,11 @@ function getLastUserMessage(
   }
 
   return "";
+}
+
+/** Extract the last user message text from the message array */
+function getLastUserMessage(
+  messages: readonly ModelMessage[] | undefined,
+): string {
+  return getLastUserMessageFromArray(messages);
 }
