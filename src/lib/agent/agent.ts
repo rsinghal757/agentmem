@@ -47,9 +47,11 @@ export function createAgent(userId: string) {
       });
       console.log("[Agent prepareCall] System prompt length:", systemPrompt.length);
 
-      // Return the system prompt as instructions, keeping the original prompt intact
+      // Return the system prompt as instructions, keeping the original prompt/messages intact
       // AI SDK v6 expects 'instructions' for system prompt
+      // Must pass through the original prompt or messages
       return { 
+        ...options,
         model, 
         instructions: systemPrompt,
       };
