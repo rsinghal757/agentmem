@@ -51,15 +51,10 @@ export function Message({ message }: MessageProps) {
           }
 
           if (isToolUIPart(part)) {
-            const toolName = getToolName(part);
-            const args = ("input" in part ? part.input : {}) as Record<
-              string,
-              unknown
-            >;
-            const result =
-              "output" in part
-                ? (part.output as Record<string, unknown>)
-                : undefined;
+            const toolName = getToolName(part) || "unknown";
+            // Safely extract input with fallback to empty object
+            const args = (part.input ?? {}) as Record<string, unknown>;
+            const result = part.output as Record<string, unknown> | undefined;
 
             return (
               <ToolCallBadge

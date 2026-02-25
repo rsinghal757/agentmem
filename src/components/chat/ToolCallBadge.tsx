@@ -33,10 +33,14 @@ export function ToolCallBadge({
   result,
   className,
 }: ToolCallBadgeProps) {
-  const icon = toolIcons[toolName] || "🔧";
-  const label = toolLabels[toolName] || toolName;
-  const path = (args.path || args.fromPath || args.query || "") as string;
-  const reason = (args.reason || args.context || "") as string;
+  // Safely handle undefined toolName
+  const safeToolName = toolName || "unknown";
+  const icon = toolIcons[safeToolName] || "🔧";
+  const label = toolLabels[safeToolName] || safeToolName;
+  // Safely access args properties with null/undefined checks
+  const safeArgs = args || {};
+  const path = (safeArgs.path || safeArgs.fromPath || safeArgs.query || "") as string;
+  const reason = (safeArgs.reason || safeArgs.context || "") as string;
 
   return (
     <div
