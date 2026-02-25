@@ -69,7 +69,7 @@ function TreeItem({
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "flex w-full items-center gap-1.5 rounded px-2 py-1 text-xs text-neutral-300 transition-colors hover:bg-neutral-800",
+            "flex w-full items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-neutral-300 transition-colors hover:bg-white/5",
           )}
           style={{ paddingLeft: `${depth * 12 + 8}px` }}
         >
@@ -96,7 +96,7 @@ function TreeItem({
     <Link
       href={`/vault/${node.path}`}
       className={cn(
-        "flex items-center gap-1.5 rounded px-2 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-200",
+        "flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-neutral-400 transition-colors hover:bg-white/5 hover:text-neutral-200",
       )}
       style={{ paddingLeft: `${depth * 12 + 20}px` }}
     >
@@ -127,7 +127,7 @@ export function FileTree() {
   }
 
   return (
-    <div className="py-1">
+    <div className="p-2">
       {tree.map((node) => (
         <TreeItem key={node.path} node={node} />
       ))}

@@ -15,15 +15,17 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="flex h-12 items-center justify-between border-b border-neutral-800 bg-neutral-900 px-4">
-      <Link href="/" className="flex items-center gap-2">
-        <Brain className="h-5 w-5 text-violet-400" />
-        <span className="text-sm font-semibold text-neutral-100">
+    <header className="sticky top-0 z-30 mx-3 mt-3 flex h-14 items-center justify-between rounded-2xl border border-white/10 bg-neutral-950/75 px-4 shadow-[0_8px_30px_-20px_rgba(124,58,237,0.8)] backdrop-blur sm:mx-4">
+      <Link href="/" className="flex items-center gap-2.5">
+        <div className="rounded-xl border border-violet-400/30 bg-violet-500/10 p-1.5">
+          <Brain className="h-4 w-4 text-violet-300" />
+        </div>
+        <span className="text-sm font-semibold tracking-tight text-neutral-100">
           Obsidian Agent
         </span>
       </Link>
 
-      <nav className="flex items-center gap-1">
+      <nav className="flex items-center gap-1 rounded-xl border border-white/10 bg-neutral-900/80 p-1">
         {navItems.map(({ href, label, icon: Icon }) => {
           const isActive =
             href === "/"
@@ -35,10 +37,10 @@ export function Header() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
                 isActive
-                  ? "bg-violet-600/20 text-violet-300"
-                  : "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200",
+                  ? "bg-violet-500/20 text-violet-200 shadow-[inset_0_0_0_1px_rgba(167,139,250,0.4)]"
+                  : "text-neutral-400 hover:bg-white/5 hover:text-neutral-200",
               )}
             >
               <Icon className="h-3.5 w-3.5" />

@@ -21,7 +21,7 @@ export function Message({ message }: MessageProps) {
     >
       {/* Avatar */}
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-600 text-sm font-bold text-white">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
           A
         </div>
       )}
@@ -39,10 +39,10 @@ export function Message({ message }: MessageProps) {
               <div
                 key={index}
                 className={cn(
-                  "rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+                  "rounded-2xl border px-4 py-2.5 text-sm leading-relaxed shadow-sm",
                   isUser
-                    ? "bg-violet-600 text-white"
-                    : "bg-neutral-800 text-neutral-100",
+                    ? "border-violet-400/40 bg-violet-500 text-white"
+                    : "border-white/10 bg-neutral-900/80 text-neutral-100",
                 )}
               >
                 <div className="whitespace-pre-wrap">{part.text}</div>
@@ -73,7 +73,7 @@ export function Message({ message }: MessageProps) {
 
       {/* User avatar */}
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-600 text-sm font-bold text-white">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-neutral-700 text-sm font-bold text-white shadow-sm">
           U
         </div>
       )}

@@ -67,7 +67,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 rounded-2xl border border-white/10 bg-neutral-900/60 p-5 shadow-[0_20px_45px_-36px_rgba(124,58,237,0.95)]">
         <Link
           href="/vault"
           className="mb-4 inline-flex items-center gap-1 text-xs text-neutral-500 transition-colors hover:text-neutral-300"
@@ -113,7 +113,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
       </div>
 
       {/* Content */}
-      <div className="prose prose-invert prose-sm max-w-none">
+      <div className="prose prose-invert prose-sm max-w-none rounded-2xl border border-white/10 bg-neutral-900/40 p-5">
         <div className="whitespace-pre-wrap leading-relaxed text-neutral-200">
           {renderContent(body)}
         </div>

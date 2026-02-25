@@ -40,17 +40,17 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col rounded-2xl bg-gradient-to-b from-neutral-950/40 via-neutral-950/20 to-neutral-950/50">
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto px-2 sm:px-3">
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">
-            <div className="text-center">
-              <div className="mb-4 text-6xl">🧠</div>
-              <h2 className="mb-2 text-xl font-semibold text-neutral-200">
+            <div className="mx-auto max-w-lg rounded-3xl border border-white/10 bg-neutral-900/50 px-8 py-10 text-center shadow-[0_24px_60px_-45px_rgba(124,58,237,0.85)] backdrop-blur">
+              <div className="mb-4 text-5xl">🧠</div>
+              <h2 className="mb-2 text-xl font-semibold tracking-tight text-neutral-100">
                 Obsidian Memory Agent
               </h2>
-              <p className="max-w-md text-sm text-neutral-400">
+              <p className="mx-auto max-w-md text-sm leading-relaxed text-neutral-400">
                 I&apos;m your AI assistant with a personal knowledge vault. As
                 we chat, I&apos;ll build and maintain an Obsidian-compatible
                 wiki of everything we discuss.
@@ -64,7 +64,7 @@ export function ChatInterface() {
                   <button
                     key={suggestion}
                     onClick={() => setInput(suggestion)}
-                    className="rounded-full border border-neutral-700 px-3 py-1.5 text-xs text-neutral-300 transition-colors hover:border-violet-500 hover:text-violet-300"
+                    className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-neutral-300 transition-all hover:border-violet-400/60 hover:bg-violet-500/10 hover:text-violet-200"
                   >
                     {suggestion}
                   </button>
@@ -73,13 +73,13 @@ export function ChatInterface() {
             </div>
           </div>
         ) : (
-          <div className="pb-4">
+          <div className="pb-4 pt-2">
             {messages.map((message) => (
               <Message key={message.id} message={message} />
             ))}
             {isLoading && messages[messages.length - 1]?.role === "user" && (
               <div className="flex gap-3 px-4 py-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-600 text-sm font-bold text-white">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
                   A
                 </div>
                 <div className="flex items-center gap-2 text-sm text-neutral-400">
@@ -94,8 +94,8 @@ export function ChatInterface() {
       </div>
 
       {/* Input area */}
-      <div className="border-t border-neutral-800 p-4">
-        <div className="relative">
+      <div className="border-t border-white/10 p-4">
+        <div className="relative rounded-2xl border border-white/10 bg-neutral-900/70 p-2 shadow-[0_12px_35px_-24px_rgba(124,58,237,0.9)]">
           <textarea
             ref={inputRef}
             value={input}
@@ -104,8 +104,8 @@ export function ChatInterface() {
             placeholder="Ask me anything... I'll remember it."
             rows={1}
             className={cn(
-              "w-full resize-none rounded-xl border border-neutral-700 bg-neutral-800 px-4 py-3 pr-12 text-sm text-neutral-100 placeholder-neutral-500",
-              "focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500",
+              "w-full resize-none rounded-xl border border-white/10 bg-neutral-900 px-4 py-3 pr-12 text-sm text-neutral-100 placeholder-neutral-500",
+              "focus:border-violet-400/70 focus:outline-none focus:ring-2 focus:ring-violet-500/30",
               "max-h-32",
             )}
             style={{
@@ -123,10 +123,10 @@ export function ChatInterface() {
             onClick={onSubmit}
             disabled={!input.trim() || isLoading}
             className={cn(
-              "absolute bottom-2.5 right-2.5 rounded-lg p-1.5 transition-colors",
+              "absolute bottom-4 right-4 rounded-lg p-2 transition-all",
               input.trim() && !isLoading
-                ? "bg-violet-600 text-white hover:bg-violet-500"
-                : "text-neutral-600",
+                ? "bg-violet-500 text-white shadow-[0_10px_24px_-14px_rgba(139,92,246,0.95)] hover:bg-violet-400"
+                : "bg-neutral-800 text-neutral-600",
             )}
           >
             {isLoading ? (

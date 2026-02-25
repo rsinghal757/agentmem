@@ -13,13 +13,13 @@ export function VaultActivityFeed() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2">
+      <div className="flex items-center justify-between border-b border-white/10 px-3 py-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
           Vault Activity
         </h3>
         <button
           onClick={() => refresh()}
-          className="rounded p-1 text-neutral-500 transition-colors hover:text-neutral-300"
+          className="rounded-lg border border-white/10 bg-neutral-900/70 p-1.5 text-neutral-500 transition-colors hover:text-neutral-300"
         >
           <RefreshCw className="h-3 w-3" />
         </button>
@@ -35,11 +35,11 @@ export function VaultActivityFeed() {
             No vault notes yet. Start chatting to build your knowledge base!
           </div>
         ) : (
-          <div className="divide-y divide-neutral-800/50">
+          <div className="divide-y divide-white/5 px-2 py-2">
             {mdFiles.map((file: string) => (
               <div
                 key={file}
-                className="flex items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-neutral-800/50"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs transition-colors hover:bg-white/5"
               >
                 <FileText className="h-3 w-3 shrink-0 text-violet-400" />
                 <span className="truncate text-neutral-300" title={file}>
@@ -51,7 +51,7 @@ export function VaultActivityFeed() {
         )}
       </div>
 
-      <div className="border-t border-neutral-800 px-3 py-2 text-xs text-neutral-500">
+      <div className="border-t border-white/10 px-3 py-2 text-xs text-neutral-500">
         {count} files in vault
       </div>
     </div>
