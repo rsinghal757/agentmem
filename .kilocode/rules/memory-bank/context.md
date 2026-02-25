@@ -8,8 +8,6 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
-- [x] Applied a sleek visual refresh across chat, vault explorer, note viewer, graph, header, and sidebar with reusable Tailwind card/border/spacing patterns (form-only styling changes, no behavior changes).
-- [x] Improved local vault storage to auto-resolve a writable base path and fall back to `/tmp/.vault` for Vercel/serverless read-only filesystems, preventing add-note write failures in production. (src/lib/vault/storage.ts)
 
 - [x] Hardened `vault_write` tool error handling to return structured `{ success: false, error }` payloads on storage failures instead of throwing (src/lib/vault/tools.ts)
 - [x] Updated `ToolCallBadge` to show failure labels (e.g., "Write failed") when tool result indicates `success: false` (src/components/chat/ToolCallBadge.tsx)
@@ -85,5 +83,3 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-02-25 | Full Obsidian Memory Agent implementation: AI SDK 6 ToolLoopAgent, 6 vault tools, Mem0 memory, chat UI, vault explorer, D3 graph, all API routes. Zero TS errors, zero lint warnings. |
 
 | 2026-02-25 | Improved vault write failure handling: `vault_write` now returns structured error payloads on failure and UI badge now labels failed writes explicitly. |
-| 2026-02-25 | Added writable vault path fallback (`/tmp/.vault`) for Vercel/serverless environments so `vault_write` can persist notes instead of failing on read-only filesystem. |
-| 2026-02-25 | UI polish pass: upgraded shell/header/chat/vault/graph styling with modern card surfaces, gradients, and refined spacing while keeping all functionality unchanged. |
