@@ -2,25 +2,64 @@
 
 :root {
   color-scheme: light;
+  --bg: #F7F8F6;
+  --surface: #FFFFFF;
+  --text-primary: #1C1C1C;
+  --text-secondary: #6B6B6B;
+  --border-subtle: #E8EAE7;
+  --brand: #0B6B3A;
+  --brand-hover: #0F7A43;
+  --brand-active: #095C31;
 }
 
 body {
-  background: #ffffff;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+button,
+a,
+input,
+textarea {
+  transition: all 160ms ease;
+}
+
+input,
+textarea {
+  border-color: var(--border-subtle);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(11, 107, 58, 0.08);
 }
 
 /* Smooth scrollbar for light mode */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #d3d7d2;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #b8beb6;
 }
 
 /* Safe area for bottom tab bar */

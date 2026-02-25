@@ -69,16 +69,16 @@ function TreeItem({
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100",
+            "flex w-full items-center gap-2 rounded-[8px] px-3 py-3 text-[15px] text-[#1C1C1C] transition-colors hover:bg-white active:bg-[#F1F3F0]",
           )}
           style={{ paddingLeft: `${depth * 16 + 12}px` }}
         >
           {isOpen ? (
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#6B6B6B]" />
           ) : (
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#6B6B6B]" />
           )}
-          <Folder className="h-4 w-4 shrink-0 text-amber-500" />
+          <Folder className="h-4 w-4 shrink-0 text-[#6B6B6B]" />
           <span className="truncate font-medium">{node.name}</span>
         </button>
         {isOpen && (
@@ -96,11 +96,11 @@ function TreeItem({
     <Link
       href={`/vault/${node.path}`}
       className={cn(
-        "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 active:bg-gray-100",
+        "flex items-center gap-2 rounded-[8px] px-3 py-3 text-[15px] text-[#6B6B6B] transition-colors hover:bg-white hover:text-[#1C1C1C] active:bg-[#F1F3F0]",
       )}
       style={{ paddingLeft: `${depth * 16 + 28}px` }}
     >
-      <FileText className="h-4 w-4 shrink-0 text-[#6B8F71]" />
+      <FileText className="h-4 w-4 shrink-0 text-[#0B6B3A]" />
       <span className="truncate">{node.name}</span>
     </Link>
   );
@@ -112,7 +112,7 @@ export function FileTree() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 text-sm text-gray-400">
+      <div className="flex items-center justify-center py-12 text-[15px] text-[#6B6B6B]">
         Loading...
       </div>
     );
@@ -120,10 +120,10 @@ export function FileTree() {
 
   if (tree.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-[10px] border border-[#E8EAE7] bg-white px-6 py-16 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
         <div className="mb-3 text-4xl">📚</div>
-        <p className="text-sm text-gray-500">Vault is empty</p>
-        <p className="mt-1 text-xs text-gray-400">
+        <p className="text-[15px] text-[#1C1C1C]">Vault is empty</p>
+        <p className="mt-1 text-[13px] text-[#6B6B6B]">
           Start chatting to build your knowledge base
         </p>
       </div>
@@ -131,7 +131,7 @@ export function FileTree() {
   }
 
   return (
-    <div className="p-2">
+    <div className="mx-6 my-6 rounded-[10px] border border-[#E8EAE7] bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       {tree.map((node) => (
         <TreeItem key={node.path} node={node} />
       ))}
