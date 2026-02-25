@@ -194,15 +194,15 @@ export function GraphView() {
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full rounded-2xl border border-white/10 bg-neutral-950/60">
       <svg
         ref={svgRef}
         className="h-full w-full"
-        style={{ background: "#0a0a0a" }}
+        style={{ background: "#0a0a0a", borderRadius: "0.9rem" }}
       />
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 rounded-lg border border-neutral-800 bg-neutral-900/90 p-3">
+      <div className="absolute bottom-4 left-4 rounded-xl border border-white/10 bg-neutral-900/90 p-3 backdrop-blur">
         <div className="mb-2 text-xs font-semibold text-neutral-400">
           Node Types
         </div>

@@ -36,7 +36,10 @@ export function ToolCallBadge({
   // Safely handle undefined toolName
   const safeToolName = toolName || "unknown";
   const icon = toolIcons[safeToolName] || "🔧";
-  const label = toolLabels[safeToolName] || safeToolName;
+  const defaultLabel = toolLabels[safeToolName] || safeToolName;
+  const label = result && "success" in result && result.success === false
+    ? (safeToolName === "vault_write" ? "Write failed" : `${defaultLabel} failed`)
+    : defaultLabel;
   // Safely access args properties with null/undefined checks
   const safeArgs = args || {};
   const path = (safeArgs.path || safeArgs.fromPath || safeArgs.query || "") as string;
@@ -45,7 +48,7 @@ export function ToolCallBadge({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md border border-neutral-700 bg-neutral-800/50 px-2.5 py-1 text-xs text-neutral-300",
+        "inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-neutral-900/70 px-2.5 py-1.5 text-xs text-neutral-300 shadow-sm",
         className,
       )}
     >
@@ -62,7 +65,7 @@ export function ToolCallBadge({
         </span>
       )}
       {result && "success" in result && (
-        <span className={result.success ? "text-green-500" : "text-red-500"}>
+        <span className={result.success ? "text-emerald-400" : "text-rose-400"}>
           {result.success ? "✓" : "✗"}
         </span>
       )}

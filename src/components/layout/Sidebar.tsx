@@ -13,7 +13,7 @@ export function Sidebar() {
       {/* Toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute right-2 top-14 z-10 rounded-md border border-neutral-800 bg-neutral-900 p-1.5 text-neutral-400 transition-colors hover:text-neutral-200"
+        className="absolute right-3 top-16 z-10 rounded-xl border border-white/10 bg-neutral-900/90 p-2 text-neutral-400 shadow-sm backdrop-blur transition-colors hover:text-neutral-200"
       >
         {isOpen ? (
           <PanelRightClose className="h-4 w-4" />
@@ -25,7 +25,7 @@ export function Sidebar() {
       {/* Sidebar panel */}
       <div
         className={cn(
-          "border-l border-neutral-800 bg-neutral-900 transition-all duration-200",
+          "border-l border-white/10 bg-neutral-950/70 backdrop-blur transition-all duration-200",
           isOpen ? "w-64" : "w-0 overflow-hidden",
         )}
       >
