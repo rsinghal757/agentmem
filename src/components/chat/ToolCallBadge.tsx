@@ -36,7 +36,10 @@ export function ToolCallBadge({
   // Safely handle undefined toolName
   const safeToolName = toolName || "unknown";
   const icon = toolIcons[safeToolName] || "🔧";
-  const label = toolLabels[safeToolName] || safeToolName;
+  const defaultLabel = toolLabels[safeToolName] || safeToolName;
+  const label = result && "success" in result && result.success === false
+    ? (safeToolName === "vault_write" ? "Write failed" : `${defaultLabel} failed`)
+    : defaultLabel;
   // Safely access args properties with null/undefined checks
   const safeArgs = args || {};
   const path = (safeArgs.path || safeArgs.fromPath || safeArgs.query || "") as string;
