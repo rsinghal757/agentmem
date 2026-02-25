@@ -61,20 +61,34 @@ export function createVaultTools(userId: string) {
         content: string;
         reason: string;
       }) => {
-        await vaultStorage.write(userId, path, content);
-        const metadata = parseFrontmatter(content);
-        const wikilinks = extractWikilinks(content);
-        const words = countWords(content);
-        return {
-          success: true,
-          path,
-          reason,
-          title: metadata?.title,
-          tags: metadata?.tags,
-          type: metadata?.type,
-          wikilinkCount: wikilinks.length,
-          wordCount: words,
-        };
+        try {
+          await vaultStorage.write(userId, path, content);
+          const metadata = parseFrontmatter(content);
+          const wikilinks = extractWikilinks(content);
+          const words = countWords(content);
+
+          return {
+            success: true,
+            path,
+            reason,
+            title: metadata?.title,
+            tags: metadata?.tags,
+            type: metadata?.type,
+            wikilinkCount: wikilinks.length,
+            wordCount: words,
+          };
+        } catch (error) {
+          console.error("[Vault Tools] Write failed:", error);
+          return {
+            success: false,
+            path,
+            reason,
+            error:
+              error instanceof Error
+                ? error.message
+                : "Unknown storage write error",
+          };
+        }
       },
     }),
 

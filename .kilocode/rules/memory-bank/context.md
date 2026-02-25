@@ -8,6 +8,9 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+
+- [x] Hardened `vault_write` tool error handling to return structured `{ success: false, error }` payloads on storage failures instead of throwing (src/lib/vault/tools.ts)
+- [x] Updated `ToolCallBadge` to show failure labels (e.g., "Write failed") when tool result indicates `success: false` (src/components/chat/ToolCallBadge.tsx)
 - [x] Installed all dependencies: AI SDK 6, @ai-sdk/openai, @ai-sdk/react, mem0ai, d3, gray-matter, zod, swr, lucide-react, clsx, tailwind-merge
 - [x] Created TypeScript types for vault and agent (src/types/)
 - [x] Implemented vault storage abstraction with LocalVaultStorage (src/lib/vault/storage.ts)
@@ -78,3 +81,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 |------|---------|
 | Initial | Template created with base setup |
 | 2026-02-25 | Full Obsidian Memory Agent implementation: AI SDK 6 ToolLoopAgent, 6 vault tools, Mem0 memory, chat UI, vault explorer, D3 graph, all API routes. Zero TS errors, zero lint warnings. |
+
+| 2026-02-25 | Improved vault write failure handling: `vault_write` now returns structured error payloads on failure and UI badge now labels failed writes explicitly. |
