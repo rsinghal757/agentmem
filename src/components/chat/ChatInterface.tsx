@@ -40,20 +40,21 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex h-full flex-col rounded-2xl bg-gradient-to-b from-neutral-950/40 via-neutral-950/20 to-neutral-950/50">
+    <div className="flex h-full flex-col bg-white">
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-3">
+      <div className="flex-1 overflow-y-auto px-4">
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">
-            <div className="mx-auto max-w-lg rounded-3xl border border-white/10 bg-neutral-900/50 px-8 py-10 text-center shadow-[0_24px_60px_-45px_rgba(124,58,237,0.85)] backdrop-blur">
-              <div className="mb-4 text-5xl">🧠</div>
-              <h2 className="mb-2 text-xl font-semibold tracking-tight text-neutral-100">
+            <div className="mx-auto max-w-sm px-6 py-10 text-center">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E8F0E9]">
+                <span className="text-3xl">🧠</span>
+              </div>
+              <h2 className="mb-2 text-lg font-semibold tracking-tight text-neutral-900">
                 Obsidian Memory Agent
               </h2>
-              <p className="mx-auto max-w-md text-sm leading-relaxed text-neutral-400">
-                I&apos;m your AI assistant with a personal knowledge vault. As
-                we chat, I&apos;ll build and maintain an Obsidian-compatible
-                wiki of everything we discuss.
+              <p className="text-sm leading-relaxed text-gray-500">
+                Your AI assistant with a personal knowledge vault. I&apos;ll
+                build and maintain an Obsidian-compatible wiki as we chat.
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
                 {[
@@ -64,7 +65,7 @@ export function ChatInterface() {
                   <button
                     key={suggestion}
                     onClick={() => setInput(suggestion)}
-                    className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-neutral-300 transition-all hover:border-violet-400/60 hover:bg-violet-500/10 hover:text-violet-200"
+                    className="rounded-full border border-gray-200 bg-gray-50 px-3.5 py-2 text-xs font-medium text-gray-600 transition-all active:scale-95 hover:border-[#6B8F71]/40 hover:bg-[#E8F0E9] hover:text-[#4A6B4F]"
                   >
                     {suggestion}
                   </button>
@@ -73,17 +74,17 @@ export function ChatInterface() {
             </div>
           </div>
         ) : (
-          <div className="pb-4 pt-2">
+          <div className="pb-4 pt-3">
             {messages.map((message) => (
               <Message key={message.id} message={message} />
             ))}
             {isLoading && messages[messages.length - 1]?.role === "user" && (
-              <div className="flex gap-3 px-4 py-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
+              <div className="flex gap-3 px-2 py-3">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#6B8F71] text-sm font-bold text-white">
                   A
                 </div>
-                <div className="flex items-center gap-2 text-sm text-neutral-400">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Loader2 className="h-4 w-4 animate-spin text-[#6B8F71]" />
                   Thinking...
                 </div>
               </div>
@@ -94,23 +95,23 @@ export function ChatInterface() {
       </div>
 
       {/* Input area */}
-      <div className="border-t border-white/10 p-4">
-        <div className="relative rounded-2xl border border-white/10 bg-neutral-900/70 p-2 shadow-[0_12px_35px_-24px_rgba(124,58,237,0.9)]">
+      <div className="border-t border-gray-100 bg-white px-4 pb-3 pt-3">
+        <div className="relative">
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask me anything... I'll remember it."
+            placeholder="Ask me anything..."
             rows={1}
             className={cn(
-              "w-full resize-none rounded-xl border border-white/10 bg-neutral-900 px-4 py-3 pr-12 text-sm text-neutral-100 placeholder-neutral-500",
-              "focus:border-violet-400/70 focus:outline-none focus:ring-2 focus:ring-violet-500/30",
+              "w-full resize-none rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 pr-12 text-sm text-neutral-900 placeholder-gray-400",
+              "focus:border-[#6B8F71]/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6B8F71]/20",
               "max-h-32",
             )}
             style={{
               height: "auto",
-              minHeight: "44px",
+              minHeight: "48px",
             }}
             onInput={(e) => {
               const target = e.target as HTMLTextAreaElement;
@@ -123,10 +124,10 @@ export function ChatInterface() {
             onClick={onSubmit}
             disabled={!input.trim() || isLoading}
             className={cn(
-              "absolute bottom-4 right-4 rounded-lg p-2 transition-all",
+              "absolute bottom-2.5 right-2.5 rounded-xl p-2.5 transition-all active:scale-95",
               input.trim() && !isLoading
-                ? "bg-violet-500 text-white shadow-[0_10px_24px_-14px_rgba(139,92,246,0.95)] hover:bg-violet-400"
-                : "bg-neutral-800 text-neutral-600",
+                ? "bg-[#6B8F71] text-white shadow-sm hover:bg-[#4A6B4F]"
+                : "bg-gray-100 text-gray-400",
             )}
           >
             {isLoading ? (

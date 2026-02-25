@@ -11,7 +11,7 @@ const TYPE_COLORS: Record<string, string> = {
   person: "#22c55e",      // green
   project: "#f97316",     // orange
   decision: "#eab308",    // yellow
-  daily: "#6b7280",       // gray
+  daily: "#9ca3af",       // gray
   fleeting: "#a855f7",    // purple
   reference: "#06b6d4",   // cyan
   "core-memory": "#ef4444", // red
@@ -88,9 +88,9 @@ export function GraphView() {
         .selectAll("line")
         .data(simLinks)
         .join("line")
-        .attr("stroke", "#374151")
+        .attr("stroke", "#D1D5DB")
         .attr("stroke-width", 1)
-        .attr("stroke-opacity", 0.6);
+        .attr("stroke-opacity", 0.8);
 
       // Nodes
       const node = g
@@ -100,8 +100,8 @@ export function GraphView() {
         .join("circle")
         .attr("r", (d) => Math.log(d.backlinks + 1) * 8 + 4)
         .attr("fill", (d) => TYPE_COLORS[d.type || "concept"] || "#8b5cf6")
-        .attr("stroke", "#1f2937")
-        .attr("stroke-width", 1.5)
+        .attr("stroke", "#FFFFFF")
+        .attr("stroke-width", 2)
         .attr("cursor", "pointer")
         .on("click", (_event, d) => {
           router.push(`/vault/${d.id}`);
@@ -133,7 +133,7 @@ export function GraphView() {
         .join("text")
         .text((d) => d.title || d.id.split("/").pop()?.replace(".md", "") || "")
         .attr("font-size", 10)
-        .attr("fill", "#9ca3af")
+        .attr("fill", "#6B6B6B")
         .attr("text-anchor", "middle")
         .attr("dy", (d) => Math.log(d.backlinks + 1) * 8 + 16)
         .attr("pointer-events", "none");
@@ -175,7 +175,7 @@ export function GraphView() {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center text-neutral-500">
+      <div className="flex h-full items-center justify-center text-gray-400">
         Loading graph...
       </div>
     );
@@ -183,10 +183,10 @@ export function GraphView() {
 
   if (nodes.length === 0) {
     return (
-      <div className="flex h-full flex-col items-center justify-center text-neutral-500">
+      <div className="flex h-full flex-col items-center justify-center">
         <div className="mb-4 text-4xl">🕸️</div>
-        <p className="text-sm">No notes in the vault yet.</p>
-        <p className="text-xs text-neutral-600">
+        <p className="text-sm text-gray-500">No notes in the vault yet.</p>
+        <p className="text-xs text-gray-400">
           Start chatting to build your knowledge graph!
         </p>
       </div>
@@ -194,26 +194,26 @@ export function GraphView() {
   }
 
   return (
-    <div className="relative h-full w-full rounded-2xl border border-white/10 bg-neutral-950/60">
+    <div className="relative h-full w-full">
       <svg
         ref={svgRef}
         className="h-full w-full"
-        style={{ background: "#0a0a0a", borderRadius: "0.9rem" }}
+        style={{ background: "#FAFAFA", borderRadius: "0" }}
       />
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 rounded-xl border border-white/10 bg-neutral-900/90 p-3 backdrop-blur">
-        <div className="mb-2 text-xs font-semibold text-neutral-400">
+      <div className="absolute bottom-4 left-4 rounded-xl border border-gray-200 bg-white/95 p-3 shadow-sm backdrop-blur">
+        <div className="mb-2 text-xs font-semibold text-gray-500">
           Node Types
         </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
           {Object.entries(TYPE_COLORS).map(([type, color]) => (
             <div key={type} className="flex items-center gap-1.5">
               <div
                 className="h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-xs capitalize text-neutral-500">
+              <span className="text-xs capitalize text-gray-500">
                 {type.replace("-", " ")}
               </span>
             </div>
