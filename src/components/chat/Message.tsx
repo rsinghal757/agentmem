@@ -15,13 +15,13 @@ export function Message({ message }: MessageProps) {
   return (
     <div
       className={cn(
-        "flex w-full gap-3 px-4 py-3",
+        "flex w-full gap-2.5 px-2 py-2",
         isUser ? "justify-end" : "justify-start",
       )}
     >
-      {/* Avatar */}
+      {/* Assistant avatar */}
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#6B8F71] text-sm font-bold text-white">
           A
         </div>
       )}
@@ -39,10 +39,10 @@ export function Message({ message }: MessageProps) {
               <div
                 key={index}
                 className={cn(
-                  "rounded-2xl border px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+                  "rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                   isUser
-                    ? "border-violet-400/40 bg-violet-500 text-white"
-                    : "border-white/10 bg-neutral-900/80 text-neutral-100",
+                    ? "bg-[#6B8F71] text-white"
+                    : "bg-gray-100 text-neutral-800",
                 )}
               >
                 <div className="whitespace-pre-wrap">{part.text}</div>
@@ -73,7 +73,7 @@ export function Message({ message }: MessageProps) {
 
       {/* User avatar */}
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-neutral-700 text-sm font-bold text-white shadow-sm">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-bold text-gray-600">
           U
         </div>
       )}
