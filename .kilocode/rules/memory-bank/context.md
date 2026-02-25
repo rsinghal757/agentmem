@@ -1,87 +1,80 @@
-# Active Context: Next.js Starter Template
+# Active Context: Obsidian Memory Agent
 
 ## Current State
 
-**Template Status**: ✅ Ready for development
+**Project Status**: ✅ Core architecture implemented — Phases 1-5 complete
 
-The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. It's ready for AI-assisted expansion to build any type of application.
+The project has been transformed from a minimal Next.js starter into a full Obsidian Memory Agent — a ChatGPT-style chat interface that autonomously builds and maintains an Obsidian-compatible markdown knowledge vault.
 
 ## Recently Completed
 
-- [x] Base Next.js 16 setup with App Router
-- [x] TypeScript configuration with strict mode
-- [x] Tailwind CSS 4 integration
-- [x] ESLint configuration
-- [x] Memory bank documentation
-- [x] Recipe system for common features
+- [x] Installed all dependencies: AI SDK 6, @ai-sdk/openai, @ai-sdk/react, mem0ai, d3, gray-matter, zod, swr, lucide-react, clsx, tailwind-merge
+- [x] Created TypeScript types for vault and agent (src/types/)
+- [x] Implemented vault storage abstraction with LocalVaultStorage (src/lib/vault/storage.ts)
+- [x] Implemented markdown utilities: frontmatter parsing, wikilink extraction, word counting (src/lib/vault/markdown.ts)
+- [x] Implemented vault graph builder from wikilinks (src/lib/vault/graph.ts)
+- [x] Implemented full-text vault search (src/lib/vault/search.ts)
+- [x] Implemented all 6 vault tools: vault_read, vault_write, vault_search, vault_list, vault_link, vault_delete (src/lib/vault/tools.ts)
+- [x] Integrated Mem0 for semantic short-term memory (src/lib/memory/mem0.ts)
+- [x] Built memory injection system for system prompt enrichment (src/lib/memory/injection.ts)
+- [x] Created ToolLoopAgent factory with prepareCall memory injection (src/lib/agent/agent.ts)
+- [x] Created API route: /api/chat with createAgentUIStreamResponse (src/app/api/chat/route.ts)
+- [x] Created API routes: /api/vault/files, /api/vault/search, /api/vault/graph, /api/memory
+- [x] Built chat UI: ChatInterface with useChat, Message with tool call rendering, ToolCallBadge
+- [x] Built vault UI: FileTree, NoteViewer with wikilink resolution, GraphView with D3 force simulation
+- [x] Built layout: Header with navigation, collapsible Sidebar with VaultActivityFeed
+- [x] Created all pages: home (chat), /vault (explorer), /vault/[...path] (note viewer), /vault/graph (D3 graph)
+- [x] Created hooks: useVaultFiles, useVaultGraph, useVaultSearch
+- [x] TypeScript strict mode: zero errors
+- [x] ESLint: zero errors, zero warnings
+- [x] Committed and pushed
 
 ## Current Structure
 
 | File/Directory | Purpose | Status |
 |----------------|---------|--------|
-| `src/app/page.tsx` | Home page | ✅ Ready |
-| `src/app/layout.tsx` | Root layout | ✅ Ready |
-| `src/app/globals.css` | Global styles | ✅ Ready |
-| `.kilocode/` | AI context & recipes | ✅ Ready |
+| `src/app/page.tsx` | Chat page with sidebar | ✅ Ready |
+| `src/app/layout.tsx` | Root layout with Header | ✅ Ready |
+| `src/app/vault/` | Vault explorer, note viewer, graph | ✅ Ready |
+| `src/app/api/chat/` | ToolLoopAgent streaming endpoint | ✅ Ready |
+| `src/app/api/vault/` | Vault CRUD + search + graph APIs | ✅ Ready |
+| `src/app/api/memory/` | Mem0 memory retrieval | ✅ Ready |
+| `src/components/chat/` | ChatInterface, Message, ToolCallBadge, VaultActivityFeed | ✅ Ready |
+| `src/components/vault/` | FileTree, NoteViewer, GraphView | ✅ Ready |
+| `src/components/layout/` | Header, Sidebar | ✅ Ready |
+| `src/lib/vault/` | Storage, tools, markdown, graph, search | ✅ Ready |
+| `src/lib/memory/` | Mem0 client, memory injection | ✅ Ready |
+| `src/lib/agent/` | ToolLoopAgent factory | ✅ Ready |
+| `src/hooks/` | useVaultFiles, useVaultGraph, useVaultSearch | ✅ Ready |
+| `src/types/` | TypeScript types for vault and agent | ✅ Ready |
 
-## Current Focus
+## Architecture Highlights
 
-The template is ready. Next steps depend on user requirements:
+- **AI SDK 6**: Uses `ToolLoopAgent` with `prepareCall` for dynamic system prompt injection
+- **Dual-track memory**: Mem0 for semantic short-term + vault filesystem for structured long-term
+- **6 vault tools**: read, write, search, list, link, delete — all with zod/v4 schemas
+- **D3 force graph**: Interactive visualization of vault wikilink connections
+- **Local dev**: Vault stored in `.vault/` directory (gitignored)
 
-1. What type of application to build
-2. What features are needed
-3. Design/branding preferences
+## To Run
 
-## Quick Start Guide
-
-### To add a new page:
-
-Create a file at `src/app/[route]/page.tsx`:
-```tsx
-export default function NewPage() {
-  return <div>New page content</div>;
-}
-```
-
-### To add components:
-
-Create `src/components/` directory and add components:
-```tsx
-// src/components/ui/Button.tsx
-export function Button({ children }: { children: React.ReactNode }) {
-  return <button className="px-4 py-2 bg-blue-600 text-white rounded">{children}</button>;
-}
-```
-
-### To add a database:
-
-Follow `.kilocode/recipes/add-database.md`
-
-### To add API routes:
-
-Create `src/app/api/[route]/route.ts`:
-```tsx
-import { NextResponse } from "next/server";
-
-export async function GET() {
-  return NextResponse.json({ message: "Hello" });
-}
-```
-
-## Available Recipes
-
-| Recipe | File | Use Case |
-|--------|------|----------|
-| Add Database | `.kilocode/recipes/add-database.md` | Data persistence with Drizzle + SQLite |
+1. Copy `.env.local.example` to `.env.local`
+2. Add `OPENAI_API_KEY` and optionally `MEM0_API_KEY`
+3. `bun install && bun dev`
 
 ## Pending Improvements
 
-- [ ] Add more recipes (auth, email, etc.)
-- [ ] Add example components
-- [ ] Add testing setup recipe
+- [ ] Add Neon Postgres + Drizzle for production persistence
+- [ ] Add Vercel Blob storage for production vault
+- [ ] Add pgvector semantic search
+- [ ] Add authentication (Auth.js)
+- [ ] Add note editor (manual editing)
+- [ ] Add rate limiting
+- [ ] Deploy to Vercel
 
 ## Session History
 
 | Date | Changes |
 |------|---------|
 | Initial | Template created with base setup |
+| 2026-02-25 | Full Obsidian Memory Agent implementation: AI SDK 6 ToolLoopAgent, 6 vault tools, Mem0 memory, chat UI, vault explorer, D3 graph, all API routes. Zero TS errors, zero lint warnings. |
