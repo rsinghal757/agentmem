@@ -4,8 +4,11 @@ import { addMemories } from "@/lib/memory/mem0";
 import { getUserId } from "@/lib/utils";
 
 export async function POST(request: Request) {
+  console.log("[Chat API] Received request");
   const { messages } = await request.json();
+  console.log("[Chat API] Messages:", JSON.stringify(messages, null, 2));
   const userId = getUserId();
+  console.log("[Chat API] User ID:", userId);
   const agent = createAgent(userId);
 
   // Extract the last user message for post-response memory save

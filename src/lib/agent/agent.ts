@@ -21,14 +21,17 @@ export function createAgent(userId: string) {
     stopWhen: stepCountIs(MAX_STEPS),
 
     prepareCall: async ({ messages }) => {
+      console.log("[Agent prepareCall] Called with messages:", messages?.length);
       // Extract the last user message for memory retrieval
       const lastUserMessage = getLastUserMessage(messages);
+      console.log("[Agent prepareCall] Last user message:", lastUserMessage);
 
       // Build enriched system prompt with memory context
       const systemPrompt = await buildSystemPromptWithMemory({
         userId,
         lastUserMessage,
       });
+      console.log("[Agent prepareCall] System prompt length:", systemPrompt.length);
 
       return { model, prompt: systemPrompt };
     },
