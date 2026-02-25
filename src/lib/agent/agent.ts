@@ -6,13 +6,16 @@ import type { ModelMessage } from "ai";
 
 const MAX_STEPS = parseInt(process.env.MAX_VAULT_STEPS || "15", 10);
 
+// Use gpt-4o-mini for faster, cheaper responses
+const MODEL_NAME = process.env.OPENAI_MODEL || "gpt-4o-mini";
+
 /**
  * Create a ToolLoopAgent for a specific user.
  * The agent has access to vault tools and memory injection.
  */
 export function createAgent(userId: string) {
   const tools = createVaultTools(userId);
-  const model = openai("gpt-4o");
+  const model = openai(MODEL_NAME);
 
   return new ToolLoopAgent({
     id: "obsidian-memory-agent",
@@ -44,7 +47,12 @@ export function createAgent(userId: string) {
       });
       console.log("[Agent prepareCall] System prompt length:", systemPrompt.length);
 
-      return { model, prompt: systemPrompt };
+      // Return the system prompt as instructions, keeping the original prompt intact
+      // AI SDK v6 expects 'instructions' for system prompt
+      return { 
+        model, 
+        instructions: systemPrompt,
+      };
     },
   });
 }
