@@ -8,6 +8,13 @@
       "when": 1773268068548,
       "tag": "0000_regular_luckman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773269068548,
+      "tag": "0001_threaded_history_and_vault_upsert",
+      "breakpoints": true
     }
   ]
 }
