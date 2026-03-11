@@ -7,7 +7,6 @@
       "dependencies": {
         "@ai-sdk/openai": "^3.0.33",
         "@ai-sdk/react": "^3.0.101",
-        "@kilocode/app-builder-db": "github:Kilo-Org/app-builder-db#main",
         "ai": "^6.0.99",
         "clsx": "^2.1.1",
         "d3": "^7.9.0",
@@ -282,8 +281,6 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
-
-    "@kilocode/app-builder-db": ["@kilocode/app-builder-db@github:Kilo-Org/app-builder-db#186d1c1", { "peerDependencies": { "drizzle-orm": ">=0.30.0" } }, "Kilo-Org-app-builder-db-186d1c1", "sha512-BWHW5rko9U4K0Pu/Xtf1O5zju2alCRtWWcVWVNC8uO37EBVDfQEdjAO/43imkX7mgkFtsaj1zzxNkXz7FhXgDg=="],
 
     "@langchain/core": ["@langchain/core@0.3.80", "", { "dependencies": { "@cfworker/json-schema": "^4.0.2", "ansi-styles": "^5.0.0", "camelcase": "6", "decamelize": "1.2.0", "js-tiktoken": "^1.0.12", "langsmith": "^0.3.67", "mustache": "^4.2.0", "p-queue": "^6.6.2", "p-retry": "4", "uuid": "^10.0.0", "zod": "^3.25.32", "zod-to-json-schema": "^3.22.3" } }, "sha512-vcJDV2vk1AlCwSh3aBm/urQ1ZrlXFFBocv11bz/NBUfLWD5/UDNMzwPdaAd2dKvNmTWa9FM2lirLU3+JCf4cRA=="],
 

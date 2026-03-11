@@ -9,8 +9,9 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
-- [x] Added chat history persistence with SQLite database (src/app/api/chat/history/route.ts, src/db/schema.ts)
-- [x] Added SQLite database with Drizzle ORM for persistent vault storage (src/db/)
+- [x] Added chat history persistence with PostgreSQL database (src/app/api/chat/history/route.ts, src/db/schema.ts)
+- [x] Added .env.example with required environment variables (DATABASE_URL, OPENAI_API_KEY, MEM0_API_KEY)
+- [x] Switched from SQLite to PostgreSQL with Railway (drizzle-orm + postgres-js)
 - [x] Replaced filesystem-based LocalVaultStorage with database-backed DatabaseVaultStorage (src/lib/vault/storage.ts)
 - [x] Hardened `vault_write` tool error handling to return structured `{ success: false, error }` payloads on storage failures instead of throwing (src/lib/vault/tools.ts)
 - [x] Updated `ToolCallBadge` to show failure labels (e.g., "Write failed") when tool result indicates `success: false` (src/components/chat/ToolCallBadge.tsx)
@@ -59,16 +60,16 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 - **AI SDK 6**: Uses `ToolLoopAgent` with `prepareCall` for dynamic system prompt injection
 - **Dual-track memory**: Mem0 for semantic short-term + vault database for structured long-term
-- **Chat history**: SQLite-persisted conversation history with clear chat option
+- **Chat history**: PostgreSQL-persisted conversation history with clear chat option
 - **6 vault tools**: read, write, search, list, link, delete — all with zod/v4 schemas
 - **D3 force graph**: Interactive visualization of vault wikilink connections
 - **Local dev**: Vault stored in database (SQLite via @kilocode/app-builder-db)
 
 ## To Run
 
-1. Copy `.env.local.example` to `.env.local`
-2. Add `OPENAI_API_KEY` and optionally `MEM0_API_KEY`
-3. `bun install && bun dev`
+1. Copy `.env.example` to `.env.local`
+2. Add `DATABASE_URL` (PostgreSQL), `OPENAI_API_KEY` and optionally `MEM0_API_KEY`
+3. `bun install && bun run build && bun start`
 
 ## Pending Improvements
 
