@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Added SQLite database with Drizzle ORM for persistent vault storage (src/db/)
+- [x] Replaced filesystem-based LocalVaultStorage with database-backed DatabaseVaultStorage (src/lib/vault/storage.ts)
 - [x] Hardened `vault_write` tool error handling to return structured `{ success: false, error }` payloads on storage failures instead of throwing (src/lib/vault/tools.ts)
 - [x] Updated `ToolCallBadge` to show failure labels (e.g., "Write failed") when tool result indicates `success: false` (src/components/chat/ToolCallBadge.tsx)
 - [x] Redesigned the full UI visual language to a restrained premium style using a strict off-white/green palette, refined spacing, subtle borders/shadows, and calmer typography without changing behavior (chat, vault explorer, note viewer, graph, and bottom navigation)
@@ -68,7 +70,6 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Pending Improvements
 
-- [ ] Add Neon Postgres + Drizzle for production persistence
 - [ ] Add Vercel Blob storage for production vault
 - [ ] Add pgvector semantic search
 - [ ] Add authentication (Auth.js)

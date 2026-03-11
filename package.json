@@ -7,15 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun run src/db/migrate.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.33",
     "@ai-sdk/react": "^3.0.101",
+    "@kilocode/app-builder-db": "github:Kilo-Org/app-builder-db#main",
     "ai": "^6.0.99",
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
     "d3-force": "^3.0.0",
+    "drizzle-orm": "^0.45.1",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.575.0",
     "mem0ai": "^2.2.3",
@@ -34,6 +38,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@types/uuid": "^11.0.0",
+    "drizzle-kit": "^0.31.9",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.0",
     "tailwindcss": "^4.1.17",
