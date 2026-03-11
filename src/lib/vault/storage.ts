@@ -6,8 +6,8 @@ import { normalizeVaultPath } from "./paths";
 
 /** Database-backed vault storage for persistent storage */
 class DatabaseVaultStorage implements VaultStorage {
-  private getDbOrNull() {
-    const db = getDb();
+  private async getDbOrNull() {
+    const db = await getDb();
     if (!db) {
       console.warn("Database not configured - vault operations will be skipped");
     }
@@ -15,7 +15,7 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async read(userId: string, filePath: string): Promise<string | null> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return null;
     const normalizedPath = normalizeVaultPath(filePath);
     const result = await db
@@ -32,7 +32,7 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async write(userId: string, filePath: string, content: string): Promise<void> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return;
     const normalizedPath = normalizeVaultPath(filePath);
 
@@ -55,7 +55,7 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async delete(userId: string, filePath: string): Promise<void> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return;
     const normalizedPath = normalizeVaultPath(filePath);
     await db
@@ -70,7 +70,7 @@ class DatabaseVaultStorage implements VaultStorage {
     directory: string,
     recursive: boolean,
   ): Promise<string[]> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return [];
     const normalizedDirectory = directory ? normalizeVaultPath(directory) : "";
     const directoryPrefix = normalizedDirectory.replace(/\.md$/, "").replace(/\/$/, "");
@@ -108,7 +108,7 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async exists(userId: string, filePath: string): Promise<boolean> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return false;
     const normalizedPath = normalizeVaultPath(filePath);
     const result = await db

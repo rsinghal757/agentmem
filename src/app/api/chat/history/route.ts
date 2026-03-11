@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const db = getDb();
+  const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
