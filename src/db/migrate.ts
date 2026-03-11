@@ -1,5 +1,10 @@
-import { runMigrations } from "@kilocode/app-builder-db";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { getDb } from "./index";
 
 const db = getDb();
-await runMigrations(db, {}, { migrationsFolder: "./src/db/migrations" });
+if (db) {
+  await migrate(db, { migrationsFolder: "./src/db/migrations" });
+  console.log("Migrations completed");
+} else {
+  console.error("Database not initialized");
+}

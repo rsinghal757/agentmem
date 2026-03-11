@@ -5,6 +5,9 @@ import { eq, desc } from "drizzle-orm";
 
 export async function GET() {
   const db = getDb();
+  if (!db) {
+    return NextResponse.json({ messages: [] });
+  }
   const userId = "default-user";
 
   const messages = await db
@@ -24,6 +27,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const db = getDb();
+  if (!db) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 500 });
+  }
   const userId = "default-user";
   const { messages } = await request.json();
 
@@ -47,6 +53,9 @@ export async function POST(request: Request) {
 
 export async function DELETE() {
   const db = getDb();
+  if (!db) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 500 });
+  }
   const userId = "default-user";
 
   await db.delete(chatMessages).where(eq(chatMessages.userId, userId));

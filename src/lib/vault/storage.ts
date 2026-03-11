@@ -5,8 +5,17 @@ import { eq, and } from "drizzle-orm";
 
 /** Database-backed vault storage for persistent storage */
 class DatabaseVaultStorage implements VaultStorage {
-  async read(userId: string, filePath: string): Promise<string | null> {
+  private getDbOrNull() {
     const db = getDb();
+    if (!db) {
+      console.warn("Database not configured - vault operations will be skipped");
+    }
+    return db;
+  }
+
+  async read(userId: string, filePath: string): Promise<string | null> {
+    const db = this.getDbOrNull();
+    if (!db) return null;
     const result = await db
       .select({ content: vaultNotes.content })
       .from(vaultNotes)
@@ -16,7 +25,8 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async write(userId: string, filePath: string, content: string): Promise<void> {
-    const db = getDb();
+    const db = this.getDbOrNull();
+    if (!db) return;
     const existing = await db
       .select({ id: vaultNotes.id })
       .from(vaultNotes)
@@ -43,7 +53,8 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async delete(userId: string, filePath: string): Promise<void> {
-    const db = getDb();
+    const db = this.getDbOrNull();
+    if (!db) return;
     await db
       .delete(vaultNotes)
       .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)));
@@ -54,7 +65,8 @@ class DatabaseVaultStorage implements VaultStorage {
     directory: string,
     recursive: boolean,
   ): Promise<string[]> {
-    const db = getDb();
+    const db = this.getDbOrNull();
+    if (!db) return [];
     const results = await db
       .select({ path: vaultNotes.path })
       .from(vaultNotes)
@@ -88,7 +100,8 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async exists(userId: string, filePath: string): Promise<boolean> {
-    const db = getDb();
+    const db = this.getDbOrNull();
+    if (!db) return false;
     const result = await db
       .select({ id: vaultNotes.id })
       .from(vaultNotes)

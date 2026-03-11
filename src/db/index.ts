@@ -1,11 +1,16 @@
-import { createDatabase } from "@kilocode/app-builder-db";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 
-let db: ReturnType<typeof createDatabase<typeof schema>> | null = null;
+const connectionString = process.env.DATABASE_URL;
+
+let db: ReturnType<typeof drizzle<typeof schema>> | null = null;
+let client: postgres.Sql | null = null;
 
 export function getDb() {
-  if (!db) {
-    db = createDatabase(schema);
+  if (!db && connectionString) {
+    client = postgres(connectionString);
+    db = drizzle(client, { schema });
   }
   return db;
 }

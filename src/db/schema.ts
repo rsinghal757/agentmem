@@ -1,31 +1,25 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
 
-export const vaultNotes = sqliteTable("vault_notes", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const vaultNotes = pgTable("vault_notes", {
+  id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),
   path: text("path").notNull(),
   content: text("content").notNull(),
   title: text("title"),
-  tags: text("tags"), // JSON array stored as string
+  tags: text("tags"),
   noteType: text("note_type"),
-  wikilinks: text("wikilinks"), // JSON array stored as string
+  wikilinks: text("wikilinks"),
   wordCount: integer("word_count").default(0),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date(),
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date(),
-  ),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const chatMessages = sqliteTable("chat_messages", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),
-  role: text("role").notNull(), // "user" | "assistant"
+  role: text("role").notNull(),
   content: text("content").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date(),
-  ),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export type VaultNoteInsert = typeof vaultNotes.$inferInsert;
