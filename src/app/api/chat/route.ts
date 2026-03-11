@@ -1,17 +1,17 @@
 import { createAgentUIStreamResponse } from "ai";
 import { createAgent } from "@/lib/agent/agent";
 import { addMemories } from "@/lib/memory/mem0";
-import { getUserId } from "@/lib/utils";
+import { getUserId, scopeThreadId } from "@/lib/utils";
 
 export async function POST(request: Request) {
   console.log("[Chat API] Received request");
-  const { messages } = await request.json();
+  const { messages, threadId } = await request.json();
   console.log("[Chat API] Messages:", JSON.stringify(messages, null, 2));
   const userId = getUserId();
-  console.log("[Chat API] User ID:", userId);
+  const resolvedThreadId = scopeThreadId(userId, threadId);
+  console.log("[Chat API] User ID:", userId, "Thread:", resolvedThreadId);
   const agent = createAgent(userId);
 
-  // Extract the last user message for post-response memory save
   const lastUserMsg = messages[messages.length - 1];
   const lastUserMessage =
     typeof lastUserMsg?.content === "string"
@@ -27,14 +27,14 @@ export async function POST(request: Request) {
     agent,
     uiMessages: messages,
     onFinish: async ({ messages: finalMessages }) => {
-      // Find the last assistant message text
       const lastAssistant = [...finalMessages]
         .reverse()
         .find((m) => m.role === "assistant");
-      const assistantText = lastAssistant?.parts
-        ?.filter((p) => p.type === "text")
-        .map((p) => ("text" in p ? p.text : ""))
-        .join(" ") || "";
+      const assistantText =
+        lastAssistant?.parts
+          ?.filter((p) => p.type === "text")
+          .map((p) => ("text" in p ? p.text : ""))
+          .join(" ") || "";
 
       if (lastUserMessage && assistantText) {
         addMemories(

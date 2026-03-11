@@ -8,6 +8,7 @@ import {
   countWords,
 } from "./markdown";
 import { vaultSearch } from "./search";
+import { normalizeVaultPath } from "./paths";
 
 /**
  * Create all vault tools scoped to a specific user.
@@ -28,13 +29,20 @@ export function createVaultTools(userId: string) {
       }: {
         path: string;
       }) => {
-        const content = await vaultStorage.read(userId, path);
+        const normalizedPath = normalizeVaultPath(path);
+        const content = await vaultStorage.read(userId, normalizedPath);
         if (!content) {
-          return { found: false as const, path };
+          return { found: false as const, path: normalizedPath };
         }
         const metadata = parseFrontmatter(content);
         const wikilinks = extractWikilinks(content);
-        return { found: true as const, content, metadata, wikilinks, path };
+        return {
+          found: true as const,
+          content,
+          metadata,
+          wikilinks,
+          path: normalizedPath,
+        };
       },
     }),
 
@@ -61,15 +69,21 @@ export function createVaultTools(userId: string) {
         content: string;
         reason: string;
       }) => {
+        const normalizedPath = normalizeVaultPath(path);
         try {
-          await vaultStorage.write(userId, path, content);
+          await vaultStorage.write(userId, normalizedPath, content);
           const metadata = parseFrontmatter(content);
           const wikilinks = extractWikilinks(content);
           const words = countWords(content);
 
+          console.log("[Vault Tools] write", {
+            userId,
+            path: normalizedPath,
+          });
+
           return {
             success: true,
-            path,
+            path: normalizedPath,
             reason,
             title: metadata?.title,
             tags: metadata?.tags,
@@ -81,8 +95,9 @@ export function createVaultTools(userId: string) {
           console.error("[Vault Tools] Write failed:", error);
           return {
             success: false,
-            path,
+            path: normalizedPath,
             reason,
+            persisted: false,
             error:
               error instanceof Error
                 ? error.message
@@ -164,21 +179,23 @@ export function createVaultTools(userId: string) {
         toPath: string;
         context: string;
       }) => {
-        const content = await vaultStorage.read(userId, fromPath);
+        const normalizedFromPath = normalizeVaultPath(fromPath);
+        const normalizedToPath = normalizeVaultPath(toPath);
+        const content = await vaultStorage.read(userId, normalizedFromPath);
         if (!content) {
-          return { success: false, error: `Note not found: ${fromPath}` };
+          return { success: false, error: `Note not found: ${normalizedFromPath}` };
         }
 
         const targetName =
-          toPath.split("/").pop()?.replace(".md", "") || toPath;
+          normalizedToPath.split("/").pop()?.replace(".md", "") || normalizedToPath;
         const updatedContent = addWikilinkToContent(
           content,
           targetName,
           context,
         );
-        await vaultStorage.write(userId, fromPath, updatedContent);
+        await vaultStorage.write(userId, normalizedFromPath, updatedContent);
 
-        return { success: true, fromPath, toPath, context };
+        return { success: true, fromPath: normalizedFromPath, toPath: normalizedToPath, context };
       },
     }),
 
@@ -195,12 +212,13 @@ export function createVaultTools(userId: string) {
         path: string;
         reason: string;
       }) => {
-        const exists = await vaultStorage.exists(userId, path);
+        const normalizedPath = normalizeVaultPath(path);
+        const exists = await vaultStorage.exists(userId, normalizedPath);
         if (!exists) {
-          return { success: false, error: `Note not found: ${path}` };
+          return { success: false, error: `Note not found: ${normalizedPath}` };
         }
-        await vaultStorage.delete(userId, path);
-        return { success: true, path, reason };
+        await vaultStorage.delete(userId, normalizedPath);
+        return { success: true, path: normalizedPath, reason };
       },
     }),
   };

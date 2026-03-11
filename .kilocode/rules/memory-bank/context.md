@@ -9,6 +9,9 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Implemented end-to-end threaded chat persistence: unified user/thread context, idempotent message UUID history writes, new thread listing API, and chat sidebar thread switching with thread-scoped clear actions (src/app/api/chat/route.ts, src/app/api/chat/history/route.ts, src/app/api/chat/threads/route.ts, src/components/chat/ChatInterface.tsx, src/db/schema.ts)
+- [x] Canonicalized vault note paths and write semantics: added `(user_id, path)` uniqueness, atomic upsert writes, `.md` path normalization shared across storage/tools/files API to ensure explorer/search/graph visibility (src/lib/vault/paths.ts, src/lib/vault/storage.ts, src/lib/vault/tools.ts, src/app/api/vault/files/route.ts, src/db/schema.ts)
+- [x] Added migration/backfill for threaded chat + message UUIDs and vault path normalization/deduplication with new uniqueness indexes (src/db/migrations/0001_threaded_history_and_vault_upsert.sql)
 - [x] Added chat history persistence with PostgreSQL database (src/app/api/chat/history/route.ts, src/db/schema.ts)
 - [x] Added .env.example with required environment variables (DATABASE_URL, OPENAI_API_KEY, MEM0_API_KEY)
 - [x] Switched from SQLite to PostgreSQL with Railway (drizzle-orm + postgres-js)

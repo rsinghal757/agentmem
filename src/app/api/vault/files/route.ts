@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { vaultStorage } from "@/lib/vault/storage";
-import { parseFrontmatter, extractWikilinks, countWords } from "@/lib/vault/markdown";
+import {
+  parseFrontmatter,
+  extractWikilinks,
+  countWords,
+} from "@/lib/vault/markdown";
 import { getUserId } from "@/lib/utils";
+import { normalizeVaultPath } from "@/lib/vault/paths";
 
 /** GET /api/vault/files?path=&recursive=false — List vault files */
 export async function GET(request: Request) {
@@ -31,8 +36,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Path is required" }, { status: 400 });
   }
 
+  const normalizedPath = normalizeVaultPath(path);
+
   try {
-    const content = await vaultStorage.read(userId, path);
+    const content = await vaultStorage.read(userId, normalizedPath);
     if (!content) {
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
@@ -42,7 +49,7 @@ export async function POST(request: Request) {
     const wordCount = countWords(content);
 
     return NextResponse.json({
-      path,
+      path: normalizedPath,
       content,
       frontmatter,
       wikilinks,
@@ -69,9 +76,11 @@ export async function PUT(request: Request) {
     );
   }
 
+  const normalizedPath = normalizeVaultPath(path);
+
   try {
-    await vaultStorage.write(userId, path, content);
-    return NextResponse.json({ success: true, path });
+    await vaultStorage.write(userId, normalizedPath, content);
+    return NextResponse.json({ success: true, path: normalizedPath });
   } catch (error) {
     console.error("[Vault Files] Error writing:", error);
     return NextResponse.json(
@@ -90,9 +99,11 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Path is required" }, { status: 400 });
   }
 
+  const normalizedPath = normalizeVaultPath(path);
+
   try {
-    await vaultStorage.delete(userId, path);
-    return NextResponse.json({ success: true, path });
+    await vaultStorage.delete(userId, normalizedPath);
+    return NextResponse.json({ success: true, path: normalizedPath });
   } catch (error) {
     console.error("[Vault Files] Error deleting:", error);
     return NextResponse.json(
