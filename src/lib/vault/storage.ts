@@ -2,11 +2,12 @@ import type { VaultStorage } from "@/types/vault";
 import { getDb } from "@/db";
 import { vaultNotes } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { normalizeVaultPath } from "./paths";
 
 /** Database-backed vault storage for persistent storage */
 class DatabaseVaultStorage implements VaultStorage {
-  private getDbOrNull() {
-    const db = getDb();
+  private async getDbOrNull() {
+    const db = await getDb();
     if (!db) {
       console.warn("Database not configured - vault operations will be skipped");
     }
@@ -14,50 +15,54 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async read(userId: string, filePath: string): Promise<string | null> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return null;
+    const normalizedPath = normalizeVaultPath(filePath);
     const result = await db
       .select({ content: vaultNotes.content })
       .from(vaultNotes)
-      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)))
+      .where(
+        and(
+          eq(vaultNotes.userId, userId),
+          eq(vaultNotes.path, normalizedPath),
+        ),
+      )
       .limit(1);
     return result[0]?.content ?? null;
   }
 
   async write(userId: string, filePath: string, content: string): Promise<void> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return;
-    const existing = await db
-      .select({ id: vaultNotes.id })
-      .from(vaultNotes)
-      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)))
-      .limit(1);
+    const normalizedPath = normalizeVaultPath(filePath);
 
-    if (existing[0]) {
-      await db
-        .update(vaultNotes)
-        .set({
-          content,
-          updatedAt: new Date(),
-        })
-        .where(eq(vaultNotes.id, existing[0].id));
-    } else {
-      await db.insert(vaultNotes).values({
+    await db
+      .insert(vaultNotes)
+      .values({
         userId,
-        path: filePath,
+        path: normalizedPath,
         content,
         createdAt: new Date(),
         updatedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: [vaultNotes.userId, vaultNotes.path],
+        set: {
+          content,
+          updatedAt: new Date(),
+        },
       });
-    }
   }
 
   async delete(userId: string, filePath: string): Promise<void> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return;
+    const normalizedPath = normalizeVaultPath(filePath);
     await db
       .delete(vaultNotes)
-      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)));
+      .where(
+        and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, normalizedPath)),
+      );
   }
 
   async list(
@@ -65,17 +70,20 @@ class DatabaseVaultStorage implements VaultStorage {
     directory: string,
     recursive: boolean,
   ): Promise<string[]> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return [];
+    const normalizedDirectory = directory ? normalizeVaultPath(directory) : "";
+    const directoryPrefix = normalizedDirectory.replace(/\.md$/, "").replace(/\/$/, "");
+
     const results = await db
       .select({ path: vaultNotes.path })
       .from(vaultNotes)
       .where(eq(vaultNotes.userId, userId));
 
-    let paths = results.map((r) => r.path);
+    let paths = results.map((r) => normalizeVaultPath(r.path));
 
-    if (directory) {
-      const dirPrefix = directory.endsWith("/") ? directory : `${directory}/`;
+    if (directoryPrefix) {
+      const dirPrefix = `${directoryPrefix}/`;
       paths = paths.filter((p) => p.startsWith(dirPrefix));
     }
 
@@ -83,12 +91,12 @@ class DatabaseVaultStorage implements VaultStorage {
       const dirSet = new Set<string>();
       paths = paths
         .map((p) => {
-          const relative = directory ? p.slice(directory.length + 1) : p;
+          const relative = directoryPrefix ? p.slice(directoryPrefix.length + 1) : p;
           const firstPart = relative.split("/")[0];
-          return directory ? `${directory}/${firstPart}` : firstPart;
+          return directoryPrefix ? `${directoryPrefix}/${firstPart}` : firstPart;
         })
         .filter((p) => {
-          if (p.endsWith("/") || !dirSet.has(p)) {
+          if (!dirSet.has(p)) {
             dirSet.add(p);
             return true;
           }
@@ -100,12 +108,18 @@ class DatabaseVaultStorage implements VaultStorage {
   }
 
   async exists(userId: string, filePath: string): Promise<boolean> {
-    const db = this.getDbOrNull();
+    const db = await this.getDbOrNull();
     if (!db) return false;
+    const normalizedPath = normalizeVaultPath(filePath);
     const result = await db
       .select({ id: vaultNotes.id })
       .from(vaultNotes)
-      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)))
+      .where(
+        and(
+          eq(vaultNotes.userId, userId),
+          eq(vaultNotes.path, normalizedPath),
+        ),
+      )
       .limit(1);
     return result.length > 0;
   }
