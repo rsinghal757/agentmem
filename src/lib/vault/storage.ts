@@ -1,82 +1,52 @@
-import * as fs from "fs/promises";
-import * as path from "path";
 import type { VaultStorage } from "@/types/vault";
+import { getDb } from "@/db";
+import { vaultNotes } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
-const VAULT_LOCAL_PATH = process.env.VAULT_LOCAL_PATH || ".vault";
-
-/**
- * Resolve a writable base path for the vault.
- *
- * On Vercel, the deployment filesystem is read-only except /tmp.
- * We therefore fall back to /tmp/.vault when the configured path is not writable.
- */
-async function resolveWritableVaultBasePath(): Promise<string> {
-  const preferredPath = path.isAbsolute(VAULT_LOCAL_PATH)
-    ? VAULT_LOCAL_PATH
-    : path.join(process.cwd(), VAULT_LOCAL_PATH);
-
-  const fallbackPath = path.join("/tmp", ".vault");
-  const candidates = [preferredPath, fallbackPath];
-
-  for (const candidate of candidates) {
-    try {
-      await fs.mkdir(candidate, { recursive: true });
-      await fs.access(candidate, fs.constants.W_OK);
-      return candidate;
-    } catch {
-      // Try next candidate
-    }
-  }
-
-  // Last resort: use preferred path and let downstream operations surface errors.
-  return preferredPath;
-}
-
-/** Local filesystem vault storage for development */
-class LocalVaultStorage implements VaultStorage {
-  private basePathPromise: Promise<string> | null = null;
-
-  private async getBasePath(): Promise<string> {
-    if (!this.basePathPromise) {
-      this.basePathPromise = resolveWritableVaultBasePath();
-    }
-    return this.basePathPromise;
-  }
-
-  private getFullPath(userId: string, filePath: string): string {
-    // Kept only for type parity; prefer getFullPathAsync for runtime use.
-    return path.join(process.cwd(), VAULT_LOCAL_PATH, userId, filePath);
-  }
-
-  private async getFullPathAsync(userId: string, filePath: string): Promise<string> {
-    const basePath = await this.getBasePath();
-    return path.join(basePath, userId, filePath);
-  }
-
+/** Database-backed vault storage for persistent storage */
+class DatabaseVaultStorage implements VaultStorage {
   async read(userId: string, filePath: string): Promise<string | null> {
-    try {
-      const fullPath = await this.getFullPathAsync(userId, filePath);
-      const content = await fs.readFile(fullPath, "utf-8");
-      return content;
-    } catch {
-      return null;
-    }
+    const db = getDb();
+    const result = await db
+      .select({ content: vaultNotes.content })
+      .from(vaultNotes)
+      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)))
+      .limit(1);
+    return result[0]?.content ?? null;
   }
 
   async write(userId: string, filePath: string, content: string): Promise<void> {
-    const fullPath = await this.getFullPathAsync(userId, filePath);
-    const dir = path.dirname(fullPath);
-    await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(fullPath, content, "utf-8");
+    const db = getDb();
+    const existing = await db
+      .select({ id: vaultNotes.id })
+      .from(vaultNotes)
+      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)))
+      .limit(1);
+
+    if (existing[0]) {
+      await db
+        .update(vaultNotes)
+        .set({
+          content,
+          updatedAt: new Date(),
+        })
+        .where(eq(vaultNotes.id, existing[0].id));
+    } else {
+      await db.insert(vaultNotes).values({
+        userId,
+        path: filePath,
+        content,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
   }
 
   async delete(userId: string, filePath: string): Promise<void> {
-    try {
-      const fullPath = await this.getFullPathAsync(userId, filePath);
-      await fs.unlink(fullPath);
-    } catch {
-      // File doesn't exist, that's fine
-    }
+    const db = getDb();
+    await db
+      .delete(vaultNotes)
+      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)));
   }
 
   async list(
@@ -84,67 +54,53 @@ class LocalVaultStorage implements VaultStorage {
     directory: string,
     recursive: boolean,
   ): Promise<string[]> {
-    const basePath = await this.getFullPathAsync(userId, directory || "");
-    try {
-      await fs.access(basePath);
-    } catch {
-      return [];
+    const db = getDb();
+    const results = await db
+      .select({ path: vaultNotes.path })
+      .from(vaultNotes)
+      .where(eq(vaultNotes.userId, userId));
+
+    let paths = results.map((r) => r.path);
+
+    if (directory) {
+      const dirPrefix = directory.endsWith("/") ? directory : `${directory}/`;
+      paths = paths.filter((p) => p.startsWith(dirPrefix));
     }
 
-    if (recursive) {
-      return this.listRecursive(basePath, "");
+    if (!recursive) {
+      const dirSet = new Set<string>();
+      paths = paths
+        .map((p) => {
+          const relative = directory ? p.slice(directory.length + 1) : p;
+          const firstPart = relative.split("/")[0];
+          return directory ? `${directory}/${firstPart}` : firstPart;
+        })
+        .filter((p) => {
+          if (p.endsWith("/") || !dirSet.has(p)) {
+            dirSet.add(p);
+            return true;
+          }
+          return false;
+        });
     }
 
-    const entries = await fs.readdir(basePath, { withFileTypes: true });
-    return entries.map((entry) => {
-      const relativePath = directory
-        ? `${directory}/${entry.name}`
-        : entry.name;
-      return entry.isDirectory() ? `${relativePath}/` : relativePath;
-    });
-  }
-
-  private async listRecursive(
-    basePath: string,
-    prefix: string,
-  ): Promise<string[]> {
-    const results: string[] = [];
-    try {
-      const entries = await fs.readdir(basePath, { withFileTypes: true });
-      for (const entry of entries) {
-        const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
-        if (entry.isDirectory()) {
-          const subResults = await this.listRecursive(
-            path.join(basePath, entry.name),
-            relativePath,
-          );
-          results.push(...subResults);
-        } else {
-          results.push(relativePath);
-        }
-      }
-    } catch {
-      // Directory doesn't exist
-    }
-    return results;
+    return paths;
   }
 
   async exists(userId: string, filePath: string): Promise<boolean> {
-    try {
-      const fullPath = await this.getFullPathAsync(userId, filePath);
-      await fs.access(fullPath);
-      return true;
-    } catch {
-      return false;
-    }
+    const db = getDb();
+    const result = await db
+      .select({ id: vaultNotes.id })
+      .from(vaultNotes)
+      .where(and(eq(vaultNotes.userId, userId), eq(vaultNotes.path, filePath)))
+      .limit(1);
+    return result.length > 0;
   }
 }
 
 /** Get the vault storage instance based on environment */
 function createVaultStorage(): VaultStorage {
-  // For now, always use local storage
-  // In production, this would switch to BlobVaultStorage
-  return new LocalVaultStorage();
+  return new DatabaseVaultStorage();
 }
 
 export const vaultStorage: VaultStorage = createVaultStorage();

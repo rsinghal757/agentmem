@@ -1,4 +1,4 @@
-# Technical Context: Next.js Starter Template
+# Technical Context: Obsidian Memory Agent
 
 ## Technology Stack
 
@@ -9,6 +9,17 @@
 | TypeScript   | 5.9.x   | Type-safe JavaScript            |
 | Tailwind CSS | 4.x     | Utility-first CSS               |
 | Bun          | Latest  | Package manager & runtime       |
+| SQLite       | -       | Persistent vault storage        |
+| Drizzle ORM  | 0.45.x  | Database ORM                    |
+
+## Database
+
+| File | Purpose |
+|------|---------|
+| `src/db/schema.ts` | Vault notes table schema |
+| `src/db/index.ts` | Database client |
+| `src/db/migrate.ts` | Migration runner |
+| `drizzle.config.ts` | Drizzle configuration |
 
 ## Development Environment
 

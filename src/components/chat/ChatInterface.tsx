@@ -1,13 +1,17 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
+import { useChat, type UIMessage } from "@ai-sdk/react";
 import { useRef, useEffect, useState } from "react";
 import { Message } from "./Message";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ChatInterface() {
-  const { messages, sendMessage, status } = useChat();
+  const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const { messages, sendMessage, status } = useChat({
+    messages: initialMessages,
+  });
   const [input, setInput] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -15,12 +19,64 @@ export function ChatInterface() {
 
   const isLoading = status === "streaming" || status === "submitted";
 
-  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    async function loadHistory() {
+      try {
+        const res = await fetch("/api/chat/history");
+        const data = await res.json();
+        if (data.messages && data.messages.length > 0) {
+          setInitialMessages(
+            data.messages.map((m: { id: number; role: string; content: string }) => ({
+              id: String(m.id),
+              role: m.role as "user" | "assistant",
+              parts: [{ type: "text" as const, text: m.content }],
+              createdAt: undefined,
+            }))
+          );
+        }
+      } catch (e) {
+        console.error("Failed to load chat history:", e);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    }
+    loadHistory();
+  }, []);
+
+  useEffect(() => {
+    if (isLoadingHistory) return;
+    if (messages.length <= initialMessages.length) return;
+
+    const newMessages = messages.slice(initialMessages.length);
+    const msgsToSave = newMessages
+      .filter((m) => m.role === "user" || m.role === "assistant")
+      .map((m) => {
+        const textPart = m.parts.find((p) => p.type === "text");
+        return {
+          role: m.role,
+          content: textPart && "text" in textPart ? textPart.text : "",
+        };
+      });
+
+    if (msgsToSave.length > 0) {
+      fetch("/api/chat/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: msgsToSave }),
+      }).catch(console.error);
+    }
+  }, [messages, initialMessages.length, isLoadingHistory]);
+
+  async function clearHistory() {
+    await fetch("/api/chat/history", { method: "DELETE" });
+    setInitialMessages([]);
+    window.location.reload();
+  }
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auto-focus input
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -39,9 +95,27 @@ export function ChatInterface() {
     }
   };
 
+  if (isLoadingHistory) {
+    return (
+      <div className="flex h-full items-center justify-center bg-[#F7F8F6]">
+        <Loader2 className="h-6 w-6 animate-spin text-[#0B6B3A]" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col bg-[#F7F8F6]">
-      {/* Messages area */}
+      {messages.length > 0 && (
+        <div className="flex justify-end border-b border-[#E8EAE7] bg-white px-6 py-2">
+          <button
+            onClick={clearHistory}
+            className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs text-[#6B6B6B] hover:bg-[#F7F8F6] hover:text-[#1C1C1C]"
+          >
+            <Trash2 className="h-3 w-3" />
+            Clear chat
+          </button>
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto px-6">
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">
