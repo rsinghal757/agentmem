@@ -8,11 +8,7 @@ function previewFromContent(content: string) {
   return content.trim().slice(0, 120);
 }
 
-async function ensureThread(
-  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
-  userId: string,
-  threadId: string,
-) {
+async function ensureThread(db: NonNullable<ReturnType<typeof getDb>>, userId: string, threadId: string) {
   await db
     .insert(chatThreads)
     .values({
@@ -26,7 +22,7 @@ async function ensureThread(
 }
 
 export async function GET(request: Request) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ messages: [] });
   }
@@ -101,7 +97,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
@@ -122,7 +118,7 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }

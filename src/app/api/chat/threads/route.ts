@@ -5,7 +5,7 @@ import { chatMessages, chatThreads } from "@/db/schema";
 import { getUserId, scopeThreadId } from "@/lib/utils";
 
 export async function GET() {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ threads: [] });
   }
@@ -27,7 +27,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
@@ -74,7 +74,7 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
