@@ -1,13 +1,12 @@
 import { ToolLoopAgent, stepCountIs } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { openrouter } from "@openrouter/ai-sdk-provider";
 import { createVaultTools } from "../vault/tools";
 import { buildSystemPromptWithMemory } from "../memory/injection";
 import type { ModelMessage } from "ai";
 
 const MAX_STEPS = parseInt(process.env.MAX_VAULT_STEPS || "15", 10);
 
-// Use gpt-4o-mini for faster, cheaper responses
-const MODEL_NAME = process.env.OPENAI_MODEL || "gpt-4o-mini";
+const MODEL_NAME = process.env.OPENAI_MODEL || "minimax/minimax-m2.5";
 
 /**
  * Create a ToolLoopAgent for a specific user.
@@ -15,7 +14,7 @@ const MODEL_NAME = process.env.OPENAI_MODEL || "gpt-4o-mini";
  */
 export function createAgent(userId: string) {
   const tools = createVaultTools(userId);
-  const model = openai(MODEL_NAME);
+  const model = openrouter(MODEL_NAME);
 
   return new ToolLoopAgent({
     id: "obsidian-memory-agent",
