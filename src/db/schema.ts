@@ -18,5 +18,17 @@ export const vaultNotes = sqliteTable("vault_notes", {
   ),
 });
 
+export const chatMessages = sqliteTable("chat_messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: text("user_id").notNull(),
+  role: text("role").notNull(), // "user" | "assistant"
+  content: text("content").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+    () => new Date(),
+  ),
+});
+
 export type VaultNoteInsert = typeof vaultNotes.$inferInsert;
 export type VaultNoteSelect = typeof vaultNotes.$inferSelect;
+export type ChatMessageInsert = typeof chatMessages.$inferInsert;
+export type ChatMessageSelect = typeof chatMessages.$inferSelect;
