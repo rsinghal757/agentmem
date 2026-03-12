@@ -4,7 +4,14 @@ import { useChat, type UIMessage } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Message } from "./Message";
-import { Send, Loader2, Trash2, MessageSquarePlus } from "lucide-react";
+import {
+  Send,
+  Loader2,
+  Trash2,
+  MessageSquarePlus,
+  PanelLeft,
+  X,
+} from "lucide-react";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
 
 type ThreadSummary = {
@@ -19,6 +26,7 @@ export function ChatInterface() {
   const [activeThreadId, setActiveThreadId] = useState(DEFAULT_THREAD_ID);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [input, setInput] = useState("");
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const { messages, setMessages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -145,6 +153,7 @@ export function ChatInterface() {
     });
     const data = await res.json();
     setActiveThreadId(data.thread.id);
+    setIsHistoryOpen(false);
     await loadThreads();
   }
 
@@ -171,8 +180,33 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex h-full bg-[#F7F8F6]">
-      <aside className="w-64 border-r border-[#E8EAE7] bg-white p-3">
+    <div className="relative flex h-full bg-[#F7F8F6]">
+      {isHistoryOpen && (
+        <button
+          type="button"
+          aria-label="Close chat history"
+          onClick={() => setIsHistoryOpen(false)}
+          className="absolute inset-0 z-20 bg-black/25 md:hidden"
+        />
+      )}
+
+      <aside
+        className={cn(
+          "absolute bottom-0 left-0 top-0 z-30 w-72 border-r border-[#E8EAE7] bg-white p-3 transition-transform duration-200 md:static md:w-64 md:translate-x-0",
+          isHistoryOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <div className="mb-3 flex items-center justify-between md:hidden">
+          <p className="text-sm font-medium text-[#1C1C1C]">Chat history</p>
+          <button
+            type="button"
+            onClick={() => setIsHistoryOpen(false)}
+            className="rounded-md p-1 text-[#6B6B6B] hover:bg-[#F7F8F6] hover:text-[#1C1C1C]"
+            aria-label="Close chat history"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
         <button
           onClick={createNewThread}
           className="mb-3 flex w-full items-center justify-center gap-2 rounded-[8px] border border-[#E8EAE7] px-3 py-2 text-sm text-[#1C1C1C] hover:bg-[#F7F8F6]"
@@ -184,7 +218,10 @@ export function ChatInterface() {
           {threads.map((thread) => (
             <button
               key={thread.id}
-              onClick={() => setActiveThreadId(thread.id)}
+              onClick={() => {
+                setActiveThreadId(thread.id);
+                setIsHistoryOpen(false);
+              }}
               className={cn(
                 "w-full rounded-[8px] px-3 py-2 text-left",
                 thread.id === activeThreadId ? "bg-[#EEF0EC]" : "hover:bg-[#F7F8F6]",
@@ -198,6 +235,16 @@ export function ChatInterface() {
       </aside>
 
       <div className="flex h-full flex-1 flex-col bg-[#F7F8F6]">
+        <div className="border-b border-[#E8EAE7] bg-white px-4 py-2 md:hidden">
+          <button
+            type="button"
+            onClick={() => setIsHistoryOpen(true)}
+            className="flex items-center gap-2 rounded-[8px] border border-[#E8EAE7] px-3 py-1.5 text-sm text-[#1C1C1C]"
+          >
+            <PanelLeft className="h-4 w-4" />
+            History
+          </button>
+        </div>
         {messages.length > 0 && (
           <div className="flex justify-end border-b border-[#E8EAE7] bg-white px-6 py-2">
             <button

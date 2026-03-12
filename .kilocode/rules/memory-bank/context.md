@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Made chat history mobile-collapsible: converted thread list into a slide-in sidepanel on small screens with overlay dismissal, dedicated History trigger, and auto-close on thread selection/new thread (src/components/chat/ChatInterface.tsx)
+
 - [x] Added resilient DB schema bootstrap fallback in `getDb()` so tables/indexes are created automatically when Drizzle file-based migrations cannot run in deployed/serverless environments; includes threaded history backfill defaults and vault uniqueness index (src/db/index.ts)
 
 - [x] Fixed async DB typing in chat history/threads API routes by awaiting `getDb()` and updating `ensureThread` to use awaited DB type; resolves Next.js/TypeScript build failure on `db.insert/select/update/delete` calls (src/app/api/chat/history/route.ts, src/app/api/chat/threads/route.ts)
@@ -97,3 +99,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-02-25 | Applied comprehensive UI redesign to match a calm, precise, premium aesthetic: updated palette, typography rhythm, spacing, cards, controls, navigation, and graph visual treatment with no functional changes. |
 | 2026-03-11 | Fixed build-blocking TypeScript errors in chat API routes by awaiting async `getDb()` in history/threads handlers and correcting `ensureThread` DB type annotation. |
 | 2026-03-12 | Added migration fallback schema bootstrap in `src/db/index.ts` to auto-create required tables/indexes/backfills when migration journal execution fails, preventing missing-table issues without manual migrations. |
+
+| 2026-03-12 | Added mobile chat history sidepanel behavior: thread list now collapses into an off-canvas panel with overlay and mobile toggle button. |
