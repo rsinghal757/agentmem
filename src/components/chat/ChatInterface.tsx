@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat, type UIMessage } from "@ai-sdk/react";
+import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Message } from "./Message";
@@ -13,6 +13,11 @@ import {
   X,
 } from "lucide-react";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
+import {
+  collectUnsavedHistoryMessages,
+  mapPersistedRowsToUIMessages,
+  type PersistedHistoryMessageRow,
+} from "@/lib/chat/history-mapping";
 
 type ThreadSummary = {
   id: string;
@@ -74,32 +79,8 @@ export function ChatInterface() {
     try {
       const res = await fetch(`/api/chat/history?threadId=${encodeURIComponent(threadId)}`);
       const data = await res.json();
-      const loadedMessages: UIMessage[] = (data.messages || []).map(
-        (m: {
-          messageUuid: string;
-          role: string;
-          content: string;
-          parts?: string | null;
-          createdAt?: string;
-        }) => {
-          let parsedParts: UIMessage["parts"] = [];
-          if (m.parts) {
-            try {
-              parsedParts = JSON.parse(m.parts) as UIMessage["parts"];
-            } catch {
-              parsedParts = [];
-            }
-          }
-
-          return {
-            id: m.messageUuid,
-            role: m.role as "user" | "assistant",
-            parts:
-              parsedParts.length > 0
-                ? parsedParts
-                : [{ type: "text" as const, text: m.content }],
-          };
-        },
+      const loadedMessages = mapPersistedRowsToUIMessages(
+        (data.messages || []) as PersistedHistoryMessageRow[],
       );
       setMessages(loadedMessages);
       persistedMessageIds.current = new Set(loadedMessages.map((m) => m.id));
@@ -123,23 +104,7 @@ export function ChatInterface() {
   useEffect(() => {
     if (isLoadingHistory) return;
 
-    const unsaved = messages
-      .filter((m) => (m.role === "user" || m.role === "assistant") && !persistedMessageIds.current.has(m.id))
-      .map((m) => {
-        const textContent = m.parts
-          .filter((p) => p.type === "text")
-          .map((p) => ("text" in p ? p.text : ""))
-          .join("\n")
-          .trim();
-
-        return {
-          messageUuid: m.id,
-          role: m.role,
-          content: textContent,
-          parts: JSON.stringify(m.parts),
-        };
-      })
-      .filter((m) => m.content || m.parts);
+    const unsaved = collectUnsavedHistoryMessages(messages, persistedMessageIds.current);
 
     if (unsaved.length === 0) return;
 
