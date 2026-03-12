@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Styled reasoning parts with a distinct dashed purple treatment and "Reasoning" label so they are visually differentiated from normal text bubbles in chat messages (src/components/chat/Message.tsx)
+
 - [x] Fixed chat history consistency for message UUID updates by snapshotting persisted message signatures, upserting message payloads on conflict, treating `parts` as hydration source-of-truth, and suppressing empty text bubbles while preserving tool parts; added regression coverage for multi-pass tool message updates (src/components/chat/ChatInterface.tsx, src/lib/chat/history-mapping.ts, src/app/api/chat/history/route.ts, src/components/chat/Message.tsx, src/lib/chat/history-mapping.test.ts)
 
 - [x] Fixed thread reload hydration to preserve all persisted message segments (including assistant tool-call parts) by removing user/assistant-only persistence guards and centralizing history mapping/persistence logic with regression tests (src/components/chat/ChatInterface.tsx, src/lib/chat/history-mapping.ts, src/lib/chat/history-mapping.test.ts)
@@ -110,4 +112,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-12 | Fixed disappearing tool activity badges after reload by persisting and restoring full message `parts` in chat history storage. |
 | 2026-03-12 | Fixed thread reopen regression where tool-call segments disappeared by persisting/hydrating all message roles/types via shared mapping helpers and regression tests. |
 | 2026-03-12 | Fixed end-to-end chat history save/load consistency for repeated message UUID updates by using persisted payload signatures + conflict upserts and parts-first hydration/rendering guards. |
+| 2026-03-12 | Differentiated reasoning vs normal chat message blocks in `Message` with distinct styling and a dedicated reasoning label. |
 
