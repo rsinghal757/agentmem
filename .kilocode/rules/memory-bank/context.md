@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Persisted full AI SDK message parts (including tool call UI parts) in chat history and restored them on reload so tool badges like "Wrote note" remain visible after returning to a thread (src/components/chat/ChatInterface.tsx, src/app/api/chat/history/route.ts, src/db/schema.ts, src/db/index.ts, src/db/migrations/0002_tool_parts_persistence.sql)
+
 - [x] Made chat history mobile-collapsible: converted thread list into a slide-in sidepanel on small screens with overlay dismissal, dedicated History trigger, and auto-close on thread selection/new thread (src/components/chat/ChatInterface.tsx)
 
 - [x] Added resilient DB schema bootstrap fallback in `getDb()` so tables/indexes are created automatically when Drizzle file-based migrations cannot run in deployed/serverless environments; includes threaded history backfill defaults and vault uniqueness index (src/db/index.ts)
@@ -101,3 +103,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-12 | Added migration fallback schema bootstrap in `src/db/index.ts` to auto-create required tables/indexes/backfills when migration journal execution fails, preventing missing-table issues without manual migrations. |
 
 | 2026-03-12 | Added mobile chat history sidepanel behavior: thread list now collapses into an off-canvas panel with overlay and mobile toggle button. |
+| 2026-03-12 | Fixed disappearing tool activity badges after reload by persisting and restoring full message `parts` in chat history storage. |

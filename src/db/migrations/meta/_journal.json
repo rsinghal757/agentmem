@@ -15,6 +15,13 @@
       "when": 1773269068548,
       "tag": "0001_threaded_history_and_vault_upsert",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773270068548,
+      "tag": "0002_tool_parts_persistence",
+      "breakpoints": true
     }
   ]
 }

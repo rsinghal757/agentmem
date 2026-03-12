@@ -79,12 +79,27 @@ export function ChatInterface() {
           messageUuid: string;
           role: string;
           content: string;
+          parts?: string | null;
           createdAt?: string;
-        }) => ({
-          id: m.messageUuid,
-          role: m.role as "user" | "assistant",
-          parts: [{ type: "text" as const, text: m.content }],
-        }),
+        }) => {
+          let parsedParts: UIMessage["parts"] = [];
+          if (m.parts) {
+            try {
+              parsedParts = JSON.parse(m.parts) as UIMessage["parts"];
+            } catch {
+              parsedParts = [];
+            }
+          }
+
+          return {
+            id: m.messageUuid,
+            role: m.role as "user" | "assistant",
+            parts:
+              parsedParts.length > 0
+                ? parsedParts
+                : [{ type: "text" as const, text: m.content }],
+          };
+        },
       );
       setMessages(loadedMessages);
       persistedMessageIds.current = new Set(loadedMessages.map((m) => m.id));
@@ -111,14 +126,20 @@ export function ChatInterface() {
     const unsaved = messages
       .filter((m) => (m.role === "user" || m.role === "assistant") && !persistedMessageIds.current.has(m.id))
       .map((m) => {
-        const textPart = m.parts.find((p) => p.type === "text");
+        const textContent = m.parts
+          .filter((p) => p.type === "text")
+          .map((p) => ("text" in p ? p.text : ""))
+          .join("\n")
+          .trim();
+
         return {
           messageUuid: m.id,
           role: m.role,
-          content: textPart && "text" in textPart ? textPart.text : "",
+          content: textContent,
+          parts: JSON.stringify(m.parts),
         };
       })
-      .filter((m) => m.content);
+      .filter((m) => m.content || m.parts);
 
     if (unsaved.length === 0) return;
 

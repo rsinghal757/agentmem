@@ -50,6 +50,7 @@ export const chatMessages = pgTable(
     messageUuid: text("message_uuid").notNull(),
     role: text("role").notNull(),
     content: text("content").notNull(),
+    parts: text("parts"),
     createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [

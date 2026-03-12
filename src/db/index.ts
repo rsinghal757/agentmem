@@ -31,6 +31,7 @@ async function ensureSchemaTables(
       user_id text NOT NULL,
       role text NOT NULL,
       content text NOT NULL,
+      parts text,
       created_at timestamp DEFAULT now(),
       thread_id text,
       message_uuid text
@@ -61,6 +62,11 @@ async function ensureSchemaTables(
   await database.execute(sql`
     ALTER TABLE chat_messages
     ADD COLUMN IF NOT EXISTS message_uuid text;
+  `);
+
+  await database.execute(sql`
+    ALTER TABLE chat_messages
+    ADD COLUMN IF NOT EXISTS parts text;
   `);
 
   await database.execute(sql`
