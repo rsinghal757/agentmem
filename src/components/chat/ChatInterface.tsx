@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat, type UIMessage } from "@ai-sdk/react";
+import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Message } from "./Message";
@@ -13,6 +13,14 @@ import {
   X,
 } from "lucide-react";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
+import {
+  buildPersistedHistorySignatures,
+  collectMessagesToPersist,
+  getHistoryMessageSignature,
+  mapPersistedRowsToUIMessages,
+  type PersistedHistoryMessageRow,
+  type PersistedHistoryMessageSignatures,
+} from "@/lib/chat/history-mapping";
 
 type ThreadSummary = {
   id: string;
@@ -37,7 +45,7 @@ export function ChatInterface() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const persistedMessageIds = useRef<Set<string>>(new Set());
+  const persistedMessageSignatures = useRef<PersistedHistoryMessageSignatures>(new Map());
 
   const isLoading = status === "streaming" || status === "submitted";
 
@@ -74,39 +82,15 @@ export function ChatInterface() {
     try {
       const res = await fetch(`/api/chat/history?threadId=${encodeURIComponent(threadId)}`);
       const data = await res.json();
-      const loadedMessages: UIMessage[] = (data.messages || []).map(
-        (m: {
-          messageUuid: string;
-          role: string;
-          content: string;
-          parts?: string | null;
-          createdAt?: string;
-        }) => {
-          let parsedParts: UIMessage["parts"] = [];
-          if (m.parts) {
-            try {
-              parsedParts = JSON.parse(m.parts) as UIMessage["parts"];
-            } catch {
-              parsedParts = [];
-            }
-          }
-
-          return {
-            id: m.messageUuid,
-            role: m.role as "user" | "assistant",
-            parts:
-              parsedParts.length > 0
-                ? parsedParts
-                : [{ type: "text" as const, text: m.content }],
-          };
-        },
+      const loadedMessages = mapPersistedRowsToUIMessages(
+        (data.messages || []) as PersistedHistoryMessageRow[],
       );
       setMessages(loadedMessages);
-      persistedMessageIds.current = new Set(loadedMessages.map((m) => m.id));
+      persistedMessageSignatures.current = buildPersistedHistorySignatures(loadedMessages);
     } catch (e) {
       console.error("Failed to load chat history:", e);
       setMessages([]);
-      persistedMessageIds.current = new Set();
+      persistedMessageSignatures.current = new Map();
     } finally {
       setIsLoadingHistory(false);
     }
@@ -123,23 +107,7 @@ export function ChatInterface() {
   useEffect(() => {
     if (isLoadingHistory) return;
 
-    const unsaved = messages
-      .filter((m) => (m.role === "user" || m.role === "assistant") && !persistedMessageIds.current.has(m.id))
-      .map((m) => {
-        const textContent = m.parts
-          .filter((p) => p.type === "text")
-          .map((p) => ("text" in p ? p.text : ""))
-          .join("\n")
-          .trim();
-
-        return {
-          messageUuid: m.id,
-          role: m.role,
-          content: textContent,
-          parts: JSON.stringify(m.parts),
-        };
-      })
-      .filter((m) => m.content || m.parts);
+    const unsaved = collectMessagesToPersist(messages, persistedMessageSignatures.current);
 
     if (unsaved.length === 0) return;
 
@@ -150,7 +118,10 @@ export function ChatInterface() {
     })
       .then(() => {
         for (const message of unsaved) {
-          persistedMessageIds.current.add(message.messageUuid);
+          persistedMessageSignatures.current.set(
+            message.messageUuid,
+            getHistoryMessageSignature(message),
+          );
         }
         loadThreads().catch(() => {});
       })
@@ -162,7 +133,7 @@ export function ChatInterface() {
       method: "DELETE",
     });
     setMessages([]);
-    persistedMessageIds.current = new Set();
+    persistedMessageSignatures.current = new Map();
     await loadThreads();
   }
 

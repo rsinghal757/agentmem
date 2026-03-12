@@ -9,6 +9,10 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Fixed thread reload data loss when message IDs were reused during streaming: history persistence now tracks per-message content signatures and server writes upsert by `(user_id, thread_id, message_uuid)` so later tool-call/results segments overwrite initial placeholder rows instead of being dropped (src/components/chat/ChatInterface.tsx, src/lib/chat/history-mapping.ts, src/app/api/chat/history/route.ts, src/lib/chat/history-mapping.test.ts)
+
+- [x] Fixed thread reload hydration to preserve all persisted message segments (including assistant tool-call parts) by removing user/assistant-only persistence guards and centralizing history mapping/persistence logic with regression tests (src/components/chat/ChatInterface.tsx, src/lib/chat/history-mapping.ts, src/lib/chat/history-mapping.test.ts)
+
 - [x] Persisted full AI SDK message parts (including tool call UI parts) in chat history and restored them on reload so tool badges like "Wrote note" remain visible after returning to a thread (src/components/chat/ChatInterface.tsx, src/app/api/chat/history/route.ts, src/db/schema.ts, src/db/index.ts, src/db/migrations/0002_tool_parts_persistence.sql)
 
 - [x] Made chat history mobile-collapsible: converted thread list into a slide-in sidepanel on small screens with overlay dismissal, dedicated History trigger, and auto-close on thread selection/new thread (src/components/chat/ChatInterface.tsx)
@@ -104,3 +108,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 | 2026-03-12 | Added mobile chat history sidepanel behavior: thread list now collapses into an off-canvas panel with overlay and mobile toggle button. |
 | 2026-03-12 | Fixed disappearing tool activity badges after reload by persisting and restoring full message `parts` in chat history storage. |
+| 2026-03-12 | Fixed thread reopen regression where tool-call segments disappeared by persisting/hydrating all message roles/types via shared mapping helpers and regression tests. |
+| 2026-03-12 | Fixed reused-message-id persistence bug by switching history save tracking to content signatures and upserting existing rows, so tool call/result segments survive thread reopen. |

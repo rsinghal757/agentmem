@@ -75,6 +75,14 @@ export async function POST(request: Request) {
   let latestPreview = "";
   for (const msg of messages) {
     if (msg.role && msg.messageUuid && (msg.content || msg.parts)) {
+      const normalizedParts =
+        typeof msg.parts === "string"
+          ? msg.parts
+          : msg.parts
+            ? JSON.stringify(msg.parts)
+            : null;
+      const createdAt = msg.createdAt ? new Date(msg.createdAt) : new Date();
+
       await db
         .insert(chatMessages)
         .values({
@@ -83,15 +91,18 @@ export async function POST(request: Request) {
           messageUuid: String(msg.messageUuid),
           role: msg.role,
           content: msg.content,
-          parts:
-            typeof msg.parts === "string"
-              ? msg.parts
-              : msg.parts
-                ? JSON.stringify(msg.parts)
-                : null,
-          createdAt: msg.createdAt ? new Date(msg.createdAt) : new Date(),
+          parts: normalizedParts,
+          createdAt,
         })
-        .onConflictDoNothing();
+        .onConflictDoUpdate({
+          target: [chatMessages.userId, chatMessages.threadId, chatMessages.messageUuid],
+          set: {
+            role: msg.role,
+            content: msg.content,
+            parts: normalizedParts,
+            createdAt,
+          },
+        });
       latestPreview = previewFromContent(msg.content);
     }
   }
