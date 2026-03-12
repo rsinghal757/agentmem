@@ -35,6 +35,10 @@ export function Message({ message }: MessageProps) {
         {/* Message parts */}
         {message.parts.map((part, index) => {
           if (isTextUIPart(part)) {
+            if (!part.text.trim()) {
+              return null;
+            }
+
             return (
               <div
                 key={index}

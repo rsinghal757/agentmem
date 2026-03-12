@@ -15,8 +15,10 @@ import {
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
 import {
   collectUnsavedHistoryMessages,
+  getHistoryMessageSignature,
   mapPersistedRowsToUIMessages,
   type PersistedHistoryMessageRow,
+  type PersistedMessageSnapshot,
 } from "@/lib/chat/history-mapping";
 
 type ThreadSummary = {
@@ -42,7 +44,7 @@ export function ChatInterface() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const persistedMessageIds = useRef<Set<string>>(new Set());
+  const persistedSnapshots = useRef<PersistedMessageSnapshot>(new Map());
 
   const isLoading = status === "streaming" || status === "submitted";
 
@@ -83,11 +85,13 @@ export function ChatInterface() {
         (data.messages || []) as PersistedHistoryMessageRow[],
       );
       setMessages(loadedMessages);
-      persistedMessageIds.current = new Set(loadedMessages.map((m) => m.id));
+      persistedSnapshots.current = new Map(
+        loadedMessages.map((message) => [message.id, getHistoryMessageSignature(message)]),
+      );
     } catch (e) {
       console.error("Failed to load chat history:", e);
       setMessages([]);
-      persistedMessageIds.current = new Set();
+      persistedSnapshots.current = new Map();
     } finally {
       setIsLoadingHistory(false);
     }
@@ -104,7 +108,7 @@ export function ChatInterface() {
   useEffect(() => {
     if (isLoadingHistory) return;
 
-    const unsaved = collectUnsavedHistoryMessages(messages, persistedMessageIds.current);
+    const unsaved = collectUnsavedHistoryMessages(messages, persistedSnapshots.current);
 
     if (unsaved.length === 0) return;
 
@@ -114,8 +118,15 @@ export function ChatInterface() {
       body: JSON.stringify({ threadId: activeThreadId, messages: unsaved }),
     })
       .then(() => {
-        for (const message of unsaved) {
-          persistedMessageIds.current.add(message.messageUuid);
+        const messagesById = new Map(messages.map((message) => [message.id, message]));
+        for (const persistedMessage of unsaved) {
+          const liveMessage = messagesById.get(persistedMessage.messageUuid);
+          if (!liveMessage) continue;
+
+          persistedSnapshots.current.set(
+            persistedMessage.messageUuid,
+            getHistoryMessageSignature(liveMessage),
+          );
         }
         loadThreads().catch(() => {});
       })
@@ -127,7 +138,7 @@ export function ChatInterface() {
       method: "DELETE",
     });
     setMessages([]);
-    persistedMessageIds.current = new Set();
+    persistedSnapshots.current = new Map();
     await loadThreads();
   }
 

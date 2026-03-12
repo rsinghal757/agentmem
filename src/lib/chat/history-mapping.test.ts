@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import type { UIMessage } from "ai";
 import {
   collectUnsavedHistoryMessages,
+  getHistoryMessageSignature,
   mapPersistedRowsToUIMessages,
 } from "./history-mapping";
 
@@ -32,7 +33,7 @@ test("persists all message segments for a thread with a tool call", () => {
     },
   ] as unknown as UIMessage[];
 
-  const persisted = collectUnsavedHistoryMessages(messages, new Set());
+  const persisted = collectUnsavedHistoryMessages(messages, new Map());
 
   assert.equal(persisted.length, 3);
   assert.equal(persisted[1].role, "assistant");
@@ -86,4 +87,51 @@ test("history hydration does not discard tool-call message types", () => {
   assert.equal(uiMessages.length, 1);
   assert.equal(uiMessages[0].role, "assistant");
   assert.equal(uiMessages[0].parts[0].type, "tool-vault_search");
+});
+
+test("same message UUID updates persist final payload and hydrate without empty text bubble", () => {
+  const partial = {
+    id: "m-tool-updating",
+    role: "assistant",
+    parts: [{ type: "text", text: "   " }, { type: "tool-vault_search", state: "input-available", input: { query: "alpha" } }],
+  } as unknown as UIMessage;
+
+  const firstPass = collectUnsavedHistoryMessages([partial], new Map());
+  assert.equal(firstPass.length, 1);
+
+  const persistedSnapshots = new Map<string, string>([
+    [partial.id, getHistoryMessageSignature(partial)],
+  ]);
+
+  const finalMessage = {
+    id: "m-tool-updating",
+    role: "assistant",
+    parts: [
+      {
+        type: "tool-vault_search",
+        state: "output-available",
+        input: { query: "alpha" },
+        output: { success: true, results: [{ path: "alpha.md" }] },
+      },
+      { type: "text", text: "I found alpha.md" },
+    ],
+  } as unknown as UIMessage;
+
+  const secondPass = collectUnsavedHistoryMessages([finalMessage], persistedSnapshots);
+  assert.equal(secondPass.length, 1);
+  assert.equal(secondPass[0].messageUuid, "m-tool-updating");
+
+  const hydrated = mapPersistedRowsToUIMessages([
+    {
+      messageUuid: secondPass[0].messageUuid,
+      role: secondPass[0].role,
+      content: secondPass[0].content,
+      parts: secondPass[0].parts,
+    },
+  ]);
+
+  assert.equal(hydrated.length, 1);
+  assert.equal(hydrated[0].parts.length, 2);
+  assert.equal(hydrated[0].parts[0].type, "tool-vault_search");
+  assert.deepEqual(hydrated[0].parts[1], { type: "text", text: "I found alpha.md" });
 });
