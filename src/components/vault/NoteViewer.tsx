@@ -3,33 +3,10 @@
 import { useVaultFile } from "@/hooks/useVaultFiles";
 import Link from "next/link";
 import { ArrowLeft, Tag, Clock, FileText } from "lucide-react";
+import { MarkdownContent, markdownWithWikiLinks } from "@/components/shared/MarkdownContent";
 
 interface NoteViewerProps {
   path: string;
-}
-
-/** Render markdown content with wikilink resolution */
-function renderContent(content: string): React.ReactNode {
-  // Replace [[wikilinks]] with clickable links
-  const parts = content.split(/(\[\[[^\]]+\]\])/g);
-
-  return parts.map((part, i) => {
-    const match = part.match(/^\[\[([^\]]+)\]\]$/);
-    if (match) {
-      const linkText = match[1];
-      const [target, display] = linkText.split("|");
-      return (
-        <Link
-          key={i}
-          href={`/vault/${target.trim()}`}
-          className="text-[#0B6B3A] underline decoration-[#0B6B3A]/30 transition-colors hover:text-[#0F7A43]"
-        >
-          {display?.trim() || target.trim()}
-        </Link>
-      );
-    }
-    return <span key={i}>{part}</span>;
-  });
 }
 
 export function NoteViewer({ path }: NoteViewerProps) {
@@ -114,9 +91,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
       {/* Content */}
       <div className="max-w-none rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-        <div className="whitespace-pre-wrap text-[15px] leading-[1.6] text-[#1C1C1C]">
-          {renderContent(body)}
-        </div>
+        <MarkdownContent content={markdownWithWikiLinks(body)} className="text-[15px] leading-[1.6] text-[#1C1C1C]" />
       </div>
 
       {/* Wikilinks */}
