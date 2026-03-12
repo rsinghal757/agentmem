@@ -43,6 +43,7 @@ export async function GET(request: Request) {
       threadId: chatMessages.threadId,
       role: chatMessages.role,
       content: chatMessages.content,
+      parts: chatMessages.parts,
       createdAt: chatMessages.createdAt,
     })
     .from(chatMessages)
@@ -73,7 +74,7 @@ export async function POST(request: Request) {
 
   let latestPreview = "";
   for (const msg of messages) {
-    if (msg.role && msg.content && msg.messageUuid) {
+    if (msg.role && msg.messageUuid && (msg.content || msg.parts)) {
       await db
         .insert(chatMessages)
         .values({
@@ -82,6 +83,12 @@ export async function POST(request: Request) {
           messageUuid: String(msg.messageUuid),
           role: msg.role,
           content: msg.content,
+          parts:
+            typeof msg.parts === "string"
+              ? msg.parts
+              : msg.parts
+                ? JSON.stringify(msg.parts)
+                : null,
           createdAt: msg.createdAt ? new Date(msg.createdAt) : new Date(),
         })
         .onConflictDoNothing();
