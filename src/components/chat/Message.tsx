@@ -3,6 +3,7 @@
 import type { UIMessage } from "ai";
 import { isTextUIPart, isToolUIPart, getToolName } from "ai";
 import { ToolCallBadge } from "./ToolCallBadge";
+import { MarkdownContent } from "@/components/shared/MarkdownContent";
 import { cn } from "@/lib/utils";
 
 interface MessageProps {
@@ -63,7 +64,11 @@ export function Message({ message }: MessageProps) {
                     : "bg-white text-[#1C1C1C]",
                 )}
               >
-                <div className="whitespace-pre-wrap">{part.text}</div>
+                <MarkdownContent
+                  content={part.text}
+                  isInverted={isUser}
+                  className={cn(isUser && "prose-code:text-white")}
+                />
               </div>
             );
           }
@@ -86,7 +91,11 @@ export function Message({ message }: MessageProps) {
                 <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide opacity-75">
                   Reasoning
                 </div>
-                <div className="whitespace-pre-wrap">{part.text}</div>
+                <MarkdownContent
+                  content={part.text}
+                  isInverted={isUser}
+                  className={cn(isUser && "prose-code:text-white")}
+                />
               </div>
             );
           }
