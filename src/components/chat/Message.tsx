@@ -12,6 +12,20 @@ interface MessageProps {
 export function Message({ message }: MessageProps) {
   const isUser = message.role === "user";
 
+  const isReasoningPart = (
+    part: UIMessage["parts"][number],
+  ): part is UIMessage["parts"][number] & {
+    type: "reasoning";
+    text: string;
+  } => {
+    return (
+      "type" in part &&
+      part.type === "reasoning" &&
+      "text" in part &&
+      typeof part.text === "string"
+    );
+  };
+
   return (
     <div
       className={cn(
@@ -49,6 +63,29 @@ export function Message({ message }: MessageProps) {
                     : "bg-white text-[#1C1C1C]",
                 )}
               >
+                <div className="whitespace-pre-wrap">{part.text}</div>
+              </div>
+            );
+          }
+
+          if (isReasoningPart(part)) {
+            if (!part.text.trim()) {
+              return null;
+            }
+
+            return (
+              <div
+                key={index}
+                className={cn(
+                  "rounded-[10px] border border-dashed px-4 py-3 text-[14px] leading-[1.6]",
+                  isUser
+                    ? "border-[#8B5CF6] bg-[#8B5CF6]/10 text-[#4C1D95]"
+                    : "border-[#C4B5FD] bg-[#F5F3FF] text-[#5B21B6]",
+                )}
+              >
+                <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide opacity-75">
+                  Reasoning
+                </div>
                 <div className="whitespace-pre-wrap">{part.text}</div>
               </div>
             );
