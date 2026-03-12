@@ -9,6 +9,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Fixed async DB typing in chat history/threads API routes by awaiting `getDb()` and updating `ensureThread` to use awaited DB type; resolves Next.js/TypeScript build failure on `db.insert/select/update/delete` calls (src/app/api/chat/history/route.ts, src/app/api/chat/threads/route.ts)
 - [x] Implemented end-to-end threaded chat persistence: unified user/thread context, idempotent message UUID history writes, new thread listing API, and chat sidebar thread switching with thread-scoped clear actions (src/app/api/chat/route.ts, src/app/api/chat/history/route.ts, src/app/api/chat/threads/route.ts, src/components/chat/ChatInterface.tsx, src/db/schema.ts)
 - [x] Canonicalized vault note paths and write semantics: added `(user_id, path)` uniqueness, atomic upsert writes, `.md` path normalization shared across storage/tools/files API to ensure explorer/search/graph visibility (src/lib/vault/paths.ts, src/lib/vault/storage.ts, src/lib/vault/tools.ts, src/app/api/vault/files/route.ts, src/db/schema.ts)
 - [x] Added migration/backfill for threaded chat + message UUIDs and vault path normalization/deduplication with new uniqueness indexes (src/db/migrations/0001_threaded_history_and_vault_upsert.sql)
@@ -92,3 +93,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 | 2026-02-25 | Improved vault write failure handling: `vault_write` now returns structured error payloads on failure and UI badge now labels failed writes explicitly. |
 | 2026-02-25 | Applied comprehensive UI redesign to match a calm, precise, premium aesthetic: updated palette, typography rhythm, spacing, cards, controls, navigation, and graph visual treatment with no functional changes. |
+| 2026-03-11 | Fixed build-blocking TypeScript errors in chat API routes by awaiting async `getDb()` in history/threads handlers and correcting `ensureThread` DB type annotation. |
