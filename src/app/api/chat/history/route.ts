@@ -91,7 +91,21 @@ export async function POST(request: Request) {
                 : null,
           createdAt: msg.createdAt ? new Date(msg.createdAt) : new Date(),
         })
-        .onConflictDoNothing();
+        .onConflictDoUpdate({
+          target: [chatMessages.userId, chatMessages.threadId, chatMessages.messageUuid],
+          set: {
+            role: msg.role,
+            content: msg.content,
+            parts:
+              typeof msg.parts === "string"
+                ? msg.parts
+                : msg.parts
+                  ? JSON.stringify(msg.parts)
+                  : null,
+            // Preserve original createdAt so chronological ordering stays stable across retries/updates.
+            createdAt: chatMessages.createdAt,
+          },
+        });
       latestPreview = previewFromContent(msg.content);
     }
   }
