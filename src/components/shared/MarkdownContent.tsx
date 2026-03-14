@@ -1,5 +1,6 @@
 "use client";
 
+import { buildVaultHref, resolveVaultLinkTarget } from "@/lib/vault/links";
 import { cn } from "@/lib/utils";
 
 interface MarkdownContentProps {
@@ -107,12 +108,13 @@ function markdownToHtml(markdown: string) {
   return rendered;
 }
 
-export function markdownWithWikiLinks(content: string) {
+export function markdownWithWikiLinks(content: string, allPaths: string[] = []) {
   return content.replace(/\[\[([^\]]+)\]\]/g, (_, raw) => {
     const [target, display] = String(raw).split("|");
     const trimmedTarget = target.trim();
     const text = (display || target).trim();
-    return `[${text}](/vault/${encodeURIComponent(trimmedTarget)})`;
+    const resolvedPath = resolveVaultLinkTarget(trimmedTarget, allPaths) || trimmedTarget;
+    return `[${text}](${buildVaultHref(resolvedPath)})`;
   });
 }
 
