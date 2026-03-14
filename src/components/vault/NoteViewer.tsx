@@ -5,7 +5,6 @@ import { useVaultFile, useVaultFiles } from "@/hooks/useVaultFiles";
 import Link from "next/link";
 import { Tag, Clock, FileText, Save, Pencil, X } from "lucide-react";
 import { MarkdownContent, markdownWithWikiLinks } from "@/components/shared/MarkdownContent";
-import { FileTree } from "@/components/vault/FileTree";
 import { buildVaultHref, resolveVaultLinkTarget } from "@/lib/vault/links";
 
 interface NoteViewerProps {
@@ -64,23 +63,15 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
   if (error || !content) {
     return (
-      <div className="grid h-full grid-cols-1 gap-0 bg-[#F7F8F6] lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="h-full overflow-y-auto border-b border-[#E8EAE7] p-4 lg:border-b-0 lg:border-r">
-          <p className="mb-3 text-[13px] font-medium uppercase tracking-wide text-[#6B6B6B]">
-            Vault explorer
-          </p>
-          <FileTree activePath={path} panel />
-        </aside>
-        <div className="flex flex-col items-center justify-center px-6 py-16">
-          <FileText className="mb-4 h-12 w-12 text-[#C7CCC6]" />
-          <p className="text-[15px] text-[#6B6B6B]">Note not found</p>
-          <Link
-            href="/vault"
-            className="mt-4 text-[15px] text-[#0B6B3A] hover:text-[#0F7A43]"
-          >
-            Open vault root
-          </Link>
-        </div>
+      <div className="flex h-full flex-col items-center justify-center px-6 py-16">
+        <FileText className="mb-4 h-12 w-12 text-[#C7CCC6]" />
+        <p className="text-[15px] text-[#6B6B6B]">Note not found</p>
+        <Link
+          href="/vault"
+          className="mt-4 text-[15px] text-[#0B6B3A] hover:text-[#0F7A43]"
+        >
+          Open vault root
+        </Link>
       </div>
     );
   }
@@ -91,15 +82,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
     bodyStart > 0 ? content.slice(bodyStart + 3).trim() : content;
 
   return (
-    <div className="grid h-full grid-cols-1 gap-0 bg-[#F7F8F6] lg:grid-cols-[320px_minmax(0,1fr)]">
-      <aside className="h-full overflow-y-auto border-b border-[#E8EAE7] p-4 lg:border-b-0 lg:border-r">
-        <p className="mb-3 text-[13px] font-medium uppercase tracking-wide text-[#6B6B6B]">
-          Vault explorer
-        </p>
-        <FileTree activePath={path} panel />
-      </aside>
-
-      <div className="h-full overflow-y-auto px-6 py-8">
+    <div className="h-full overflow-y-auto px-6 py-8">
         <div className="mx-auto max-w-3xl">
           {/* Header */}
           <div className="mb-8 rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
@@ -216,7 +199,6 @@ export function NoteViewer({ path }: NoteViewerProps) {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }
