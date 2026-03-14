@@ -5,6 +5,7 @@ import { FileText, Folder, ChevronRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface TreeNode {
   name: string;
@@ -124,25 +125,64 @@ interface FileTreeProps {
 }
 
 export function FileTree({ activePath, panel = false }: FileTreeProps) {
-  const { files, isLoading } = useVaultFiles("", true);
+  const router = useRouter();
+  const { files, isLoading, refresh } = useVaultFiles("", true);
+  const [newFilePath, setNewFilePath] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
   const tree = buildTree(files.filter((f: string) => f.endsWith(".md")));
+
+  async function handleCreateFile(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (isCreating) {
+      return;
+    }
+
+    const trimmedPath = newFilePath.trim();
+    if (!trimmedPath) {
+      setCreateError("Please enter a file name.");
+      return;
+    }
+
+    const normalizedPath = trimmedPath.endsWith(".md")
+      ? trimmedPath
+      : `${trimmedPath}.md`;
+    const fileName = normalizedPath.split("/").pop()?.replace(/\.md$/, "") || "New Note";
+    const initialContent = `# ${fileName}\n\n`;
+
+    setCreateError(null);
+    setIsCreating(true);
+
+    try {
+      const response = await fetch("/api/vault/files", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: normalizedPath, content: initialContent }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.error || "Failed to create file");
+      }
+
+      const data = await response.json();
+      await refresh();
+      setNewFilePath("");
+      router.push(`/vault/${data.path}`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to create file";
+      setCreateError(message);
+    } finally {
+      setIsCreating(false);
+    }
+  }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12 text-[15px] text-[#6B6B6B]">
         Loading...
-      </div>
-    );
-  }
-
-  if (tree.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-[10px] border border-[#E8EAE7] bg-white px-6 py-16 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-        <div className="mb-3 text-4xl">📚</div>
-        <p className="text-[15px] text-[#1C1C1C]">Vault is empty</p>
-        <p className="mt-1 text-[13px] text-[#6B6B6B]">
-          Start chatting to build your knowledge base
-        </p>
       </div>
     );
   }
@@ -154,9 +194,50 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
         panel ? "m-0 h-full" : "mx-6 my-6",
       )}
     >
-      {tree.map((node) => (
-        <TreeItem key={node.path} node={node} activePath={activePath} />
-      ))}
+      <form
+        onSubmit={handleCreateFile}
+        className="mb-3 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] p-3"
+      >
+        <label
+          htmlFor="new-vault-file"
+          className="mb-2 block text-[13px] font-medium text-[#1C1C1C]"
+        >
+          Create new file
+        </label>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            id="new-vault-file"
+            type="text"
+            value={newFilePath}
+            onChange={(event) => setNewFilePath(event.target.value)}
+            placeholder="notes/my-note or my-note.md"
+            className="h-10 flex-1 rounded-[8px] border border-[#D8DCD7] bg-white px-3 text-[14px] text-[#1C1C1C] outline-none ring-[#0B6B3A]/30 transition focus:ring-2"
+          />
+          <button
+            type="submit"
+            disabled={isCreating}
+            className="h-10 rounded-[8px] bg-[#0B6B3A] px-4 text-[14px] font-medium text-white transition hover:bg-[#0F7A43] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isCreating ? "Creating..." : "Create"}
+          </button>
+        </div>
+        {createError && (
+          <p className="mt-2 text-[13px] text-[#A11A1A]">{createError}</p>
+        )}
+      </form>
+      {tree.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-[10px] border border-[#E8EAE7] bg-white px-6 py-16 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div className="mb-3 text-4xl">📚</div>
+          <p className="text-[15px] text-[#1C1C1C]">Vault is empty</p>
+          <p className="mt-1 text-[13px] text-[#6B6B6B]">
+            Start chatting to build your knowledge base
+          </p>
+        </div>
+      ) : (
+        tree.map((node) => (
+          <TreeItem key={node.path} node={node} activePath={activePath} />
+        ))
+      )}
     </div>
   );
 }
