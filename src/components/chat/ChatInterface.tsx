@@ -14,6 +14,9 @@ import {
 } from "lucide-react";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
 import { SidebarTabs } from "@/components/layout/BottomTabs";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import {
   collectUnsavedHistoryMessages,
   getHistoryMessageSignature,
@@ -217,13 +220,14 @@ export function ChatInterface() {
           <div className="mt-1 text-lg font-semibold tracking-tight text-[#171B1A]">0xMem</div>
         </div>
 
-        <button
+        <Button
           onClick={createNewThread}
-          className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#D4E2DA] bg-white px-3 py-2 text-sm font-medium text-[#22342D] hover:bg-[#F8FAF8]"
+          variant="outline"
+          className="mb-3 w-full justify-center rounded-xl"
         >
           <MessageSquarePlus className="h-4 w-4" />
           New chat
-        </button>
+        </Button>
 
         <SidebarTabs />
 
@@ -249,27 +253,30 @@ export function ChatInterface() {
         </div>
       </aside>
 
-      <div className="flex h-full min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-[#DCE5DF] bg-white/80 shadow-[0_25px_65px_-48px_rgba(10,32,22,0.65)] backdrop-blur-md">
+      <Card className="h-full min-w-0 flex-1 overflow-hidden border-[#DCE5DF] bg-white/80 shadow-[0_25px_65px_-48px_rgba(10,32,22,0.65)] backdrop-blur-md">
         <div className="flex items-center justify-between border-b border-[#E2E8E4] bg-[#FAFCFB] px-4 py-2 md:px-5">
-          <button
+          <Button
             type="button"
             onClick={() => setIsHistoryOpen(true)}
-            className="flex items-center gap-2 rounded-lg border border-[#DEE5E1] px-3 py-1.5 text-sm text-[#344741] md:hidden"
+            variant="outline"
+            className="gap-2 md:hidden"
           >
             <PanelLeft className="h-4 w-4" />
             History
-          </button>
+          </Button>
 
           <div className="hidden md:block text-xs uppercase tracking-[0.12em] text-[#7A8882]">Research + Writing Assistant</div>
 
           {messages.length > 0 ? (
-            <button
+            <Button
               onClick={clearThread}
-              className="ml-auto flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs text-[#64716C] hover:bg-[#F2F6F3] hover:text-[#1C2A25]"
+              variant="ghost"
+              size="sm"
+              className="ml-auto gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
               <Trash2 className="h-3 w-3" />
               Clear thread
-            </button>
+            </Button>
           ) : (
             <span className="text-xs text-[#7A8882]">Ready when you are</span>
           )}
@@ -282,10 +289,16 @@ export function ChatInterface() {
             </div>
           ) : messages.length === 0 ? (
             <div className="flex h-full items-center justify-center">
-              <div className="max-w-md rounded-2xl border border-[#DFE7E2] bg-[#F8FAF8] px-6 py-8 text-center">
-                <h2 className="text-xl font-medium tracking-tight text-[#18211E]">Welcome to 0xMem</h2>
-                <p className="mt-2 text-sm text-[#62706A]">A calm workspace for thoughtful research, writing, and assistance.</p>
-              </div>
+              <Card className="max-w-md border-[#DFE7E2] bg-[#F8FAF8] py-2 text-center">
+                <CardContent className="px-6 py-6">
+                  <CardTitle className="text-xl font-medium tracking-tight text-[#18211E]">
+                    Welcome to 0xMem
+                  </CardTitle>
+                  <CardDescription className="mt-2 text-sm text-[#62706A]">
+                    A calm workspace for thoughtful research, writing, and assistance.
+                  </CardDescription>
+                </CardContent>
+              </Card>
             </div>
           ) : (
             <div className="space-y-1 pb-8 pt-7">
@@ -309,7 +322,7 @@ export function ChatInterface() {
 
         <div className="border-t border-[#E2E8E4] bg-[#FAFCFB] px-6 pb-5 pt-4 md:px-10">
           <div className="relative mx-auto max-w-4xl">
-            <textarea
+            <Textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -318,7 +331,7 @@ export function ChatInterface() {
               rows={1}
               className={cn(
                 "max-h-40 w-full resize-none rounded-xl border border-[#D7E3DC] bg-white px-4 py-3 pr-12 text-[15px] font-normal text-[#1A2521] placeholder:text-[#70807A]",
-                "shadow-[0_8px_24px_-20px_rgba(16,44,33,0.75)] focus:outline-none",
+                "shadow-[0_8px_24px_-20px_rgba(16,44,33,0.75)]",
               )}
               style={{
                 height: "auto",
@@ -330,12 +343,13 @@ export function ChatInterface() {
                 target.style.height = `${Math.min(target.scrollHeight, 160)}px`;
               }}
             />
-            <button
+            <Button
               type="button"
               onClick={onSubmit}
               disabled={!input.trim() || isLoading}
+              size="icon"
               className={cn(
-                "absolute bottom-2 right-2 flex h-10 w-10 items-center justify-center rounded-[10px] transition-colors",
+                "absolute bottom-2 right-2 h-10 w-10 rounded-[10px] transition-colors",
                 input.trim() && !isLoading
                   ? "bg-[#1F6A4F] text-white hover:bg-[#18543F] active:bg-[#134231]"
                   : "bg-[#EEF2EF] text-[#7C8A84]",
@@ -346,10 +360,10 @@ export function ChatInterface() {
               ) : (
                 <Send className="h-4 w-4" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
