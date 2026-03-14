@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Began shadcn/ui adoption for the chat shell: added `components.json`, introduced reusable `Button`, `Card`, and `Textarea` UI primitives under `src/components/ui`, migrated key chat controls/empty-state/composer to these primitives, and aligned global CSS tokens to shadcn-style theme variables while preserving the existing 0xMem aesthetic.
+
 - [x] Updated vault/graph navigation UX: when Vault or Graph is active, the left rail now swaps chat history for a persistent filesystem sidebar (with tabs + new chat + file tree), and vault routes now use a shared vault layout that keeps this sidebar open across Explorer, Note, and Graph views (src/app/vault/layout.tsx, src/components/layout/VaultSidebar.tsx, src/components/vault/NoteViewer.tsx, src/app/vault/page.tsx)
 
 - [x] Fixed chat viewport jump/overscroll after message updates by changing auto-scroll to target only the internal messages container instead of calling `scrollIntoView` on a sentinel element, preventing the app shell from shifting upward unexpectedly (src/components/chat/ChatInterface.tsx)
@@ -146,3 +148,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Fixed chat UI vertical jump/overshoot by scoping auto-scroll to the chat message container rather than the page-level scroll context. |
 | 2026-03-14 | Updated vault/graph UI shell so Vault and Graph routes use a persistent filesystem sidebar (replacing chat thread list in that context) and keep the sidebar open across explorer, note, and graph views. |
 
+
+| 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |
