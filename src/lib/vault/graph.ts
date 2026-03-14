@@ -1,6 +1,7 @@
 import type { GraphNode, GraphEdge, VaultGraph } from "@/types/vault";
 import { vaultStorage } from "./storage";
 import { parseFrontmatter, extractWikilinks } from "./markdown";
+import { resolveVaultLinkTarget } from "./links";
 
 /** Build a graph from all vault files for a user */
 export async function buildVaultGraph(userId: string): Promise<VaultGraph> {
@@ -30,7 +31,7 @@ export async function buildVaultGraph(userId: string): Promise<VaultGraph> {
     // Create edges from wikilinks
     for (const link of wikilinks) {
       // Try to resolve the wikilink to a file path
-      const targetPath = resolveLink(link, mdFiles);
+      const targetPath = resolveVaultLinkTarget(link, mdFiles);
       if (targetPath) {
         edges.push({ source: filePath, target: targetPath });
         backlinkCounts[targetPath] = (backlinkCounts[targetPath] || 0) + 1;
@@ -44,21 +45,6 @@ export async function buildVaultGraph(userId: string): Promise<VaultGraph> {
   }
 
   return { nodes, edges };
-}
-
-/** Resolve a wikilink name to a file path from the list of known files */
-function resolveLink(linkName: string, allPaths: string[]): string | null {
-  // Try exact path match
-  if (allPaths.includes(linkName)) return linkName;
-  if (allPaths.includes(`${linkName}.md`)) return `${linkName}.md`;
-
-  // Try matching by filename only
-  for (const p of allPaths) {
-    const filename = p.split("/").pop()?.replace(".md", "");
-    if (filename === linkName) return p;
-  }
-
-  return null;
 }
 
 /** Get backlinks for a specific note */

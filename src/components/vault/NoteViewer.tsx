@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useVaultFile } from "@/hooks/useVaultFiles";
+import { useVaultFile, useVaultFiles } from "@/hooks/useVaultFiles";
 import Link from "next/link";
 import { Tag, Clock, FileText, Save, Pencil, X } from "lucide-react";
 import { MarkdownContent, markdownWithWikiLinks } from "@/components/shared/MarkdownContent";
 import { FileTree } from "@/components/vault/FileTree";
+import { buildVaultHref, resolveVaultLinkTarget } from "@/lib/vault/links";
 
 interface NoteViewerProps {
   path: string;
@@ -14,6 +15,7 @@ interface NoteViewerProps {
 export function NoteViewer({ path }: NoteViewerProps) {
   const { content, frontmatter, wikilinks, wordCount, isLoading, error } =
     useVaultFile(path);
+  const { files } = useVaultFiles("", true);
   const [isEditing, setIsEditing] = useState(false);
   const [draftContent, setDraftContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -187,7 +189,10 @@ export function NoteViewer({ path }: NoteViewerProps) {
                 )}
               </div>
             ) : (
-              <MarkdownContent content={markdownWithWikiLinks(body)} className="text-[15px] leading-[1.6] text-[#1C1C1C]" />
+              <MarkdownContent
+                content={markdownWithWikiLinks(body, files)}
+                className="text-[15px] leading-[1.6] text-[#1C1C1C]"
+              />
             )}
           </div>
 
@@ -201,7 +206,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                 {wikilinks.map((link: string) => (
                   <Link
                     key={link}
-                    href={`/vault/${link}`}
+                    href={buildVaultHref(resolveVaultLinkTarget(link, files) || link)}
                     className="rounded-[8px] border border-[#E8EAE7] bg-white px-3 py-1.5 text-[13px] font-medium text-[#6B6B6B] transition-colors hover:border-[#0B6B3A]/40 hover:text-[#1C1C1C]"
                   >
                     {link}
