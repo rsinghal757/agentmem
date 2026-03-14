@@ -30,24 +30,22 @@ export function Message({ message }: MessageProps) {
   return (
     <div
       className={cn(
-        "flex w-full gap-3 px-2 py-2",
+        "flex w-full gap-3 px-2 py-2.5",
         isUser ? "justify-end" : "justify-start",
       )}
     >
-      {/* Assistant avatar */}
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#0B6B3A] text-sm font-medium text-white">
-          A
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#D2E0D8] bg-[#1F6A4F] text-xs font-semibold text-white">
+          0x
         </div>
       )}
 
       <div
         className={cn(
-          "flex max-w-[80%] flex-col gap-2",
+          "flex max-w-[82%] flex-col gap-2",
           isUser ? "items-end" : "items-start",
         )}
       >
-        {/* Message parts */}
         {message.parts.map((part, index) => {
           if (isTextUIPart(part)) {
             if (!part.text.trim()) {
@@ -58,10 +56,10 @@ export function Message({ message }: MessageProps) {
               <div
                 key={index}
                 className={cn(
-                  "rounded-[10px] border border-[#E8EAE7] px-4 py-3 text-[15px] leading-[1.6]",
+                  "rounded-2xl border px-4 py-3 text-[15px] leading-[1.65] shadow-[0_8px_20px_-18px_rgba(14,36,28,0.55)]",
                   isUser
-                    ? "border-[#0B6B3A] bg-[#0B6B3A] text-white"
-                    : "bg-white text-[#1C1C1C]",
+                    ? "border-[#1F6A4F] bg-[#1F6A4F] text-white"
+                    : "border-[#DCE5DF] bg-white text-[#1A2521]",
                 )}
               >
                 <MarkdownContent
@@ -82,13 +80,13 @@ export function Message({ message }: MessageProps) {
               <div
                 key={index}
                 className={cn(
-                  "rounded-[10px] border border-dashed px-4 py-3 text-[14px] leading-[1.6]",
+                  "rounded-xl border border-dashed px-4 py-3 text-[14px] leading-[1.6]",
                   isUser
-                    ? "border-[#8B5CF6] bg-[#8B5CF6]/10 text-[#4C1D95]"
-                    : "border-[#C4B5FD] bg-[#F5F3FF] text-[#5B21B6]",
+                    ? "border-[#6A8C7E] bg-[#ECF4EF] text-[#244538]"
+                    : "border-[#C9D9D1] bg-[#F6FAF7] text-[#355B4D]",
                 )}
               >
-                <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide opacity-75">
+                <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.09em] opacity-70">
                   Reasoning
                 </div>
                 <MarkdownContent
@@ -102,7 +100,6 @@ export function Message({ message }: MessageProps) {
 
           if (isToolUIPart(part)) {
             const toolName = getToolName(part) || "unknown";
-            // Safely extract input with fallback to empty object
             const args = (part.input ?? {}) as Record<string, unknown>;
             const result = part.output as Record<string, unknown> | undefined;
 
@@ -116,15 +113,13 @@ export function Message({ message }: MessageProps) {
             );
           }
 
-          // Skip step-start and other non-renderable parts
           return null;
         })}
       </div>
 
-      {/* User avatar */}
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] border border-[#E8EAE7] bg-white text-sm font-medium text-[#6B6B6B]">
-          U
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#DCE5DF] bg-[#F7FAF8] text-xs font-semibold text-[#5C6D66]">
+          You
         </div>
       )}
     </div>

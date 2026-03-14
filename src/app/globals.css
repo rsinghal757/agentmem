@@ -2,21 +2,26 @@
 
 :root {
   color-scheme: light;
-  --bg: #F7F8F6;
-  --surface: #FFFFFF;
-  --text-primary: #1C1C1C;
-  --text-secondary: #6B6B6B;
-  --border-subtle: #E8EAE7;
-  --brand: #0B6B3A;
-  --brand-hover: #0F7A43;
-  --brand-active: #095C31;
+  --bg: #ecefed;
+  --surface: #ffffff;
+  --surface-tinted: #f8faf8;
+  --text-primary: #171b1a;
+  --text-secondary: #62706a;
+  --border-subtle: #dde4df;
+  --brand: #1f6a4f;
+  --brand-hover: #18543f;
+  --brand-active: #134231;
 }
 
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 255, 255, 0.7) 0%, transparent 38%),
+    radial-gradient(circle at 90% 0%, rgba(209, 220, 214, 0.5) 0%, transparent 32%),
+    var(--bg);
   color: var(--text-primary);
   font-weight: 400;
   line-height: 1.6;
+  letter-spacing: -0.01em;
 }
 
 h1,
@@ -39,6 +44,10 @@ textarea {
 input,
 textarea {
   border-color: var(--border-subtle);
+}
+
+textarea {
+  field-sizing: content;
 }
 
 input:focus,
@@ -113,7 +122,7 @@ textarea:focus {
   overflow-x: auto;
   border: 1px solid #e8eae7;
   border-radius: 0.375rem;
-  background: #f7f8f6;
+  background: #f4f7f4;
   padding: 0.6rem 0.75rem;
   margin: 0.5rem 0;
 }
