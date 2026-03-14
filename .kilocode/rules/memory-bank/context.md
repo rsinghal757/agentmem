@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Fixed chat viewport jump/overscroll after message updates by changing auto-scroll to target only the internal messages container instead of calling `scrollIntoView` on a sentinel element, preventing the app shell from shifting upward unexpectedly (src/components/chat/ChatInterface.tsx)
+
 - [x] Refined the app's visual design for a calmer premium desktop feel (no behavior changes): refreshed neutral palette/background treatments, introduced a cleaner 0xMem brand presence, and restyled chat shell, thread rail, bubbles, tool badges, and composer controls for improved hierarchy and readability (src/app/globals.css, src/components/chat/ChatInterface.tsx, src/components/chat/Message.tsx, src/components/chat/ToolCallBadge.tsx)
 
 - [x] Moved primary app navigation from the mobile bottom bar into the chat sidebar directly above "New chat," with a compact segmented tab treatment while preserving active-route highlighting and removing the global bottom tabs layout chrome (src/components/layout/BottomTabs.tsx, src/components/chat/ChatInterface.tsx, src/app/layout.tsx)
@@ -139,3 +141,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Reduced startup log spam: migration fallback now initializes only once per process with concise error logging, and moved viewport metadata into Next.js `viewport` export to remove repeated warnings. |
 | 2026-03-14 | Refined chat UI styling to a calmer, premium 0xMem visual direction (desktop-first) with updated shell, thread rail, message bubbles, tool badges, and composer while preserving existing functionality. |
 | 2026-03-14 | Relocated app-level navigation tabs from the bottom bar into the chat sidebar above the New chat action, and removed persistent bottom navigation from the root layout. |
+| 2026-03-14 | Fixed chat UI vertical jump/overshoot by scoping auto-scroll to the chat message container rather than the page-level scroll context. |
