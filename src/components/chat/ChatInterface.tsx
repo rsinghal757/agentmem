@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
+import { SidebarTabs } from "@/components/layout/BottomTabs";
 import {
   collectUnsavedHistoryMessages,
   getHistoryMessageSignature,
@@ -217,6 +218,8 @@ export function ChatInterface() {
           <MessageSquarePlus className="h-4 w-4" />
           New chat
         </button>
+
+        <SidebarTabs />
 
         <div className="space-y-1.5">
           {threads.map((thread) => (
