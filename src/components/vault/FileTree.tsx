@@ -1,7 +1,7 @@
 "use client";
 
 import { useVaultFiles } from "@/hooks/useVaultFiles";
-import { FileText, Folder, ChevronRight, ChevronDown } from "lucide-react";
+import { FileText, Folder, ChevronRight, ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -204,21 +204,22 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
         >
           Create new file
         </label>
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <input
             id="new-vault-file"
             type="text"
             value={newFilePath}
             onChange={(event) => setNewFilePath(event.target.value)}
             placeholder="notes/my-note or my-note.md"
-            className="h-10 flex-1 rounded-[8px] border border-[#D8DCD7] bg-white px-3 text-[14px] text-[#1C1C1C] outline-none ring-[#0B6B3A]/30 transition focus:ring-2"
+            className="h-10 min-w-0 flex-1 rounded-[8px] border border-[#D8DCD7] bg-white px-3 text-[14px] text-[#1C1C1C] outline-none ring-[#0B6B3A]/30 transition focus:ring-2"
           />
           <button
             type="submit"
             disabled={isCreating}
-            className="h-10 rounded-[8px] bg-[#0B6B3A] px-4 text-[14px] font-medium text-white transition hover:bg-[#0F7A43] disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label={isCreating ? "Creating file" : "Create file"}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#0B6B3A] p-0 text-white transition hover:bg-[#0F7A43] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isCreating ? "Creating..." : "Create"}
+            <Plus className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
         {createError && (
