@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Reduced noisy startup logs by making migration/bootstrap initialization run only once per process and logging concise fallback errors; also moved Next.js viewport config from `metadata` to a dedicated `viewport` export to remove deprecation warnings (src/db/index.ts, src/app/layout.tsx)
+
 - [x] Added "Create new file" flow in vault explorer `FileTree`: inline file-path input + Create button, API-backed file creation with default heading content, refresh + auto-navigation to the new note, and inline error/loading states (src/components/vault/FileTree.tsx)
 
 - [x] Fixed vault wikilink navigation resolution so filename-only links (e.g. `[[chiara-marletto]]`) now resolve to their real note paths (e.g. `people/chiara-marletto.md`) in both rendered markdown and link chips; added shared vault link resolution/href utilities and reused them in graph edge building (src/lib/vault/links.ts, src/components/shared/MarkdownContent.tsx, src/components/vault/NoteViewer.tsx, src/lib/vault/graph.ts)
@@ -130,3 +132,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Fixed broken vault note navigation from wikilinks/connections by resolving filename-only wikilinks to canonical markdown paths before building hrefs (e.g. `chiara-marletto` → `people/chiara-marletto.md`), and shared the same resolver with graph construction for consistency. |
 
 | 2026-03-14 | Added vault explorer "Create new file" action with inline path input and API-backed note creation that navigates directly to the new note. |
+| 2026-03-14 | Reduced startup log spam: migration fallback now initializes only once per process with concise error logging, and moved viewport metadata into Next.js `viewport` export to remove repeated warnings. |
+

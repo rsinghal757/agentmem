@@ -10,6 +10,7 @@ const shouldAutoMigrate = process.env.AUTO_DB_MIGRATE !== "false";
 let db: ReturnType<typeof drizzle<typeof schema>> | null = null;
 let client: postgres.Sql | null = null;
 let migrationPromise: Promise<void> | null = null;
+let migrationsEnsured = false;
 
 async function ensureSchemaTables(
   database: NonNullable<ReturnType<typeof drizzle<typeof schema>>>,
@@ -135,7 +136,7 @@ async function ensureSchemaTables(
 async function ensureMigrations(
   database: NonNullable<ReturnType<typeof drizzle<typeof schema>>>,
 ) {
-  if (!shouldAutoMigrate) return;
+  if (!shouldAutoMigrate || migrationsEnsured) return;
 
   if (!migrationPromise) {
     migrationPromise = migrate(database, { migrationsFolder: "./src/db/migrations" })
@@ -143,14 +144,16 @@ async function ensureMigrations(
         console.log("[DB] Auto-migrations complete");
       })
       .catch(async (error) => {
+        const message =
+          error instanceof Error ? error.message : "Unknown migration error";
         console.warn(
-          "[DB] File-based migrations failed; applying schema bootstrap fallback",
-          error,
+          `[DB] File-based migrations failed; applying schema bootstrap fallback: ${message}`,
         );
         await ensureSchemaTables(database);
         console.log("[DB] Schema bootstrap fallback complete");
       })
       .finally(() => {
+        migrationsEnsured = true;
         migrationPromise = null;
       });
   }

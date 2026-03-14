@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { BottomTabs } from "@/components/layout/BottomTabs";
 import "./globals.css";
@@ -17,7 +17,12 @@ export const metadata: Metadata = {
   title: "Obsidian Memory Agent",
   description:
     "An AI assistant that builds and maintains its own Obsidian-compatible knowledge vault",
-  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
