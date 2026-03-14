@@ -33,14 +33,12 @@ export function ToolCallBadge({
   result,
   className,
 }: ToolCallBadgeProps) {
-  // Safely handle undefined toolName
   const safeToolName = toolName || "unknown";
   const icon = toolIcons[safeToolName] || "🔧";
   const defaultLabel = toolLabels[safeToolName] || safeToolName;
   const label = result && "success" in result && result.success === false
     ? (safeToolName === "vault_write" ? "Write failed" : `${defaultLabel} failed`)
     : defaultLabel;
-  // Safely access args properties with null/undefined checks
   const safeArgs = args || {};
   const path = (safeArgs.path || safeArgs.fromPath || safeArgs.query || "") as string;
   const reason = (safeArgs.reason || safeArgs.context || "") as string;
@@ -48,24 +46,24 @@ export function ToolCallBadge({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-[8px] border border-[#E8EAE7] bg-white px-2.5 py-1.5 text-[13px] text-[#6B6B6B]",
+        "inline-flex items-center gap-1.5 rounded-xl border border-[#DBE5DF] bg-[#FAFCFB] px-2.5 py-1.5 text-[13px] text-[#61716B]",
         className,
       )}
     >
       <span>{icon}</span>
-      <span className="font-medium text-[#1C1C1C]">{label}</span>
+      <span className="font-medium text-[#24352E]">{label}</span>
       {path && (
-        <span className="text-[#6B6B6B]">
+        <span className="text-[#62706A]">
           {path.length > 40 ? `...${path.slice(-37)}` : path}
         </span>
       )}
       {reason && (
-        <span className="hidden text-[#6B6B6B] sm:inline">
+        <span className="hidden text-[#6D7A75] sm:inline">
           — {reason.length > 50 ? `${reason.slice(0, 47)}...` : reason}
         </span>
       )}
       {result && "success" in result && (
-        <span className={result.success ? "text-[#0B6B3A]" : "text-red-500"}>
+        <span className={result.success ? "text-[#1F6A4F]" : "text-red-500"}>
           {result.success ? "✓" : "✗"}
         </span>
       )}
