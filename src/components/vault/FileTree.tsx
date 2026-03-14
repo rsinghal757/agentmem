@@ -56,9 +56,11 @@ function sortTree(nodes: TreeNode[]): TreeNode[] {
 
 function TreeItem({
   node,
+  activePath,
   depth = 0,
 }: {
   node: TreeNode;
+  activePath?: string;
   depth?: number;
 }) {
   const [isOpen, setIsOpen] = useState(depth < 2);
@@ -84,7 +86,12 @@ function TreeItem({
         {isOpen && (
           <div>
             {node.children.map((child) => (
-              <TreeItem key={child.path} node={child} depth={depth + 1} />
+              <TreeItem
+                key={child.path}
+                node={child}
+                activePath={activePath}
+                depth={depth + 1}
+              />
             ))}
           </div>
         )}
@@ -92,11 +99,16 @@ function TreeItem({
     );
   }
 
+  const isActive = activePath === node.path;
+
   return (
     <Link
       href={`/vault/${node.path}`}
       className={cn(
-        "flex items-center gap-2 rounded-[8px] px-3 py-3 text-[15px] text-[#6B6B6B] transition-colors hover:bg-white hover:text-[#1C1C1C] active:bg-[#F1F3F0]",
+        "flex items-center gap-2 rounded-[8px] px-3 py-3 text-[15px] transition-colors active:bg-[#F1F3F0]",
+        isActive
+          ? "border border-[#0B6B3A]/20 bg-[#EAF6EE] text-[#1C1C1C]"
+          : "text-[#6B6B6B] hover:bg-white hover:text-[#1C1C1C]",
       )}
       style={{ paddingLeft: `${depth * 16 + 28}px` }}
     >
@@ -106,7 +118,12 @@ function TreeItem({
   );
 }
 
-export function FileTree() {
+interface FileTreeProps {
+  activePath?: string;
+  panel?: boolean;
+}
+
+export function FileTree({ activePath, panel = false }: FileTreeProps) {
   const { files, isLoading } = useVaultFiles("", true);
   const tree = buildTree(files.filter((f: string) => f.endsWith(".md")));
 
@@ -131,9 +148,14 @@ export function FileTree() {
   }
 
   return (
-    <div className="mx-6 my-6 rounded-[10px] border border-[#E8EAE7] bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+    <div
+      className={cn(
+        "rounded-[10px] border border-[#E8EAE7] bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+        panel ? "m-0 h-full" : "mx-6 my-6",
+      )}
+    >
       {tree.map((node) => (
-        <TreeItem key={node.path} node={node} />
+        <TreeItem key={node.path} node={node} activePath={activePath} />
       ))}
     </div>
   );
