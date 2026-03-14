@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useVaultFile } from "@/hooks/useVaultFiles";
 import Link from "next/link";
-import { ArrowLeft, Tag, Clock, FileText } from "lucide-react";
+import { ArrowLeft, Tag, Clock, FileText, Save, Pencil, X } from "lucide-react";
 import { MarkdownContent, markdownWithWikiLinks } from "@/components/shared/MarkdownContent";
 
 interface NoteViewerProps {
@@ -12,6 +13,43 @@ interface NoteViewerProps {
 export function NoteViewer({ path }: NoteViewerProps) {
   const { content, frontmatter, wikilinks, wordCount, isLoading, error } =
     useVaultFile(path);
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftContent, setDraftContent] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isEditing && typeof content === "string") {
+      setDraftContent(content);
+    }
+  }, [content, isEditing]);
+
+  async function handleSave() {
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const response = await fetch("/api/vault/files", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path, content: draftContent }),
+      });
+
+      if (!response.ok) {
+        const data = (await response.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        throw new Error(data.error || "Failed to save note");
+      }
+
+      setIsEditing(false);
+      window.location.reload();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save note");
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -57,6 +95,41 @@ export function NoteViewer({ path }: NoteViewerProps) {
           {frontmatter?.title || path.split("/").pop()?.replace(".md", "")}
         </h1>
 
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-3 py-1.5 text-[13px] font-medium text-[#1C1C1C] transition-colors hover:border-[#0B6B3A]/40"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Edit note
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#0B6B3A] bg-[#0B6B3A] px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-[#0F7A43] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                <Save className="h-3.5 w-3.5" />
+                {isSaving ? "Saving..." : "Save changes"}
+              </button>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setSaveError(null);
+                  setDraftContent(content || "");
+                }}
+                disabled={isSaving}
+                className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-3 py-1.5 text-[13px] font-medium text-[#1C1C1C] transition-colors hover:border-[#BFC5BE] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                <X className="h-3.5 w-3.5" />
+                Cancel
+              </button>
+            </>
+          )}
+        </div>
+
         {/* Metadata */}
         <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#6B6B6B]">
           {frontmatter?.type && (
@@ -91,7 +164,21 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
       {/* Content */}
       <div className="max-w-none rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-        <MarkdownContent content={markdownWithWikiLinks(body)} className="text-[15px] leading-[1.6] text-[#1C1C1C]" />
+        {isEditing ? (
+          <div>
+            <textarea
+              value={draftContent}
+              onChange={(event) => setDraftContent(event.target.value)}
+              className="min-h-[420px] w-full resize-y rounded-[8px] border border-[#E8EAE7] bg-[#FDFEFC] p-4 font-mono text-[13px] leading-[1.6] text-[#1C1C1C] outline-none transition-colors focus:border-[#0B6B3A]/50"
+              spellCheck={false}
+            />
+            {saveError && (
+              <p className="mt-3 text-[13px] text-[#B42318]">{saveError}</p>
+            )}
+          </div>
+        ) : (
+          <MarkdownContent content={markdownWithWikiLinks(body)} className="text-[15px] leading-[1.6] text-[#1C1C1C]" />
+        )}
       </div>
 
       {/* Wikilinks */}
