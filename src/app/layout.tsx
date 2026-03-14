@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { BottomTabs } from "@/components/layout/BottomTabs";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,12 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-[#F7F8F6] text-[#1C1C1C] antialiased selection:bg-[#0B6B3A]/20`}
       >
-        <div className="flex h-[100dvh] flex-col">
-          <main className="flex-1 overflow-hidden">
-            {children}
-          </main>
-          <BottomTabs />
-        </div>
+        <main className="h-[100dvh] overflow-hidden">{children}</main>
       </body>
     </html>
   );

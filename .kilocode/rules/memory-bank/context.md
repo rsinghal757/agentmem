@@ -11,6 +11,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 - [x] Refined the app's visual design for a calmer premium desktop feel (no behavior changes): refreshed neutral palette/background treatments, introduced a cleaner 0xMem brand presence, and restyled chat shell, thread rail, bubbles, tool badges, and composer controls for improved hierarchy and readability (src/app/globals.css, src/components/chat/ChatInterface.tsx, src/components/chat/Message.tsx, src/components/chat/ToolCallBadge.tsx)
 
+- [x] Moved primary app navigation from the mobile bottom bar into the chat sidebar directly above "New chat," with a compact segmented tab treatment while preserving active-route highlighting and removing the global bottom tabs layout chrome (src/components/layout/BottomTabs.tsx, src/components/chat/ChatInterface.tsx, src/app/layout.tsx)
+
 - [x] Reduced noisy startup logs by making migration/bootstrap initialization run only once per process and logging concise fallback errors; also moved Next.js viewport config from `metadata` to a dedicated `viewport` export to remove deprecation warnings (src/db/index.ts, src/app/layout.tsx)
 
 - [x] Added "Create new file" flow in vault explorer `FileTree`: inline file-path input + Create button, API-backed file creation with default heading content, refresh + auto-navigation to the new note, and inline error/loading states (src/components/vault/FileTree.tsx)
@@ -136,4 +138,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Added vault explorer "Create new file" action with inline path input and API-backed note creation that navigates directly to the new note. |
 | 2026-03-14 | Reduced startup log spam: migration fallback now initializes only once per process with concise error logging, and moved viewport metadata into Next.js `viewport` export to remove repeated warnings. |
 | 2026-03-14 | Refined chat UI styling to a calmer, premium 0xMem visual direction (desktop-first) with updated shell, thread rail, message bubbles, tool badges, and composer while preserving existing functionality. |
-
+| 2026-03-14 | Relocated app-level navigation tabs from the bottom bar into the chat sidebar above the New chat action, and removed persistent bottom navigation from the root layout. |
