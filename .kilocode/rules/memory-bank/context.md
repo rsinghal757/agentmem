@@ -9,6 +9,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 ## Recently Completed
 
 
+- [x] Updated vault/graph navigation UX: when Vault or Graph is active, the left rail now swaps chat history for a persistent filesystem sidebar (with tabs + new chat + file tree), and vault routes now use a shared vault layout that keeps this sidebar open across Explorer, Note, and Graph views (src/app/vault/layout.tsx, src/components/layout/VaultSidebar.tsx, src/components/vault/NoteViewer.tsx, src/app/vault/page.tsx)
+
 - [x] Fixed chat viewport jump/overscroll after message updates by changing auto-scroll to target only the internal messages container instead of calling `scrollIntoView` on a sentinel element, preventing the app shell from shifting upward unexpectedly (src/components/chat/ChatInterface.tsx)
 
 - [x] Refined the app's visual design for a calmer premium desktop feel (no behavior changes): refreshed neutral palette/background treatments, introduced a cleaner 0xMem brand presence, and restyled chat shell, thread rail, bubbles, tool badges, and composer controls for improved hierarchy and readability (src/app/globals.css, src/components/chat/ChatInterface.tsx, src/components/chat/Message.tsx, src/components/chat/ToolCallBadge.tsx)
@@ -142,3 +144,5 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Refined chat UI styling to a calmer, premium 0xMem visual direction (desktop-first) with updated shell, thread rail, message bubbles, tool badges, and composer while preserving existing functionality. |
 | 2026-03-14 | Relocated app-level navigation tabs from the bottom bar into the chat sidebar above the New chat action, and removed persistent bottom navigation from the root layout. |
 | 2026-03-14 | Fixed chat UI vertical jump/overshoot by scoping auto-scroll to the chat message container rather than the page-level scroll context. |
+| 2026-03-14 | Updated vault/graph UI shell so Vault and Graph routes use a persistent filesystem sidebar (replacing chat thread list in that context) and keep the sidebar open across explorer, note, and graph views. |
+
