@@ -43,7 +43,7 @@ export function ChatInterface() {
     }),
   });
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const persistedSnapshots = useRef<PersistedMessageSnapshot>(new Map());
 
@@ -156,7 +156,13 @@ export function ChatInterface() {
   }
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages]);
 
   useEffect(() => {
@@ -269,7 +275,7 @@ export function ChatInterface() {
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 md:px-10">
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 md:px-10">
           {isLoadingHistory ? (
             <div className="flex h-full items-center justify-center">
               <Loader2 className="h-6 w-6 animate-spin text-[#1F6A4F]" />
@@ -297,7 +303,6 @@ export function ChatInterface() {
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
