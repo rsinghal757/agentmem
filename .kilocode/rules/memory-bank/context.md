@@ -11,6 +11,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 - [x] Added vault note manual editing in `NoteViewer`: Edit/Save/Cancel controls, inline markdown textarea editing, PUT save flow with error handling, and post-save reload to refresh parsed metadata and rendered content (src/components/vault/NoteViewer.tsx)
 
+- [x] Merged note viewer with vault explorer by adding a persistent file-tree side panel in `NoteViewer`, including active-note highlighting and panel layout variants in `FileTree` for easier file switching while reading/editing notes (src/components/vault/NoteViewer.tsx, src/components/vault/FileTree.tsx)
+
 - [x] Added proper markdown rendering in chat and vault note views via a shared `MarkdownContent` renderer (headings, lists, links, code blocks, blockquotes, inline formatting), including wikilink-to-route conversion support for note bodies (src/components/shared/MarkdownContent.tsx, src/components/chat/Message.tsx, src/components/vault/NoteViewer.tsx, src/app/globals.css)
 
 - [x] Styled reasoning parts with a distinct dashed purple treatment and "Reasoning" label so they are visually differentiated from normal text bubbles in chat messages (src/components/chat/Message.tsx)
@@ -120,3 +122,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 | 2026-03-12 | Added shared markdown renderer for chat messages and vault note body content, with wikilink-to-route conversion and markdown-specific styling in global CSS. |
 | 2026-03-14 | Added manual vault note editing in `NoteViewer` with Edit/Save/Cancel actions, inline textarea editing, and API-backed save handling. |
+| 2026-03-14 | Merged vault explorer into the note view: note pages now show a side-panel file tree with active note highlighting for quick navigation between files. |
