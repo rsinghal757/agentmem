@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { MessageSquarePlus } from "lucide-react";
 import { SidebarTabs } from "@/components/layout/BottomTabs";
 import { FileTree } from "@/components/vault/FileTree";
@@ -9,8 +10,22 @@ export function VaultSidebar() {
   return (
     <aside className="w-72 rounded-2xl border border-[#DCE5DF] bg-white/85 p-3 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md">
       <div className="mb-3 rounded-xl border border-[#E1E8E3] bg-[#F8FAF8] p-3">
-        <div className="text-[11px] uppercase tracking-[0.14em] text-[#74827D]">Workspace</div>
-        <div className="mt-1 text-lg font-semibold tracking-tight text-[#171B1A]">0xMem</div>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.14em] text-[#74827D]">Workspace</div>
+            <div className="mt-1 text-lg font-semibold tracking-tight text-[#171B1A]">0xMem</div>
+          </div>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton>
+              <button className="rounded-lg border border-[#DCE5DF] bg-white px-2.5 py-1 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
+                Sign in
+              </button>
+            </SignInButton>
+          </SignedOut>
+        </div>
       </div>
 
       <Link
