@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import {
   ClerkLoaded,
   ClerkLoading,
+  SignedIn,
+  SignedOut,
   SignInButton,
   SignUpButton,
   UserButton,
@@ -27,13 +29,16 @@ export function Header() {
         <div className="rounded-xl border border-[#BFD3C4] bg-[#EDF4EE] p-1.5">
           <Brain className="h-4 w-4 text-[#0B6B3A]" />
         </div>
-        <span className="text-sm font-semibold tracking-tight text-[#171B1A]">0xMem</span>
+        <span className="text-sm font-semibold tracking-tight text-[#171B1A]">
+          0xMem
+        </span>
       </Link>
 
       <div className="flex items-center gap-3">
         <nav className="hidden items-center gap-1 rounded-xl border border-[#DCE5DF] bg-[#F8FAF8] p-1 sm:flex">
           {navItems.map(({ href, label, icon: Icon }) => {
-            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+            const isActive =
+              href === "/" ? pathname === "/" : pathname.startsWith(href);
 
             return (
               <Link
@@ -43,7 +48,7 @@ export function Header() {
                   "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
                   isActive
                     ? "bg-[#0B6B3A]/12 text-[#0B6B3A] shadow-[inset_0_0_0_1px_rgba(11,107,58,0.25)]"
-                    : "text-[#62706A] hover:bg-white hover:text-[#171B1A]",
+                    : "text-[#62706A] hover:bg-white hover:text-[#171B1A]"
                 )}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -57,22 +62,27 @@ export function Header() {
           <ClerkLoading>
             <Loader2 className="h-4 w-4 animate-spin text-[#62706A]" />
           </ClerkLoading>
+
           <ClerkLoaded>
-            <Show when="signed-out">
-              <SignInButton>
-                <button className="rounded-lg border border-[#DCE5DF] bg-white px-3 py-1.5 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
-                  Sign in
-                </button>
-              </SignInButton>
-              <SignUpButton>
-                <button className="rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0F7A43]">
-                  Sign up
-                </button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
+            <SignedOut>
+              <div className="flex gap-2">
+                <SignInButton>
+                  <button className="rounded-lg border border-[#DCE5DF] bg-white px-3 py-1.5 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
+                    Sign in
+                  </button>
+                </SignInButton>
+
+                <SignUpButton>
+                  <button className="rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0F7A43]">
+                    Sign up
+                  </button>
+                </SignUpButton>
+              </div>
+            </SignedOut>
+
+            <SignedIn>
               <UserButton />
-            </Show>
+            </SignedIn>
           </ClerkLoaded>
         </div>
       </div>
