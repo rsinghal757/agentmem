@@ -1,13 +1,20 @@
+import { NextResponse } from "next/server";
 import { createAgentUIStreamResponse } from "ai";
 import { createAgent } from "@/lib/agent/agent";
 import { addMemories } from "@/lib/memory/mem0";
-import { getUserId, scopeThreadId } from "@/lib/utils";
+import { requireUserId } from "@/lib/auth";
+import { scopeThreadId } from "@/lib/utils";
 
 export async function POST(request: Request) {
   console.log("[Chat API] Received request");
   const { messages, threadId } = await request.json();
   console.log("[Chat API] Messages:", JSON.stringify(messages, null, 2));
-  const userId = getUserId();
+
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const resolvedThreadId = scopeThreadId(userId, threadId);
   console.log("[Chat API] User ID:", userId, "Thread:", resolvedThreadId);
   const agent = createAgent(userId);

@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { vaultSearch } from "@/lib/vault/search";
-import { getUserId } from "@/lib/utils";
+import { requireUserId } from "@/lib/auth";
 
 /** GET /api/vault/search?q=query&mode=fulltext&limit=5 */
 export async function GET(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q") || "";
   const mode = (searchParams.get("mode") || "fulltext") as
     | "fulltext"
     | "semantic";
   const limit = parseInt(searchParams.get("limit") || "5", 10);
-  const userId = getUserId();
 
   if (!query) {
     return NextResponse.json(

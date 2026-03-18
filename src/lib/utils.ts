@@ -8,11 +8,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Get the current user ID (placeholder for auth) */
-export function getUserId(): string {
-  return process.env.DEFAULT_USER_ID || "local-dev-user";
-}
-
 /** Resolve thread id from query/body with a deterministic fallback */
 export function getThreadId(value?: string | null): string {
   const trimmed = value?.trim();
