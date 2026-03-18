@@ -2,15 +2,20 @@ import { NextResponse } from "next/server";
 import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { chatMessages, chatThreads } from "@/db/schema";
-import { getUserId, scopeThreadId } from "@/lib/utils";
+import { requireUserId } from "@/lib/auth";
+import { scopeThreadId } from "@/lib/utils";
 
 export async function GET() {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ threads: [] });
   }
 
-  const userId = getUserId();
   const threads = await db
     .select({
       id: chatThreads.id,
@@ -27,12 +32,16 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
 
-  const userId = getUserId();
   const { threadId, title } = await request.json();
   const resolvedThreadId = scopeThreadId(userId, threadId || crypto.randomUUID());
 
@@ -56,12 +65,16 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
 
-  const userId = getUserId();
   const { threadId, title } = await request.json();
   const resolvedThreadId = scopeThreadId(userId, threadId);
 
@@ -74,12 +87,16 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
 
-  const userId = getUserId();
   const { threadId } = await request.json();
   const resolvedThreadId = scopeThreadId(userId, threadId);
 

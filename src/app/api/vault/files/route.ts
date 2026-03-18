@@ -5,15 +5,19 @@ import {
   extractWikilinks,
   countWords,
 } from "@/lib/vault/markdown";
-import { getUserId } from "@/lib/utils";
+import { requireUserId } from "@/lib/auth";
 import { normalizeVaultPath } from "@/lib/vault/paths";
 
 /** GET /api/vault/files?path=&recursive=false — List vault files */
 export async function GET(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const directory = searchParams.get("path") || "";
   const recursive = searchParams.get("recursive") === "true";
-  const userId = getUserId();
 
   try {
     const files = await vaultStorage.list(userId, directory, recursive);
@@ -29,8 +33,12 @@ export async function GET(request: Request) {
 
 /** POST /api/vault/files — Read a specific file */
 export async function POST(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { path } = await request.json();
-  const userId = getUserId();
 
   if (!path) {
     return NextResponse.json({ error: "Path is required" }, { status: 400 });
@@ -66,8 +74,12 @@ export async function POST(request: Request) {
 
 /** PUT /api/vault/files — Write/update a file */
 export async function PUT(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { path, content } = await request.json();
-  const userId = getUserId();
 
   if (!path || !content) {
     return NextResponse.json(
@@ -92,8 +104,12 @@ export async function PUT(request: Request) {
 
 /** DELETE /api/vault/files — Delete a file */
 export async function DELETE(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { path } = await request.json();
-  const userId = getUserId();
 
   if (!path) {
     return NextResponse.json({ error: "Path is required" }, { status: 400 });

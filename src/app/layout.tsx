@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Header } from "@/components/layout/Header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,7 +36,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-[#F7F8F6] text-[#1C1C1C] antialiased selection:bg-[#0B6B3A]/20`}
       >
-        <main className="h-[100dvh] overflow-hidden">{children}</main>
+        <ClerkProvider>
+          <div className="flex h-[100dvh] flex-col overflow-hidden">
+            <Header />
+            <main className="min-h-0 flex-1 overflow-hidden">{children}</main>
+          </div>
+        </ClerkProvider>
       </body>
     </html>
   );
