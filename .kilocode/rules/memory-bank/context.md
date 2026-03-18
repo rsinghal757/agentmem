@@ -152,6 +152,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Fixed chat UI vertical jump/overshoot by scoping auto-scroll to the chat message container rather than the page-level scroll context. |
 | 2026-03-14 | Updated vault/graph UI shell so Vault and Graph routes use a persistent filesystem sidebar (replacing chat thread list in that context) and keep the sidebar open across explorer, note, and graph views. |
 | 2026-03-18 | Changed note editing to a WYSIWYG-first experience: visual editor opens by default, keeps frontmatter out of the editable surface, supports Visual/Markdown mode switching, and serializes visual edits back into markdown on save. |
+| 2026-03-18 | Fixed visual editor cursor reset regression in `NoteViewer` by removing reactive `dangerouslySetInnerHTML` re-injection on every keystroke and synchronizing editor HTML through a guarded ref effect, preserving caret position while typing/deleting. |
 
 
 | 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |
