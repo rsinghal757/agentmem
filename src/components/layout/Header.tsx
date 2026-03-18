@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   ClerkLoaded,
   ClerkLoading,
-  Show,
   SignInButton,
   SignUpButton,
   UserButton,
