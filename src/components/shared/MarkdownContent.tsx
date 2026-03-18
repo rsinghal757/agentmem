@@ -36,7 +36,7 @@ function renderInlineMarkdown(text: string) {
   return rendered;
 }
 
-function markdownToHtml(markdown: string) {
+export function markdownToHtml(markdown: string) {
   const codeBlocks: string[] = [];
 
   const withoutCode = markdown.replace(/```([\w-]*)\n([\s\S]*?)```/g, (_full, lang, code) => {
