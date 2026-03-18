@@ -12,6 +12,7 @@ import {
   PanelLeft,
   X,
 } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
 import { SidebarTabs } from "@/components/layout/BottomTabs";
 import { Button } from "@/components/ui/button";
@@ -216,8 +217,22 @@ export function ChatInterface() {
         </div>
 
         <div className="mb-3 rounded-xl border border-[#E1E8E3] bg-[#F8FAF8] p-3">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-[#74827D]">Workspace</div>
-          <div className="mt-1 text-lg font-semibold tracking-tight text-[#171B1A]">0xMem</div>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.14em] text-[#74827D]">Workspace</div>
+              <div className="mt-1 text-lg font-semibold tracking-tight text-[#171B1A]">0xMem</div>
+            </div>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton>
+                <button className="rounded-lg border border-[#DCE5DF] bg-white px-2.5 py-1 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
+                  Sign in
+                </button>
+              </SignInButton>
+            </SignedOut>
+          </div>
         </div>
 
         <Button
@@ -264,8 +279,6 @@ export function ChatInterface() {
             <PanelLeft className="h-4 w-4" />
             History
           </Button>
-
-          <div className="hidden md:block text-xs uppercase tracking-[0.12em] text-[#7A8882]">Research + Writing Assistant</div>
 
           {messages.length > 0 ? (
             <Button
