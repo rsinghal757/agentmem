@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Added Clerk authentication for App Router with keyless-compatible provider wiring, API protection, and global auth controls in the existing header; auth now requires Clerk user context without legacy data migration (src/proxy.ts, src/app/layout.tsx, src/components/layout/Header.tsx, src/lib/auth.ts, src/app/api/**/route.ts, src/lib/utils.ts, .env.example, nixpacks.toml)
+
 - [x] Updated chat reasoning UX so reasoning parts are collapsed by default behind a "Show reasoning" disclosure toggle, letting users expand only when needed while keeping normal assistant text bubbles unchanged (src/components/chat/Message.tsx)
 
 - [x] Upgraded vault note editing UX with a WYSIWYG-first flow: edit mode now opens in a visual contentEditable markdown surface (instead of raw frontmatter markdown), includes a Visual/Markdown toggle for fallback precision edits, and preserves frontmatter while saving the edited body back to markdown (src/components/vault/NoteViewer.tsx, src/components/shared/MarkdownContent.tsx)
@@ -119,7 +121,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 - [ ] Add Vercel Blob storage for production vault
 - [ ] Add pgvector semantic search
-- [ ] Add authentication (Auth.js)
+- [x] Add authentication (Clerk)
 - [ ] Add rate limiting
 - [ ] Deploy to Vercel
 

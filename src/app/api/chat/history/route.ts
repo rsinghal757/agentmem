@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { chatMessages, chatThreads } from "@/db/schema";
-import { getUserId, scopeThreadId } from "@/lib/utils";
+import { requireUserId } from "@/lib/auth";
+import { scopeThreadId } from "@/lib/utils";
 
 function previewFromContent(content: string) {
   return content.trim().slice(0, 120);
@@ -26,11 +27,16 @@ async function ensureThread(
 }
 
 export async function GET(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ messages: [] });
   }
-  const userId = getUserId();
+
   const { searchParams } = new URL(request.url);
   const threadId = scopeThreadId(userId, searchParams.get("threadId"));
 
@@ -57,12 +63,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
 
-  const userId = getUserId();
   const { messages, threadId } = await request.json();
   const resolvedThreadId = scopeThreadId(userId, threadId);
 
@@ -122,11 +132,16 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
-  const userId = getUserId();
+
   const { searchParams } = new URL(request.url);
   const threadId = scopeThreadId(userId, searchParams.get("threadId"));
 
@@ -143,12 +158,16 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const userId = await requireUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const db = await getDb();
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
 
-  const userId = getUserId();
   const { threadId, title } = await request.json();
   const resolvedThreadId = scopeThreadId(userId, threadId);
 

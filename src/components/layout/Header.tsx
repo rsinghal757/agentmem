@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Brain, MessageSquare, FolderOpen, GitBranch } from "lucide-react";
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
+import { Brain, MessageSquare, FolderOpen, GitBranch, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -15,40 +23,60 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 mx-3 mt-3 flex h-14 items-center justify-between rounded-2xl border border-white/10 bg-neutral-950/75 px-4 shadow-[0_8px_30px_-20px_rgba(124,58,237,0.8)] backdrop-blur sm:mx-4">
+    <header className="mx-3 mt-3 flex h-14 items-center justify-between rounded-2xl border border-[#DCE5DF] bg-white/85 px-4 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md sm:mx-4">
       <Link href="/" className="flex items-center gap-2.5">
-        <div className="rounded-xl border border-violet-400/30 bg-violet-500/10 p-1.5">
-          <Brain className="h-4 w-4 text-violet-300" />
+        <div className="rounded-xl border border-[#BFD3C4] bg-[#EDF4EE] p-1.5">
+          <Brain className="h-4 w-4 text-[#0B6B3A]" />
         </div>
-        <span className="text-sm font-semibold tracking-tight text-neutral-100">
-          Obsidian Agent
-        </span>
+        <span className="text-sm font-semibold tracking-tight text-[#171B1A]">0xMem</span>
       </Link>
 
-      <nav className="flex items-center gap-1 rounded-xl border border-white/10 bg-neutral-900/80 p-1">
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const isActive =
-            href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(href);
+      <div className="flex items-center gap-3">
+        <nav className="hidden items-center gap-1 rounded-xl border border-[#DCE5DF] bg-[#F8FAF8] p-1 sm:flex">
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
-                isActive
-                  ? "bg-violet-500/20 text-violet-200 shadow-[inset_0_0_0_1px_rgba(167,139,250,0.4)]"
-                  : "text-neutral-400 hover:bg-white/5 hover:text-neutral-200",
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
+                  isActive
+                    ? "bg-[#0B6B3A]/12 text-[#0B6B3A] shadow-[inset_0_0_0_1px_rgba(11,107,58,0.25)]"
+                    : "text-[#62706A] hover:bg-white hover:text-[#171B1A]",
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex min-w-[124px] items-center justify-end gap-2">
+          <ClerkLoading>
+            <Loader2 className="h-4 w-4 animate-spin text-[#62706A]" />
+          </ClerkLoading>
+          <ClerkLoaded>
+            <Show when="signed-out">
+              <SignInButton>
+                <button className="rounded-lg border border-[#DCE5DF] bg-white px-3 py-1.5 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton>
+                <button className="rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0F7A43]">
+                  Sign up
+                </button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+          </ClerkLoaded>
+        </div>
+      </div>
     </header>
   );
 }
