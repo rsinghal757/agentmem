@@ -200,7 +200,7 @@ export function ChatInterface() {
 
       <aside
         className={cn(
-          "absolute bottom-4 left-4 top-3 z-30 w-72 rounded-2xl border border-[#DCE5DF] bg-white/85 p-3 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md transition-transform duration-200 md:static md:top-0 md:w-72 md:translate-x-0",
+          "absolute bottom-4 left-4 top-3 z-30 flex w-72 flex-col overflow-hidden rounded-2xl border border-[#DCE5DF] bg-white/85 p-3 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md transition-transform duration-200 md:static md:top-0 md:w-72 md:translate-x-0",
           isHistoryOpen ? "translate-x-0" : "-translate-x-[110%]",
         )}
       >
@@ -246,25 +246,27 @@ export function ChatInterface() {
 
         <SidebarTabs />
 
-        <div className="space-y-1.5">
-          {threads.map((thread) => (
-            <button
-              key={thread.id}
-              onClick={() => {
-                setActiveThreadId(thread.id);
-                setIsHistoryOpen(false);
-              }}
-              className={cn(
-                "w-full rounded-xl border px-3 py-2.5 text-left transition-colors",
-                thread.id === activeThreadId
-                  ? "border-[#CEDFD5] bg-[#F3F8F4]"
-                  : "border-transparent hover:border-[#E0E7E2] hover:bg-[#F8FAF8]",
-              )}
-            >
-              <div className="truncate text-sm font-medium text-[#18211E]">{thread.title || "New chat"}</div>
-              <div className="truncate text-xs text-[#62706A]">{thread.preview || "No messages yet"}</div>
-            </button>
-          ))}
+        <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+          <div className="space-y-1.5">
+            {threads.map((thread) => (
+              <button
+                key={thread.id}
+                onClick={() => {
+                  setActiveThreadId(thread.id);
+                  setIsHistoryOpen(false);
+                }}
+                className={cn(
+                  "w-full rounded-xl border px-3 py-2.5 text-left transition-colors",
+                  thread.id === activeThreadId
+                    ? "border-[#CEDFD5] bg-[#F3F8F4]"
+                    : "border-transparent hover:border-[#E0E7E2] hover:bg-[#F8FAF8]",
+                )}
+              >
+                <div className="truncate text-sm font-medium text-[#18211E]">{thread.title || "New chat"}</div>
+                <div className="truncate text-xs text-[#62706A]">{thread.preview || "No messages yet"}</div>
+              </button>
+            ))}
+          </div>
         </div>
       </aside>
 
