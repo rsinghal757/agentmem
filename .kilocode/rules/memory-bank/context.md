@@ -8,6 +8,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Upgraded vault note editing UX with a WYSIWYG-first flow: edit mode now opens in a visual contentEditable markdown surface (instead of raw frontmatter markdown), includes a Visual/Markdown toggle for fallback precision edits, and preserves frontmatter while saving the edited body back to markdown (src/components/vault/NoteViewer.tsx, src/components/shared/MarkdownContent.tsx)
 
 - [x] Polished vault file-creation control UI: replaced the textual "Create" CTA with a compact plus-icon button, fixed input/button flex sizing, and tightened button padding/fill so it no longer overflows in the filesystem panel (src/components/vault/FileTree.tsx)
 
@@ -150,6 +151,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Relocated app-level navigation tabs from the bottom bar into the chat sidebar above the New chat action, and removed persistent bottom navigation from the root layout. |
 | 2026-03-14 | Fixed chat UI vertical jump/overshoot by scoping auto-scroll to the chat message container rather than the page-level scroll context. |
 | 2026-03-14 | Updated vault/graph UI shell so Vault and Graph routes use a persistent filesystem sidebar (replacing chat thread list in that context) and keep the sidebar open across explorer, note, and graph views. |
+| 2026-03-18 | Changed note editing to a WYSIWYG-first experience: visual editor opens by default, keeps frontmatter out of the editable surface, supports Visual/Markdown mode switching, and serializes visual edits back into markdown on save. |
 
 
 | 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |
