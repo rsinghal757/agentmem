@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Fixed chat sidebar conversation history scrolling: made the chat history rail a bounded flex column with an internal `overflow-y-auto` list region so long thread lists are scrollable without pushing content off-screen (src/components/chat/ChatInterface.tsx)
+
 - [x] Simplified app chrome for auth-first UX: removed the global top header bar, moved Clerk avatar/sign-in control into the sidebar Workspace card (chat + vault sidebars), and added a signed-out landing page at `/` while keeping the chat workspace for signed-in users (src/app/layout.tsx, src/app/page.tsx, src/components/chat/ChatInterface.tsx, src/components/layout/VaultSidebar.tsx)
 
 - [x] Added Clerk authentication for App Router with keyless-compatible provider wiring, API protection, global auth controls in the existing header, and one-time migration from legacy `local-dev-user` data to the first authenticated user (src/proxy.ts, src/app/layout.tsx, src/components/layout/Header.tsx, src/lib/auth.ts, src/app/api/**/route.ts, src/lib/utils.ts, .env.example)
@@ -161,6 +163,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-18 | Fixed visual editor cursor reset regression in `NoteViewer` by removing reactive `dangerouslySetInnerHTML` re-injection on every keystroke and synchronizing editor HTML through a guarded ref effect, preserving caret position while typing/deleting. |
 | 2026-03-18 | Updated chat reasoning blocks to be collapsed by default behind a disclosure toggle ("Show reasoning"/"Hide reasoning"), so chain-of-thought is hidden unless explicitly expanded by the user. |
 | 2026-03-18 | Removed the top global header, relocated avatar/auth controls into sidebar Workspace cards, and introduced a signed-out landing page at `/` with sign-in/sign-up CTAs. |
+| 2026-03-18 | Fixed chat sidebar thread list scrolling by constraining the rail layout and adding an internal scroll container around conversation items, matching vault sidebar behavior for long lists. |
 
 
 | 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |
