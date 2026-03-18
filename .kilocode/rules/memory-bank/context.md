@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Unified mobile sidebar behavior across Chat/Vault/Graph: vault routes now use the same off-canvas collapsible sidebar pattern as chat (with backdrop + icon-only trigger), and the chat history trigger now shows icon-only (no "History" label) for a consistent compact mobile header control (src/app/vault/layout.tsx, src/components/layout/VaultSidebar.tsx, src/components/chat/ChatInterface.tsx)
+
 - [x] Fixed chat sidebar conversation history scrolling: made the chat history rail a bounded flex column with an internal `overflow-y-auto` list region so long thread lists are scrollable without pushing content off-screen (src/components/chat/ChatInterface.tsx)
 
 - [x] Simplified app chrome for auth-first UX: removed the global top header bar, moved Clerk avatar/sign-in control into the sidebar Workspace card (chat + vault sidebars), and added a signed-out landing page at `/` while keeping the chat workspace for signed-in users (src/app/layout.tsx, src/app/page.tsx, src/components/chat/ChatInterface.tsx, src/components/layout/VaultSidebar.tsx)
@@ -164,6 +166,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-18 | Updated chat reasoning blocks to be collapsed by default behind a disclosure toggle ("Show reasoning"/"Hide reasoning"), so chain-of-thought is hidden unless explicitly expanded by the user. |
 | 2026-03-18 | Removed the top global header, relocated avatar/auth controls into sidebar Workspace cards, and introduced a signed-out landing page at `/` with sign-in/sign-up CTAs. |
 | 2026-03-18 | Fixed chat sidebar thread list scrolling by constraining the rail layout and adding an internal scroll container around conversation items, matching vault sidebar behavior for long lists. |
+| 2026-03-18 | Matched mobile sidebar UX across all tabs: Vault/Graph now use an off-canvas collapsible filesystem rail with backdrop + icon trigger like chat, and the chat history trigger is now icon-only. |
 
 
 | 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |

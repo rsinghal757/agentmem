@@ -276,10 +276,11 @@ export function ChatInterface() {
             type="button"
             onClick={() => setIsHistoryOpen(true)}
             variant="outline"
-            className="gap-2 md:hidden"
+            size="icon"
+            className="h-9 w-9 md:hidden"
+            aria-label="Open history"
           >
             <PanelLeft className="h-4 w-4" />
-            History
           </Button>
 
           {messages.length > 0 ? (

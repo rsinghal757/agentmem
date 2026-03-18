@@ -2,13 +2,36 @@
 
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { MessageSquarePlus } from "lucide-react";
+import { MessageSquarePlus, X } from "lucide-react";
 import { SidebarTabs } from "@/components/layout/BottomTabs";
+import { cn } from "@/lib/utils";
 import { FileTree } from "@/components/vault/FileTree";
 
-export function VaultSidebar() {
+type VaultSidebarProps = {
+  isOpen?: boolean;
+  onClose?: () => void;
+};
+
+export function VaultSidebar({ isOpen = true, onClose }: VaultSidebarProps) {
   return (
-    <aside className="w-72 rounded-2xl border border-[#DCE5DF] bg-white/85 p-3 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md">
+    <aside
+      className={cn(
+        "absolute bottom-4 left-4 top-3 z-30 flex w-72 flex-col overflow-hidden rounded-2xl border border-[#DCE5DF] bg-white/85 p-3 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md transition-transform duration-200 md:static md:top-0 md:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-[110%]",
+      )}
+    >
+      <div className="mb-3 flex items-center justify-between md:hidden">
+        <p className="text-sm font-medium text-[#171B1A]">Filesystem</p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-md p-1 text-[#62706A] hover:bg-[#EFF3EF] hover:text-[#171B1A]"
+          aria-label="Close sidebar"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
       <div className="mb-3 rounded-xl border border-[#E1E8E3] bg-[#F8FAF8] p-3">
         <div className="flex items-center justify-between gap-3">
           <div>
