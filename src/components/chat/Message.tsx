@@ -77,24 +77,27 @@ export function Message({ message }: MessageProps) {
             }
 
             return (
-              <div
+              <details
                 key={index}
                 className={cn(
-                  "rounded-xl border border-dashed px-4 py-3 text-[14px] leading-[1.6]",
+                  "group w-full rounded-xl border border-dashed px-4 py-3 text-[14px] leading-[1.6]",
                   isUser
                     ? "border-[#6A8C7E] bg-[#ECF4EF] text-[#244538]"
                     : "border-[#C9D9D1] bg-[#F6FAF7] text-[#355B4D]",
                 )}
               >
-                <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.09em] opacity-70">
-                  Reasoning
+                <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.09em] opacity-80 marker:content-['']">
+                  <span className="group-open:hidden">Show reasoning</span>
+                  <span className="hidden group-open:inline">Hide reasoning</span>
+                </summary>
+                <div className="mt-2">
+                  <MarkdownContent
+                    content={part.text}
+                    isInverted={isUser}
+                    className={cn(isUser && "prose-code:text-white")}
+                  />
                 </div>
-                <MarkdownContent
-                  content={part.text}
-                  isInverted={isUser}
-                  className={cn(isUser && "prose-code:text-white")}
-                />
-              </div>
+              </details>
             );
           }
 
