@@ -159,6 +159,16 @@ export function NoteViewer({ path }: NoteViewerProps) {
     }
   }, [body, content, isEditing]);
 
+  useEffect(() => {
+    if (!isEditing || editorMode !== "visual" || !visualEditorRef.current) {
+      return;
+    }
+
+    if (visualEditorRef.current.innerHTML !== visualHtml) {
+      visualEditorRef.current.innerHTML = visualHtml;
+    }
+  }, [editorMode, isEditing, visualHtml]);
+
   async function handleSave() {
     setIsSaving(true);
     setSaveError(null);
@@ -338,11 +348,10 @@ export function NoteViewer({ path }: NoteViewerProps) {
                     contentEditable
                     suppressContentEditableWarning
                     onInput={(event) => {
-                      const nextHtml = (event.target as HTMLDivElement).innerHTML;
+                      const nextHtml = event.currentTarget.innerHTML;
                       setVisualHtml(nextHtml);
                     }}
                     className="markdown-content min-h-[420px] w-full rounded-[8px] border border-[#E8EAE7] bg-[#FDFEFC] p-4 text-[15px] leading-[1.6] text-[#1C1C1C] outline-none transition-colors focus:border-[#0B6B3A]/50"
-                    dangerouslySetInnerHTML={{ __html: visualHtml }}
                   />
                 ) : (
                   <textarea
