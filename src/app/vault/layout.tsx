@@ -20,7 +20,7 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
       )}
 
       <VaultSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="workspace-panel flex min-w-0 flex-1 flex-col overflow-hidden rounded-[var(--radius-panel)]">
+      <div className="workspace-panel flex min-w-0 flex-1 flex-col overflow-hidden">
         <div className="border-b border-[var(--border-subtle)] bg-[var(--surface-raised)] px-4 py-3 lg:hidden">
           <Button
             type="button"

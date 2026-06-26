@@ -28,7 +28,7 @@
   --brand-soft: oklch(0.94 0.032 148);
   --brand-softer: oklch(0.965 0.02 148);
   --canvas: oklch(0.972 0.01 150);
-  --surface-panel: oklch(0.992 0.006 150 / 0.86);
+  --surface-panel: oklch(0.992 0.006 150);
   --surface-raised: oklch(1 0 0 / 0.94);
   --text-strong: oklch(0.17 0.018 160);
   --text: var(--foreground);
@@ -72,6 +72,14 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
   }
 
   body {
@@ -187,22 +195,17 @@
 
 @layer utilities {
   .app-shell {
-    @apply relative mx-auto flex h-full max-w-[1680px] gap-3 bg-transparent px-3 pb-3 pt-3 sm:px-4 sm:pb-4 lg:gap-5 lg:px-6 lg:pb-6 lg:pt-5 2xl:px-8;
+    @apply fixed inset-0 flex h-[100dvh] w-screen gap-0 overflow-hidden bg-background;
   }
 
   .workspace-panel {
-    border-color: var(--border-soft);
-    background: var(--surface-panel);
-    box-shadow: var(--shadow-panel);
-    backdrop-filter: blur(18px);
+    @apply min-h-0 min-w-0 flex-1 bg-[var(--surface-panel)];
   }
 
   .workspace-sidebar {
-    @apply absolute bottom-3 left-3 top-3 z-30 flex w-[19rem] flex-col overflow-hidden rounded-[var(--radius-panel)] p-3 sm:left-4 sm:w-80 lg:static lg:top-0 lg:translate-x-0;
-    border: 1px solid var(--border-soft);
+    @apply absolute bottom-0 left-0 top-0 z-30 flex w-[19rem] shrink-0 flex-col overflow-hidden p-3 sm:w-80 lg:static lg:translate-x-0;
     background: var(--surface-panel);
-    box-shadow: var(--shadow-panel);
-    backdrop-filter: blur(18px);
+    border-right: 1px solid var(--border-soft);
     transition: transform 180ms ease, opacity 180ms ease;
   }
 

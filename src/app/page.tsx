@@ -22,7 +22,7 @@ export default function Home() {
 
       <ClerkLoaded>
         <SignedIn>
-          <div className="h-full">
+          <div className="h-full w-full">
             <ChatInterface />
           </div>
         </SignedIn>

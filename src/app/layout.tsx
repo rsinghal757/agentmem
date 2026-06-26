@@ -31,12 +31,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full overflow-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased selection:bg-primary/20`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden bg-background text-foreground antialiased selection:bg-primary/20`}
       >
         <ClerkProvider>
-          <main className="h-[100dvh] overflow-hidden">{children}</main>
+          <main className="h-full w-full overflow-hidden">{children}</main>
         </ClerkProvider>
       </body>
     </html>
