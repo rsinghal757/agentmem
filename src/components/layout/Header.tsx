@@ -24,18 +24,18 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="mx-3 mt-3 flex h-14 items-center justify-between rounded-2xl border border-[#DCE5DF] bg-white/85 px-4 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md sm:mx-4">
+    <header className="mx-3 mt-3 flex h-14 items-center justify-between rounded-2xl border border-[var(--border-soft)] bg-white/85 px-4 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md sm:mx-4">
       <Link href="/" className="flex items-center gap-2.5">
         <div className="rounded-xl border border-[#BFD3C4] bg-[#EDF4EE] p-1.5">
-          <Brain className="h-4 w-4 text-[#0B6B3A]" />
+          <Brain className="h-4 w-4 text-[var(--brand)]" />
         </div>
-        <span className="text-sm font-semibold tracking-tight text-[#171B1A]">
+        <span className="text-sm font-semibold tracking-tight text-[var(--text-strong)]">
           0xMem
         </span>
       </Link>
 
       <div className="flex items-center gap-3">
-        <nav className="hidden items-center gap-1 rounded-xl border border-[#DCE5DF] bg-[#F8FAF8] p-1 sm:flex">
+        <nav className="hidden items-center gap-1 rounded-xl border border-[var(--border-soft)] bg-[var(--brand-softer)] p-1 sm:flex">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -45,10 +45,10 @@ export function Header() {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
+                  "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-[color,background-color,border-color,box-shadow]",
                   isActive
-                    ? "bg-[#0B6B3A]/12 text-[#0B6B3A] shadow-[inset_0_0_0_1px_rgba(11,107,58,0.25)]"
-                    : "text-[#62706A] hover:bg-white hover:text-[#171B1A]"
+                    ? "bg-[var(--brand)]/12 text-[var(--brand)] shadow-[inset_0_0_0_1px_rgba(11,107,58,0.25)]"
+                    : "text-[var(--text-muted)] hover:bg-white hover:text-[var(--text-strong)]"
                 )}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -60,20 +60,20 @@ export function Header() {
 
         <div className="flex min-w-[124px] items-center justify-end gap-2">
           <ClerkLoading>
-            <Loader2 className="h-4 w-4 animate-spin text-[#62706A]" />
+            <Loader2 className="h-4 w-4 animate-spin text-[var(--text-muted)]" />
           </ClerkLoading>
 
           <ClerkLoaded>
             <SignedOut>
               <div className="flex gap-2">
                 <SignInButton>
-                  <button className="rounded-lg border border-[#DCE5DF] bg-white px-3 py-1.5 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
+                  <button className="rounded-lg border border-[var(--border-soft)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-strong)] hover:bg-[var(--brand-softer)]">
                     Sign in
                   </button>
                 </SignInButton>
 
                 <SignUpButton>
-                  <button className="rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0F7A43]">
+                  <button className="rounded-lg bg-[var(--brand)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--brand-hover)]">
                     Sign up
                   </button>
                 </SignUpButton>

@@ -154,8 +154,10 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
   useEffect(() => {
     if (!isEditing && typeof content === "string") {
-      setDraftBody(body);
-      setVisualHtml(markdownToHtml(body));
+      void Promise.resolve().then(() => {
+        setDraftBody(body);
+        setVisualHtml(markdownToHtml(body));
+      });
     }
   }, [body, content, isEditing]);
 

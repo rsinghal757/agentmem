@@ -46,24 +46,24 @@ export function ToolCallBadge({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-xl border border-[#DBE5DF] bg-[#FAFCFB] px-2.5 py-1.5 text-[13px] text-[#61716B]",
+        "inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-soft)] bg-[var(--surface-raised)] px-2.5 py-1.5 text-[13px] text-[var(--text-muted)]",
         className,
       )}
     >
       <span>{icon}</span>
-      <span className="font-medium text-[#24352E]">{label}</span>
+      <span className="font-medium text-[var(--text-strong)]">{label}</span>
       {path && (
-        <span className="text-[#62706A]">
+        <span className="text-[var(--text-muted)]">
           {path.length > 40 ? `...${path.slice(-37)}` : path}
         </span>
       )}
       {reason && (
-        <span className="hidden text-[#6D7A75] sm:inline">
+        <span className="hidden text-[var(--text-faint)] sm:inline">
           — {reason.length > 50 ? `${reason.slice(0, 47)}...` : reason}
         </span>
       )}
       {result && "success" in result && (
-        <span className={result.success ? "text-[#1F6A4F]" : "text-red-500"}>
+        <span className={result.success ? "text-[var(--brand)]" : "text-red-500"}>
           {result.success ? "✓" : "✗"}
         </span>
       )}
