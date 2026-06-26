@@ -171,3 +171,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 | 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |
 | 2026-03-14 | Tweaked vault explorer create-file button styling/content: switched to a plus-icon action and corrected sizing/alignment to prevent clipping in the sidebar form. |
+| 2026-06-26 | Refreshed 0xMem signed-in workspace branding: semantic green design tokens, premium shell spacing, polished chat/vault sidebars, readable assistant answer surfaces, command-bar composer, and consistent onboarding empty states across Chat, Vault, and Graph. |

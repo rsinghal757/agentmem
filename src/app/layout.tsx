@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Obsidian Memory Agent",
+  title: "0xMem — Research Memory Workspace",
   description:
-    "An AI assistant that builds and maintains its own Obsidian-compatible knowledge vault",
+    "A calm AI workspace for research, writing, markdown notes, and connected memory.",
 };
 
 export const viewport: Viewport = {
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-[#F7F8F6] text-[#1C1C1C] antialiased selection:bg-[#0B6B3A]/20`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased selection:bg-primary/20`}
       >
         <ClerkProvider>
           <main className="h-[100dvh] overflow-hidden">{children}</main>

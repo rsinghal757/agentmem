@@ -8,7 +8,7 @@ type ButtonSize = "default" | "sm" | "lg" | "icon";
 const variantClasses: Record<ButtonVariant, string> = {
   default: "bg-primary text-primary-foreground hover:bg-primary/90",
   destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+  outline: "border border-input bg-white/75 hover:bg-accent hover:text-accent-foreground",
   secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   ghost: "hover:bg-accent hover:text-accent-foreground",
   link: "text-primary underline-offset-4 hover:underline",
@@ -35,7 +35,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow,background-color] disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] text-sm font-medium transition-[color,box-shadow,background-color,border-color,transform] disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]",
         variantClasses[variant],
         sizeClasses[size],
         className,

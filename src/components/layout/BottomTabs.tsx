@@ -27,8 +27,8 @@ function NavigationTabs({ orientation }: { orientation: "bottom" | "sidebar" }) 
     <nav
       className={cn(
         isSidebar
-          ? "mb-3 rounded-xl border border-[#E1E8E3] bg-[#F8FAF8] p-1.5"
-          : "border-t border-[#E8EAE7] bg-[#F7F8F6]/95 backdrop-blur pb-safe",
+          ? "mb-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--brand-softer)] p-1.5"
+          : "border-t border-[var(--border-subtle)] bg-background/95 backdrop-blur pb-safe",
       )}
     >
       <div className={cn("flex items-stretch", isSidebar ? "gap-1" : "h-16")}>
@@ -50,11 +50,11 @@ function NavigationTabs({ orientation }: { orientation: "bottom" | "sidebar" }) 
               href={href}
               className={cn(
                 isSidebar
-                  ? "relative flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-colors"
-                  : "relative flex flex-1 flex-col items-center justify-center gap-1 transition-colors",
+                  ? "relative flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-[color,background-color,box-shadow]"
+                  : "relative flex flex-1 flex-col items-center justify-center gap-1 transition-[color,background-color,box-shadow]",
                 isActive
-                  ? "text-[#0B6B3A]"
-                  : "text-[#6B6B6B] active:text-[#1C1C1C]",
+                  ? "text-primary"
+                  : "text-muted-foreground active:text-foreground",
                 isSidebar && isActive && "bg-white shadow-[0_3px_10px_-8px_rgba(11,107,58,0.5)]",
               )}
             >
@@ -68,7 +68,7 @@ function NavigationTabs({ orientation }: { orientation: "bottom" | "sidebar" }) 
                 {label}
               </span>
               {isActive && !isSidebar && (
-                <div className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+8px)] h-1 w-1 rounded-full bg-[#0B6B3A]" />
+                <div className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+8px)] h-1 w-1 rounded-full bg-primary" />
               )}
             </Link>
           );

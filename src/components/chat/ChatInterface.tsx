@@ -11,6 +11,9 @@ import {
   MessageSquarePlus,
   PanelLeft,
   X,
+  Sparkles,
+  Network,
+  FileText,
 } from "lucide-react";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
@@ -103,11 +106,15 @@ export function ChatInterface() {
   }, [setMessages]);
 
   useEffect(() => {
-    loadThreads().catch((e) => console.error("Failed to load threads", e));
+    void Promise.resolve().then(() => {
+      loadThreads().catch((e) => console.error("Failed to load threads", e));
+    });
   }, [loadThreads]);
 
   useEffect(() => {
-    loadHistory(activeThreadId).catch((e) => console.error("Failed to load history", e));
+    void Promise.resolve().then(() => {
+      loadHistory(activeThreadId).catch((e) => console.error("Failed to load history", e));
+    });
   }, [activeThreadId, loadHistory]);
 
   useEffect(() => {
@@ -187,132 +194,122 @@ export function ChatInterface() {
     }
   };
 
+  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const starterPrompts = [
+    { icon: FileText, title: "Summarize notes", prompt: "Summarize my latest notes and pull out open questions." },
+    { icon: Network, title: "Find connections", prompt: "Find connections between my current projects and saved research." },
+    { icon: Sparkles, title: "Draft from memory", prompt: "Draft a concise brief using what you know from my vault." },
+  ];
+
   return (
-    <div className="relative mx-auto flex h-full max-w-[1600px] gap-3 bg-transparent px-4 pb-4 pt-3">
+    <div className="app-shell">
       {isHistoryOpen && (
         <button
           type="button"
           aria-label="Close chat history"
           onClick={() => setIsHistoryOpen(false)}
-          className="absolute inset-0 z-20 bg-black/25 md:hidden"
+          className="absolute inset-0 z-20 bg-black/25 lg:hidden"
         />
       )}
 
       <aside
         className={cn(
-          "absolute bottom-4 left-4 top-3 z-30 flex w-72 flex-col overflow-hidden rounded-2xl border border-[#DCE5DF] bg-white/85 p-3 shadow-[0_20px_50px_-42px_rgba(26,54,42,0.65)] backdrop-blur-md transition-transform duration-200 md:static md:top-0 md:w-72 md:translate-x-0",
-          isHistoryOpen ? "translate-x-0" : "-translate-x-[110%]",
+          "workspace-sidebar",
+          isHistoryOpen ? "translate-x-0" : "-translate-x-[112%] lg:translate-x-0",
         )}
       >
-        <div className="mb-4 flex items-center justify-between md:hidden">
-          <p className="text-sm font-medium text-[#171B1A]">Conversations</p>
-          <button
-            type="button"
-            onClick={() => setIsHistoryOpen(false)}
-            className="rounded-md p-1 text-[#62706A] hover:bg-[#EFF3EF] hover:text-[#171B1A]"
-            aria-label="Close chat history"
-          >
+        <div className="mb-4 flex items-center justify-between lg:hidden">
+          <p className="text-sm font-semibold text-[var(--text-strong)]">Conversations</p>
+          <button type="button" onClick={() => setIsHistoryOpen(false)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Close chat history">
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mb-3 rounded-xl border border-[#E1E8E3] bg-[#F8FAF8] p-3">
-          <div className="flex items-center justify-between gap-3">
+        <div className="mb-3 rounded-2xl border border-[var(--border-subtle)] bg-[linear-gradient(135deg,var(--brand-softer),rgba(255,255,255,0.82))] p-4">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-[11px] uppercase tracking-[0.14em] text-[#74827D]">Workspace</div>
-              <div className="mt-1 text-lg font-semibold tracking-tight text-[#171B1A]">0xMem</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">Workspace</div>
+              <div className="mt-1 text-xl font-semibold tracking-tight text-[var(--text-strong)]">0xMem</div>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Research memory, notes, and graph.</p>
             </div>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton>
-                <button className="rounded-lg border border-[#DCE5DF] bg-white px-2.5 py-1 text-xs font-medium text-[#171B1A] hover:bg-[#F5F7F5]">
-                  Sign in
-                </button>
-              </SignInButton>
-            </SignedOut>
+            <SignedIn><UserButton /></SignedIn>
+            <SignedOut><SignInButton><button className="rounded-lg border border-[var(--border-soft)] bg-white px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent">Sign in</button></SignInButton></SignedOut>
           </div>
         </div>
 
-        <Button
-          onClick={createNewThread}
-          variant="outline"
-          className="mb-3 w-full justify-center rounded-xl"
-        >
+        <Button onClick={createNewThread} variant="outline" className="mb-3 w-full justify-center rounded-xl bg-white/70">
           <MessageSquarePlus className="h-4 w-4" />
           New chat
         </Button>
 
         <SidebarTabs />
 
+        <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Recent threads</div>
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           <div className="space-y-1.5">
             {threads.map((thread) => (
               <button
                 key={thread.id}
-                onClick={() => {
-                  setActiveThreadId(thread.id);
-                  setIsHistoryOpen(false);
-                }}
+                onClick={() => { setActiveThreadId(thread.id); setIsHistoryOpen(false); }}
                 className={cn(
-                  "w-full rounded-xl border px-3 py-2.5 text-left transition-colors",
+                  "w-full rounded-2xl px-3 py-2.5 text-left transition-[background-color,border-color,box-shadow]",
                   thread.id === activeThreadId
-                    ? "border-[#CEDFD5] bg-[#F3F8F4]"
-                    : "border-transparent hover:border-[#E0E7E2] hover:bg-[#F8FAF8]",
+                    ? "border border-[color-mix(in_oklab,var(--brand),white_70%)] bg-[var(--brand-softer)] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)]"
+                    : "border border-transparent hover:border-[var(--border-subtle)] hover:bg-white/70",
                 )}
               >
-                <div className="truncate text-sm font-medium text-[#18211E]">{thread.title || "New chat"}</div>
-                <div className="truncate text-xs text-[#62706A]">{thread.preview || "No messages yet"}</div>
+                <div className="truncate text-sm font-medium text-[var(--text-strong)]">{thread.title || "New chat"}</div>
+                <div className="mt-0.5 truncate text-xs text-muted-foreground">{thread.preview || "No messages yet"}</div>
               </button>
             ))}
           </div>
         </div>
       </aside>
 
-      <Card className="h-full min-w-0 flex-1 overflow-hidden border-[#DCE5DF] bg-white/80 shadow-[0_25px_65px_-48px_rgba(10,32,22,0.65)] backdrop-blur-md">
-        <div className="flex items-center justify-between border-b border-[#E2E8E4] bg-[#FAFCFB] px-4 py-2 md:px-5">
-          <Button
-            type="button"
-            onClick={() => setIsHistoryOpen(true)}
-            variant="outline"
-            size="icon"
-            className="h-9 w-9 md:hidden"
-            aria-label="Open history"
-          >
-            <PanelLeft className="h-4 w-4" />
-          </Button>
+      <Card className="workspace-panel h-full min-w-0 flex-1 overflow-hidden rounded-[var(--radius-panel)]">
+        <div className="workspace-header">
+          <div className="flex min-w-0 items-center gap-3">
+            <Button type="button" onClick={() => setIsHistoryOpen(true)} variant="outline" size="icon" className="h-9 w-9 shrink-0 bg-white/80 lg:hidden" aria-label="Open history">
+              <PanelLeft className="h-4 w-4" />
+            </Button>
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">Chat</div>
+              <h1 className="truncate text-base font-semibold tracking-tight text-[var(--text-strong)] sm:text-lg">{activeThread?.title || "New chat"}</h1>
+              <p className="hidden text-xs text-muted-foreground sm:block">Calm workspace for research, synthesis, and vault-aware writing.</p>
+            </div>
+          </div>
 
           {messages.length > 0 ? (
-            <Button
-              onClick={clearThread}
-              variant="ghost"
-              size="sm"
-              className="ml-auto gap-1 text-xs text-muted-foreground hover:text-foreground"
-            >
+            <Button onClick={clearThread} variant="ghost" size="sm" className="shrink-0 gap-1 text-xs text-muted-foreground hover:text-foreground">
               <Trash2 className="h-3 w-3" />
               Clear thread
             </Button>
           ) : (
-            <span className="text-xs text-[#7A8882]">Ready when you are</span>
+            <span className="hidden rounded-full bg-[var(--brand-softer)] px-3 py-1 text-xs font-medium text-[var(--brand)] sm:inline-flex">Ready</span>
           )}
         </div>
 
-        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 md:px-10">
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-10">
           {isLoadingHistory ? (
             <div className="flex h-full items-center justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-[#1F6A4F]" />
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
           ) : messages.length === 0 ? (
-            <div className="flex h-full items-center justify-center">
-              <Card className="max-w-md border-[#DFE7E2] bg-[#F8FAF8] py-2 text-center">
-                <CardContent className="px-6 py-6">
-                  <CardTitle className="text-xl font-medium tracking-tight text-[#18211E]">
-                    Welcome to 0xMem
-                  </CardTitle>
-                  <CardDescription className="mt-2 text-sm text-[#62706A]">
-                    A calm workspace for thoughtful research, writing, and assistance.
-                  </CardDescription>
+            <div className="flex h-full items-center justify-center p-4">
+              <Card className="max-w-2xl border-[var(--border-soft)] bg-[var(--surface-raised)] text-center shadow-[var(--shadow-raised)]">
+                <CardContent className="px-5 py-7 sm:px-8">
+                  <div className="brand-pill mx-auto"><Sparkles className="h-3.5 w-3.5" />Start with memory</div>
+                  <CardTitle className="mt-4 text-2xl font-semibold tracking-tight text-[var(--text-strong)]">Welcome to 0xMem</CardTitle>
+                  <CardDescription className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">Ask questions, shape notes, and let your research workspace surface useful context.</CardDescription>
+                  <div className="mt-6 grid gap-2 sm:grid-cols-3">
+                    {starterPrompts.map(({ icon: Icon, title, prompt }) => (
+                      <button key={title} type="button" onClick={() => setInput(prompt)} className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--brand-softer)] p-3 text-left hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--brand),white_65%)] hover:bg-white">
+                        <Icon className="h-4 w-4 text-primary" />
+                        <div className="mt-2 text-sm font-semibold text-[var(--text-strong)]">{title}</div>
+                        <div className="mt-1 text-xs leading-relaxed text-muted-foreground">{prompt}</div>
+                      </button>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -323,11 +320,11 @@ export function ChatInterface() {
               ))}
               {isLoading && messages[messages.length - 1]?.role === "user" && (
                 <div className="flex gap-3 px-2 py-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#1F6A4F] text-sm font-semibold text-white">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground">
                     0x
                   </div>
-                  <div className="flex items-center gap-2 text-[15px] text-[#62706A]">
-                    <Loader2 className="h-4 w-4 animate-spin text-[#1F6A4F]" />
+                  <div className="flex items-center gap-2 text-[15px] text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     Thinking...
                   </div>
                 </div>
@@ -336,7 +333,7 @@ export function ChatInterface() {
           )}
         </div>
 
-        <div className="border-t border-[#E2E8E4] bg-[#FAFCFB] px-6 pb-5 pt-4 md:px-10">
+        <div className="border-t border-[var(--border-subtle)] bg-[linear-gradient(180deg,rgba(255,255,255,0.42),var(--brand-softer))] px-3 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] pt-4 sm:px-6 lg:px-10">
           <div className="relative mx-auto max-w-4xl">
             <Textarea
               ref={inputRef}
@@ -346,8 +343,8 @@ export function ChatInterface() {
               placeholder="Ask 0xMem anything…"
               rows={1}
               className={cn(
-                "max-h-40 w-full resize-none rounded-xl border border-[#D7E3DC] bg-white px-4 py-3 pr-12 text-[15px] font-normal text-[#1A2521] placeholder:text-[#70807A]",
-                "shadow-[0_8px_24px_-20px_rgba(16,44,33,0.75)]",
+                "max-h-40 w-full resize-none rounded-2xl border border-[var(--border-soft)] bg-white/92 px-4 py-3 pr-14 text-[15px] font-normal text-foreground placeholder:text-muted-foreground focus-visible:border-[color-mix(in_oklab,var(--brand),white_50%)] focus-visible:ring-[var(--focus-ring)]",
+                "shadow-[0_16px_44px_-34px_rgba(16,44,33,0.75)]",
               )}
               style={{
                 height: "auto",
@@ -367,8 +364,8 @@ export function ChatInterface() {
               className={cn(
                 "absolute bottom-2 right-2 h-10 w-10 rounded-[10px] transition-colors",
                 input.trim() && !isLoading
-                  ? "bg-[#1F6A4F] text-white hover:bg-[#18543F] active:bg-[#134231]"
-                  : "bg-[#EEF2EF] text-[#7C8A84]",
+                  ? "bg-primary text-primary-foreground hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)]"
+                  : "bg-muted text-muted-foreground",
               )}
             >
               {isLoading ? (

@@ -27,104 +27,89 @@ export function Message({ message }: MessageProps) {
     );
   };
 
-  return (
-    <div
-      className={cn(
-        "flex w-full gap-3 px-2 py-2.5",
-        isUser ? "justify-end" : "justify-start",
-      )}
-    >
-      {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#D2E0D8] bg-[#1F6A4F] text-xs font-semibold text-white">
-          0x
-        </div>
-      )}
+  const textContent = message.parts
+    .filter(isTextUIPart)
+    .map((part) => part.text)
+    .join("\n\n");
+  const isLongAssistant = !isUser && textContent.length > 520;
 
+  return (
+    <div className={cn("flex w-full px-1 py-3 sm:px-2", isUser ? "justify-end" : "justify-center")}>
       <div
         className={cn(
-          "flex max-w-[82%] flex-col gap-2",
-          isUser ? "items-end" : "items-start",
+          "flex w-full gap-3",
+          isUser ? "max-w-3xl justify-end" : "max-w-4xl justify-start",
         )}
       >
-        {message.parts.map((part, index) => {
-          if (isTextUIPart(part)) {
-            if (!part.text.trim()) {
-              return null;
-            }
+        {!isUser && (
+          <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[color-mix(in_oklab,var(--brand),white_68%)] bg-primary text-xs font-semibold text-primary-foreground shadow-[var(--shadow-raised)]">
+            0x
+          </div>
+        )}
 
-            return (
-              <div
-                key={index}
-                className={cn(
-                  "rounded-2xl border px-4 py-3 text-[15px] leading-[1.65] shadow-[0_8px_20px_-18px_rgba(14,36,28,0.55)]",
-                  isUser
-                    ? "border-[#1F6A4F] bg-[#1F6A4F] text-white"
-                    : "border-[#DCE5DF] bg-white text-[#1A2521]",
-                )}
-              >
-                <MarkdownContent
-                  content={part.text}
-                  isInverted={isUser}
-                  className={cn(isUser && "prose-code:text-white")}
-                />
-              </div>
-            );
-          }
+        <div className={cn("flex min-w-0 flex-col gap-2", isUser ? "max-w-[82%] items-end" : "flex-1 items-start")}>
+          {message.parts.map((part, index) => {
+            if (isTextUIPart(part)) {
+              if (!part.text.trim()) return null;
 
-          if (isReasoningPart(part)) {
-            if (!part.text.trim()) {
-              return null;
-            }
-
-            return (
-              <details
-                key={index}
-                className={cn(
-                  "group w-full rounded-xl border border-dashed px-4 py-3 text-[14px] leading-[1.6]",
-                  isUser
-                    ? "border-[#6A8C7E] bg-[#ECF4EF] text-[#244538]"
-                    : "border-[#C9D9D1] bg-[#F6FAF7] text-[#355B4D]",
-                )}
-              >
-                <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.09em] opacity-80 marker:content-['']">
-                  <span className="group-open:hidden">Show reasoning</span>
-                  <span className="hidden group-open:inline">Hide reasoning</span>
-                </summary>
-                <div className="mt-2">
+              return (
+                <div
+                  key={index}
+                  className={cn(
+                    "text-[15px] leading-relaxed shadow-[var(--shadow-raised)]",
+                    isUser
+                      ? "rounded-2xl border border-primary bg-primary px-4 py-2.5 text-primary-foreground"
+                      : isLongAssistant
+                        ? "w-full rounded-[1.35rem] border border-[var(--border-soft)] bg-[var(--surface-raised)] px-5 py-5 text-foreground sm:px-7 sm:py-6"
+                        : "max-w-2xl rounded-2xl border border-[var(--border-subtle)] bg-white/82 px-4 py-3 text-foreground",
+                  )}
+                >
                   <MarkdownContent
                     content={part.text}
                     isInverted={isUser}
                     className={cn(isUser && "prose-code:text-white")}
                   />
                 </div>
-              </details>
-            );
-          }
+              );
+            }
 
-          if (isToolUIPart(part)) {
-            const toolName = getToolName(part) || "unknown";
-            const args = (part.input ?? {}) as Record<string, unknown>;
-            const result = part.output as Record<string, unknown> | undefined;
+            if (isReasoningPart(part)) {
+              if (!part.text.trim()) return null;
 
-            return (
-              <ToolCallBadge
-                key={index}
-                toolName={toolName}
-                args={args}
-                result={result}
-              />
-            );
-          }
+              return (
+                <details
+                  key={index}
+                  className="group w-full rounded-2xl border border-dashed border-[color-mix(in_oklab,var(--brand),white_68%)] bg-[var(--brand-softer)] px-4 py-3 text-sm leading-relaxed text-[var(--text-muted)]"
+                >
+                  <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.09em] text-[var(--brand)] marker:content-['']">
+                    <span className="group-open:hidden">Show reasoning</span>
+                    <span className="hidden group-open:inline">Hide reasoning</span>
+                  </summary>
+                  <div className="mt-2">
+                    <MarkdownContent content={part.text} isInverted={isUser} />
+                  </div>
+                </details>
+              );
+            }
 
-          return null;
-        })}
-      </div>
+            if (isToolUIPart(part)) {
+              const toolName = getToolName(part) || "unknown";
+              const args = (part.input ?? {}) as Record<string, unknown>;
+              const result = part.output as Record<string, unknown> | undefined;
 
-      {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#DCE5DF] bg-[#F7FAF8] text-xs font-semibold text-[#5C6D66]">
-          You
+              return <ToolCallBadge key={index} toolName={toolName} args={args} result={result} />;
+            }
+
+            return null;
+          })}
         </div>
-      )}
+
+        {isUser && (
+          <div className="mt-1 hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--border-soft)] bg-[var(--brand-softer)] text-xs font-semibold text-[var(--text-muted)] sm:flex">
+            You
+          </div>
+        )}
+      </div>
     </div>
   );
 }
