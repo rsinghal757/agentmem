@@ -5,6 +5,9 @@ import { useVaultGraph } from "@/hooks/useVaultGraph";
 import { useRouter } from "next/navigation";
 import * as d3 from "d3";
 import type { GraphNode, GraphEdge } from "@/types/vault";
+import { Network } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 const TYPE_COLORS: Record<string, string> = {
   concept: "#7B77A8",
@@ -88,7 +91,7 @@ export function GraphView() {
         .selectAll("line")
         .data(simLinks)
         .join("line")
-        .attr("stroke", "#D3D8D2")
+        .attr("stroke", "#D9DED8")
         .attr("stroke-width", 0.9)
         .attr("stroke-opacity", 0.75);
 
@@ -133,7 +136,7 @@ export function GraphView() {
         .join("text")
         .text((d) => d.title || d.id.split("/").pop()?.replace(".md", "") || "")
         .attr("font-size", 10)
-        .attr("fill", "#6B6B6B")
+        .attr("fill", "#667169")
         .attr("text-anchor", "middle")
         .attr("dy", (d) => Math.log(d.backlinks + 1) * 8 + 16)
         .attr("pointer-events", "none");
@@ -175,51 +178,62 @@ export function GraphView() {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center text-[15px] text-[#6B6B6B]">
-        Loading graph...
+      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+        Mapping your vault…
       </div>
     );
   }
 
   if (nodes.length === 0) {
     return (
-      <div className="flex h-full flex-col items-center justify-center">
-        <div className="mb-4 text-4xl">🕸️</div>
-        <p className="text-[15px] text-[#1C1C1C]">No notes in the vault yet.</p>
-        <p className="text-[13px] text-[#6B6B6B]">
-          Start chatting to build your knowledge graph!
+      <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-softer)] text-primary">
+          <Network className="h-6 w-6" />
+        </div>
+        <p className="text-sm font-medium text-foreground">Your graph is waiting for its first link.</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Create notes and connect them with wikilinks.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full overflow-hidden bg-background">
       <svg
         ref={svgRef}
         className="h-full w-full"
-        style={{ background: "#F7F8F6", borderRadius: "0" }}
+        aria-label="Interactive knowledge graph"
       />
 
-      {/* Legend */}
-      <div className="absolute bottom-6 left-6 rounded-[10px] border border-[#E8EAE7] bg-white/95 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur">
-        <div className="mb-3 text-[13px] font-medium text-[#6B6B6B]">
-          Node Types
+      <div className="pointer-events-none absolute left-5 right-5 top-5 flex items-start justify-between gap-3">
+        <div>
+          <div className="eyebrow">Knowledge graph</div>
+          <h1 className="mt-0.5 text-lg font-semibold tracking-[-0.03em] text-[var(--text-strong)]">Connections across your vault</h1>
+          <p className="mt-0.5 hidden text-xs text-muted-foreground sm:block">Drag to rearrange · Scroll to zoom · Select a node to open it</p>
         </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+        <Badge variant="outline" className="bg-card/90 backdrop-blur">{nodes.length} notes</Badge>
+      </div>
+
+      {/* Legend */}
+      <Card className="absolute bottom-5 left-5 border-border/80 bg-card/90 shadow-[var(--shadow-raised)] backdrop-blur">
+        <CardContent className="p-3.5">
+        <div className="mb-2.5 text-xs font-medium text-foreground">Node types</div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4">
           {Object.entries(TYPE_COLORS).map(([type, color]) => (
             <div key={type} className="flex items-center gap-1.5">
               <div
                 className="h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-[13px] capitalize text-[#6B6B6B]">
+              <span className="text-[0.68rem] capitalize text-muted-foreground">
                 {type.replace("-", " ")}
               </span>
             </div>
           ))}
         </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

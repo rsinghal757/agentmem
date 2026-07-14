@@ -1,14 +1,27 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+import {
+  BookOpen,
+  CircleCheck,
+  CircleX,
+  FilePenLine,
+  FolderTree,
+  Link2,
+  Search,
+  Trash2,
+  Wrench,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const toolIcons: Record<string, string> = {
-  vault_read: "📖",
-  vault_write: "📝",
-  vault_search: "🔍",
-  vault_link: "🔗",
-  vault_list: "📂",
-  vault_delete: "🗑️",
+const toolIcons: Record<string, LucideIcon> = {
+  vault_read: BookOpen,
+  vault_write: FilePenLine,
+  vault_search: Search,
+  vault_link: Link2,
+  vault_list: FolderTree,
+  vault_delete: Trash2,
 };
 
 const toolLabels: Record<string, string> = {
@@ -34,39 +47,36 @@ export function ToolCallBadge({
   className,
 }: ToolCallBadgeProps) {
   const safeToolName = toolName || "unknown";
-  const icon = toolIcons[safeToolName] || "🔧";
+  const Icon = toolIcons[safeToolName] || Wrench;
+  const succeeded = !(result && "success" in result && result.success === false);
   const defaultLabel = toolLabels[safeToolName] || safeToolName;
-  const label = result && "success" in result && result.success === false
-    ? (safeToolName === "vault_write" ? "Write failed" : `${defaultLabel} failed`)
-    : defaultLabel;
+  const label = succeeded
+    ? defaultLabel
+    : safeToolName === "vault_write"
+      ? "Write failed"
+      : `${defaultLabel} failed`;
   const safeArgs = args || {};
   const path = (safeArgs.path || safeArgs.fromPath || safeArgs.query || "") as string;
-  const reason = (safeArgs.reason || safeArgs.context || "") as string;
+  const StatusIcon = succeeded ? CircleCheck : CircleX;
 
   return (
-    <div
+    <Badge
+      variant="outline"
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-soft)] bg-[var(--surface-raised)] px-2.5 py-1.5 text-[13px] text-[var(--text-muted)]",
+        "max-w-full gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]",
         className,
       )}
     >
-      <span>{icon}</span>
-      <span className="font-medium text-[var(--text-strong)]">{label}</span>
+      <Icon className="text-primary" />
+      <span className="font-medium text-foreground">{label}</span>
       {path && (
-        <span className="text-[var(--text-muted)]">
-          {path.length > 40 ? `...${path.slice(-37)}` : path}
+        <span className="max-w-48 truncate">
+          {path.length > 44 ? `…${path.slice(-43)}` : path}
         </span>
       )}
-      {reason && (
-        <span className="hidden text-[var(--text-faint)] sm:inline">
-          — {reason.length > 50 ? `${reason.slice(0, 47)}...` : reason}
-        </span>
+      {result && (
+        <StatusIcon className={succeeded ? "text-primary" : "text-destructive"} />
       )}
-      {result && "success" in result && (
-        <span className={result.success ? "text-[var(--brand)]" : "text-red-500"}>
-          {result.success ? "✓" : "✗"}
-        </span>
-      )}
-    </div>
+    </Badge>
   );
 }

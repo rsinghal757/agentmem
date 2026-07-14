@@ -1,44 +1,44 @@
-# Product Context: Next.js Starter Template
+# Product Context: 0xMem
 
-## Why This Template Exists
+## Why It Exists
 
-Starting a new Next.js project involves boilerplate setup, configuration decisions, and establishing patterns. This template provides a clean, opinionated starting point that eliminates setup friction and establishes best practices from the start. It's optimized for AI-assisted development, where an AI can quickly extend the template based on user requirements.
+Chat is good for developing ideas; markdown is good for keeping them. Most AI tools separate the conversation from the user's durable knowledge. 0xMem makes them one continuous system: the assistant works directly with a transparent vault the user can read, edit, link, and take elsewhere.
 
 ## Problems It Solves
 
-1. **Setup Time**: Eliminates boilerplate configuration (TypeScript, Tailwind, ESLint)
-2. **Decision Fatigue**: Pre-made choices for tooling and patterns
-3. **AI Context**: Memory bank provides persistent context for AI assistants
-4. **Extensibility**: Recipe system for adding common features
-5. **Consistency**: Standardized project structure and conventions
+1. **Ephemeral conversations**: useful conclusions become durable notes.
+2. **Scattered research**: vault search and synthesis bring relevant context into the current question.
+3. **Disconnected notes**: wikilinks and the graph expose relationships across projects and concepts.
+4. **Opaque AI memory**: long-term context lives in user-visible markdown, not an external memory service.
+5. **Tool switching**: chat, curation, editing, and graph exploration share one workspace.
 
-## How It Should Work (User Flow)
+## Primary User Flow
 
-1. User starts with this template
-2. User describes what they want to build to AI assistant
-3. AI adds pages, components, and features as needed
-4. AI uses recipes for common additions (database, auth)
-5. User previews changes via hot reload
-6. Iterate until satisfied
-7. Deploy
+1. Sign in and start or reopen a conversation.
+2. Ask a question, request synthesis, or develop a draft.
+3. The agent searches/reads relevant vault material and answers.
+4. When worthwhile, the agent updates atomic notes, `_core.md`, daily notes, and wikilinks.
+5. The user opens the Vault to inspect or edit markdown.
+6. The user opens Graph to discover and navigate connections.
 
-## Key User Experience Goals
+## Experience Goals
 
-- **Zero to Feature Fast**: Get building immediately, no setup required
-- **AI-Friendly**: Memory bank and recipes make AI assistance effective
-- **Flexible Foundation**: Can become any type of application
-- **Best Practices Built-In**: TypeScript strict mode, ESLint, clean structure
+- **Calm and editorial**: dense knowledge work without dashboard noise.
+- **Transparent**: tool activity and note changes are visible.
+- **Owned**: markdown remains the canonical knowledge format.
+- **Fast to navigate**: chat threads, files, and graph share consistent responsive navigation.
+- **Precise**: shadcn primitives and semantic tokens keep interactions and states consistent.
 
-## What This Template Provides
+## Product Surfaces
 
-1. **Clean App Structure**: Single page ready for expansion
-2. **Type Safety**: Full TypeScript setup with strict mode
-3. **Modern Styling**: Tailwind CSS 4 ready to use
-4. **Code Quality**: ESLint configured
-5. **Extensibility**: Recipe system for common features
+- **Chat**: thread history, streaming answers, reasoning disclosures, vault tool activity, composer.
+- **Vault**: file creation, hierarchical browsing, note metadata, visual/markdown editing, wikilink navigation.
+- **Graph**: force-directed visualization derived from note links and metadata.
+- **Landing**: concise signed-out explanation and Clerk sign-in/sign-up entry points.
 
 ## Integration Points
 
-- **Database**: Use add-database recipe for Drizzle + SQLite
-- **Styling**: Tailwind CSS pre-configured
-- **AI Assistance**: Memory bank for context persistence
+- PostgreSQL + Drizzle for chat and vault persistence
+- Clerk for authentication and user scoping
+- OpenRouter through AI SDK for the agent model
+- shadcn-style primitives + Tailwind CSS 4 tokens for UI composition

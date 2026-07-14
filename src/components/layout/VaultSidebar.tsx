@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { MessageSquarePlus, X } from "lucide-react";
+import { MessageSquarePlus, Orbit, X } from "lucide-react";
 import { SidebarTabs } from "@/components/layout/BottomTabs";
 import { cn } from "@/lib/utils";
 import { FileTree } from "@/components/vault/FileTree";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type VaultSidebarProps = {
   isOpen?: boolean;
@@ -22,39 +24,46 @@ export function VaultSidebar({ isOpen = true, onClose }: VaultSidebarProps) {
     >
       <div className="mb-3 flex items-center justify-between lg:hidden">
         <p className="text-sm font-medium text-[var(--text-strong)]">Filesystem</p>
-        <button
+        <Button
           type="button"
           onClick={onClose}
-          className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-[var(--text-strong)]"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
           aria-label="Close sidebar"
         >
           <X className="h-4 w-4" />
-        </button>
+        </Button>
       </div>
 
-      <div className="mb-3 rounded-2xl border border-[var(--border-subtle)] bg-[linear-gradient(135deg,var(--brand-softer),rgba(255,255,255,0.82))] p-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--brand)]">Workspace</div>
-            <div className="mt-1 text-xl font-semibold tracking-tight text-[var(--text-strong)]">0xMem</div>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Files, notes, and graph context.</p>
+      <Card className="mb-3 border-border/80 bg-card/80 shadow-none">
+        <CardContent className="flex items-center justify-between gap-3 p-3.5">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.7rem] bg-primary text-primary-foreground shadow-[var(--shadow-control)]">
+              <Orbit className="h-[1.1rem] w-[1.1rem]" />
+            </div>
+            <div className="min-w-0">
+              <div className="eyebrow">Workspace</div>
+              <div className="truncate text-base font-semibold tracking-[-0.025em] text-[var(--text-strong)]">0xMem</div>
+              <p className="truncate text-[0.7rem] text-muted-foreground">Notes that think with you</p>
+            </div>
           </div>
           <SignedIn>
             <UserButton />
           </SignedIn>
           <SignedOut>
             <SignInButton>
-              <button className="rounded-lg border border-[var(--border-soft)] bg-white px-2.5 py-1 text-xs font-medium text-[var(--text-strong)] hover:bg-accent">
+              <Button variant="outline" size="sm">
                 Sign in
-              </button>
+              </Button>
             </SignInButton>
           </SignedOut>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <Link
         href="/"
-        className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--border-soft)] bg-white/70 px-3 py-2 text-sm font-medium text-foreground hover:bg-accent"
+        className="focus-ring mb-3 flex h-9 w-full items-center justify-center gap-2 rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm font-medium text-foreground shadow-[var(--shadow-control)] hover:bg-accent"
       >
         <MessageSquarePlus className="h-4 w-4" />
         New chat
@@ -62,7 +71,7 @@ export function VaultSidebar({ isOpen = true, onClose }: VaultSidebarProps) {
 
       <SidebarTabs />
 
-      <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="mb-1.5 px-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
         Filesystem
       </div>
 
