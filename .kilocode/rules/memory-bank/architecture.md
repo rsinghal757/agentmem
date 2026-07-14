@@ -1,4 +1,13 @@
-# System Patterns: Next.js Starter Template
+# System Patterns: 0xMem
+
+## Current Architecture
+
+- The App Router owns the signed-out landing page, authenticated chat workspace, vault routes, and route handlers.
+- `ToolLoopAgent` is created per authenticated user. `prepareCall` injects `_core.md`; the agent searches and updates all other context through explicit vault tools.
+- PostgreSQL is the source of truth for markdown notes, chat threads, and message parts. Drizzle migrations and a runtime bootstrap fallback keep deployed schemas compatible.
+- Chat history persistence is separate from model streaming: UI message parts are streamed through AI SDK and upserted through `/api/chat/history`.
+- Active controls use the shadcn-style primitives in `src/components/ui`; product composition lives in `chat`, `vault`, and `layout` component folders.
+- The knowledge graph is derived from parsed markdown frontmatter and wikilinks, then rendered client-side with D3.
 
 ## Architecture Overview
 

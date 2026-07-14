@@ -1,11 +1,21 @@
 "use client";
 
-import { useVaultFiles } from "@/hooks/useVaultFiles";
-import { FileText, Folder, ChevronRight, ChevronDown, Plus } from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import {
+  ChevronDown,
+  ChevronRight,
+  FileText,
+  Folder,
+  Library,
+  Plus,
+} from "lucide-react";
+import { useVaultFiles } from "@/hooks/useVaultFiles";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TreeNode {
   name: string;
@@ -14,7 +24,6 @@ interface TreeNode {
   children: TreeNode[];
 }
 
-/** Build a tree structure from flat file paths */
 function buildTree(files: string[]): TreeNode[] {
   const root: TreeNode[] = [];
 
@@ -22,12 +31,12 @@ function buildTree(files: string[]): TreeNode[] {
     const parts = filePath.split("/");
     let current = root;
 
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      const isLast = i === parts.length - 1;
-      const currentPath = parts.slice(0, i + 1).join("/");
+    for (let index = 0; index < parts.length; index++) {
+      const part = parts[index];
+      const isLast = index === parts.length - 1;
+      const currentPath = parts.slice(0, index + 1).join("/");
+      let existing = current.find((node) => node.name === part);
 
-      let existing = current.find((n) => n.name === part);
       if (!existing) {
         existing = {
           name: part,
@@ -37,6 +46,7 @@ function buildTree(files: string[]): TreeNode[] {
         };
         current.push(existing);
       }
+
       current = existing.children;
     }
   }
@@ -44,10 +54,9 @@ function buildTree(files: string[]): TreeNode[] {
   return sortTree(root);
 }
 
-/** Sort: directories first, then alphabetically */
 function sortTree(nodes: TreeNode[]): TreeNode[] {
   return nodes
-    .map((n) => ({ ...n, children: sortTree(n.children) }))
+    .map((node) => ({ ...node, children: sortTree(node.children) }))
     .sort((a, b) => {
       if (a.isDirectory && !b.isDirectory) return -1;
       if (!a.isDirectory && b.isDirectory) return 1;
@@ -69,21 +78,22 @@ function TreeItem({
   if (node.isDirectory) {
     return (
       <div>
-        <button
+        <Button
+          type="button"
+          variant="ghost"
           onClick={() => setIsOpen(!isOpen)}
-          className={cn(
-            "flex w-full items-center gap-2 rounded-[8px] px-3 py-3 text-[15px] text-[#1C1C1C] transition-colors hover:bg-white active:bg-[#F1F3F0]",
-          )}
-          style={{ paddingLeft: `${depth * 16 + 12}px` }}
+          className="h-9 w-full justify-start gap-1.5 rounded-lg px-2 text-[0.8rem] text-foreground shadow-none hover:bg-card"
+          style={{ paddingLeft: `${depth * 16 + 8}px` }}
         >
           {isOpen ? (
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#6B6B6B]" />
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#6B6B6B]" />
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
           )}
-          <Folder className="h-4 w-4 shrink-0 text-[#6B6B6B]" />
+          <Folder className="h-4 w-4 text-muted-foreground" />
           <span className="truncate font-medium">{node.name}</span>
-        </button>
+        </Button>
+
         {isOpen && (
           <div>
             {node.children.map((child) => (
@@ -106,15 +116,15 @@ function TreeItem({
     <Link
       href={`/vault/${node.path}`}
       className={cn(
-        "flex items-center gap-2 rounded-[8px] px-3 py-3 text-[15px] transition-colors active:bg-[#F1F3F0]",
+        "focus-ring flex h-9 items-center gap-2 rounded-lg border px-2 text-[0.8rem] transition-colors",
         isActive
-          ? "border border-[#0B6B3A]/20 bg-[#EAF6EE] text-[#1C1C1C]"
-          : "text-[#6B6B6B] hover:bg-white hover:text-[#1C1C1C]",
+          ? "border-[color-mix(in_oklab,var(--brand),white_76%)] bg-[var(--brand-softer)] font-medium text-foreground"
+          : "border-transparent text-muted-foreground hover:border-border hover:bg-card hover:text-foreground",
       )}
-      style={{ paddingLeft: `${depth * 16 + 28}px` }}
+      style={{ paddingLeft: `${depth * 16 + 24}px` }}
     >
-      <FileText className="h-4 w-4 shrink-0 text-[#0B6B3A]" />
-      <span className="truncate">{node.name}</span>
+      <FileText className="h-3.5 w-3.5 shrink-0 text-primary" />
+      <span className="truncate">{node.name.replace(/\.md$/, "")}</span>
     </Link>
   );
 }
@@ -130,14 +140,11 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
   const [newFilePath, setNewFilePath] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
-  const tree = buildTree(files.filter((f: string) => f.endsWith(".md")));
+  const tree = buildTree(files.filter((file: string) => file.endsWith(".md")));
 
   async function handleCreateFile(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    if (isCreating) {
-      return;
-    }
+    if (isCreating) return;
 
     const trimmedPath = newFilePath.trim();
     if (!trimmedPath) {
@@ -148,8 +155,8 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
     const normalizedPath = trimmedPath.endsWith(".md")
       ? trimmedPath
       : `${trimmedPath}.md`;
-    const fileName = normalizedPath.split("/").pop()?.replace(/\.md$/, "") || "New Note";
-    const initialContent = `# ${fileName}\n\n`;
+    const fileName =
+      normalizedPath.split("/").pop()?.replace(/\.md$/, "") || "New Note";
 
     setCreateError(null);
     setIsCreating(true);
@@ -158,7 +165,10 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
       const response = await fetch("/api/vault/files", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: normalizedPath, content: initialContent }),
+        body: JSON.stringify({
+          path: normalizedPath,
+          content: `# ${fileName}\n\n`,
+        }),
       });
 
       if (!response.ok) {
@@ -171,9 +181,9 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
       setNewFilePath("");
       router.push(`/vault/${data.path}`);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to create file";
-      setCreateError(message);
+      setCreateError(
+        error instanceof Error ? error.message : "Failed to create file",
+      );
     } finally {
       setIsCreating(false);
     }
@@ -181,8 +191,11 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 text-[15px] text-[#6B6B6B]">
-        Loading...
+      <div className="space-y-2 p-1">
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-8 w-[82%]" />
+        <Skeleton className="h-8 w-[68%]" />
+        <Skeleton className="h-8 w-[88%]" />
       </div>
     );
   }
@@ -190,54 +203,61 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
   return (
     <div
       className={cn(
-        "rounded-[10px] border border-[#E8EAE7] bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
-        panel ? "m-0 h-full" : "mx-6 my-6",
+        panel
+          ? "m-0 h-full"
+          : "mx-6 my-6 rounded-[var(--radius-panel)] border bg-card p-3 shadow-[var(--shadow-raised)]",
       )}
     >
       <form
         onSubmit={handleCreateFile}
-        className="mb-3 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] p-3"
+        className="mb-3 rounded-xl border border-border/80 bg-card p-2.5 shadow-[var(--shadow-control)]"
       >
         <label
           htmlFor="new-vault-file"
-          className="mb-2 block text-[13px] font-medium text-[#1C1C1C]"
+          className="mb-2 block text-xs font-medium text-foreground"
         >
-          Create new file
+          Create a note
         </label>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <input
+        <div className="flex items-center gap-2">
+          <Input
             id="new-vault-file"
             type="text"
             value={newFilePath}
             onChange={(event) => setNewFilePath(event.target.value)}
-            placeholder="notes/my-note or my-note.md"
-            className="h-10 min-w-0 flex-1 rounded-[8px] border border-[#D8DCD7] bg-white px-3 text-[14px] text-[#1C1C1C] outline-none ring-[#0B6B3A]/30 transition focus:ring-2"
+            placeholder="Folder/note-name"
+            className="h-9 min-w-0 flex-1 text-xs shadow-none"
           />
-          <button
+          <Button
             type="submit"
             disabled={isCreating}
             aria-label={isCreating ? "Creating file" : "Create file"}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#0B6B3A] p-0 text-white transition hover:bg-[#0F7A43] disabled:cursor-not-allowed disabled:opacity-50"
+            size="icon"
+            className="h-9 w-9"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
-          </button>
+          </Button>
         </div>
         {createError && (
-          <p className="mt-2 text-[13px] text-[#A11A1A]">{createError}</p>
+          <p className="mt-2 text-xs text-destructive">{createError}</p>
         )}
       </form>
+
       {tree.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-[10px] border border-[#E8EAE7] bg-white px-6 py-16 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-          <div className="mb-3 text-4xl">📚</div>
-          <p className="text-[15px] text-[#1C1C1C]">Vault is empty</p>
-          <p className="mt-1 text-[13px] text-[#6B6B6B]">
-            Start chatting to build your knowledge base
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-card/70 px-6 py-12 text-center">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-softer)] text-primary">
+            <Library className="h-5 w-5" />
+          </div>
+          <p className="text-sm font-medium text-foreground">Vault is empty</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Create a note or start a conversation.
           </p>
         </div>
       ) : (
-        tree.map((node) => (
-          <TreeItem key={node.path} node={node} activePath={activePath} />
-        ))
+        <div className="space-y-0.5">
+          {tree.map((node) => (
+            <TreeItem key={node.path} node={node} activePath={activePath} />
+          ))}
+        </div>
       )}
     </div>
   );

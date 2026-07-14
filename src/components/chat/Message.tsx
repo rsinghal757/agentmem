@@ -34,7 +34,7 @@ export function Message({ message }: MessageProps) {
   const isLongAssistant = !isUser && textContent.length > 520;
 
   return (
-    <div className={cn("flex w-full px-1 py-3 sm:px-2", isUser ? "justify-end" : "justify-center")}>
+    <div className={cn("flex w-full px-1 py-2.5 sm:px-2", isUser ? "justify-end" : "justify-center")}>
       <div
         className={cn(
           "flex w-full gap-3",
@@ -42,7 +42,7 @@ export function Message({ message }: MessageProps) {
         )}
       >
         {!isUser && (
-          <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[color-mix(in_oklab,var(--brand),white_68%)] bg-primary text-xs font-semibold text-primary-foreground shadow-[var(--shadow-raised)]">
+          <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.65rem] bg-primary text-[0.65rem] font-semibold text-primary-foreground shadow-[var(--shadow-control)]">
             0x
           </div>
         )}
@@ -56,12 +56,12 @@ export function Message({ message }: MessageProps) {
                 <div
                   key={index}
                   className={cn(
-                    "text-[15px] leading-relaxed shadow-[var(--shadow-raised)]",
+                    "text-[15px] leading-relaxed",
                     isUser
-                      ? "rounded-2xl border border-primary bg-primary px-4 py-2.5 text-primary-foreground"
+                      ? "rounded-2xl rounded-tr-md bg-primary px-4 py-2.5 text-primary-foreground shadow-[var(--shadow-control)]"
                       : isLongAssistant
-                        ? "w-full rounded-[1.35rem] border border-[var(--border-soft)] bg-[var(--surface-raised)] px-5 py-5 text-foreground sm:px-7 sm:py-6"
-                        : "max-w-2xl rounded-2xl border border-[var(--border-subtle)] bg-white/82 px-4 py-3 text-foreground",
+                        ? "w-full rounded-[var(--radius-panel)] border bg-card px-5 py-5 text-foreground shadow-[var(--shadow-raised)] sm:px-7 sm:py-6"
+                        : "max-w-2xl rounded-[var(--radius-panel)] border bg-card px-4 py-3 text-foreground shadow-[var(--shadow-control)]",
                   )}
                 >
                   <MarkdownContent
@@ -79,9 +79,9 @@ export function Message({ message }: MessageProps) {
               return (
                 <details
                   key={index}
-                  className="group w-full rounded-2xl border border-dashed border-[color-mix(in_oklab,var(--brand),white_68%)] bg-[var(--brand-softer)] px-4 py-3 text-sm leading-relaxed text-[var(--text-muted)]"
+                  className="group w-full rounded-xl border border-dashed bg-muted/65 px-4 py-3 text-sm leading-relaxed text-muted-foreground"
                 >
-                  <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.09em] text-[var(--brand)] marker:content-['']">
+                  <summary className="cursor-pointer list-none text-[0.65rem] font-semibold uppercase tracking-[0.13em] text-primary marker:content-['']">
                     <span className="group-open:hidden">Show reasoning</span>
                     <span className="hidden group-open:inline">Hide reasoning</span>
                   </summary>
@@ -105,7 +105,7 @@ export function Message({ message }: MessageProps) {
         </div>
 
         {isUser && (
-          <div className="mt-1 hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--border-soft)] bg-[var(--brand-softer)] text-xs font-semibold text-[var(--text-muted)] sm:flex">
+          <div className="mt-1 hidden h-8 w-8 shrink-0 items-center justify-center rounded-[0.65rem] border bg-muted text-[0.65rem] font-medium text-muted-foreground sm:flex">
             You
           </div>
         )}

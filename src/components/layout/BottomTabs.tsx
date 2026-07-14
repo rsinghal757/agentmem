@@ -27,7 +27,7 @@ function NavigationTabs({ orientation }: { orientation: "bottom" | "sidebar" }) 
     <nav
       className={cn(
         isSidebar
-          ? "mb-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--brand-softer)] p-1.5"
+          ? "mb-3 rounded-[0.8rem] border border-[var(--border-subtle)] bg-muted/70 p-1"
           : "border-t border-[var(--border-subtle)] bg-background/95 backdrop-blur pb-safe",
       )}
     >
@@ -50,15 +50,15 @@ function NavigationTabs({ orientation }: { orientation: "bottom" | "sidebar" }) 
               href={href}
               className={cn(
                 isSidebar
-                  ? "relative flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-[color,background-color,box-shadow]"
+                  ? "focus-ring relative flex flex-1 items-center justify-center gap-1.5 rounded-[0.55rem] px-2 py-2 text-xs font-medium transition-[color,background-color,box-shadow]"
                   : "relative flex flex-1 flex-col items-center justify-center gap-1 transition-[color,background-color,box-shadow]",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground active:text-foreground",
-                isSidebar && isActive && "bg-white shadow-[0_3px_10px_-8px_rgba(11,107,58,0.5)]",
+                isSidebar && isActive && "bg-card shadow-[var(--shadow-control)]",
               )}
             >
-              <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />
+              <Icon className={cn(isSidebar ? "h-4 w-4" : "h-5 w-5")} strokeWidth={isActive ? 2 : 1.5} />
               <span
                 className={cn(
                   isSidebar ? "text-[11px] leading-none" : "text-[10px] leading-none",

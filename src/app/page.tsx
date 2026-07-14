@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Brain, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, FileText, GitBranch, Orbit, Sparkles } from "lucide-react";
 import {
   ClerkLoaded,
   ClerkLoading,
@@ -10,6 +10,8 @@ import {
   SignUpButton,
 } from "@clerk/nextjs";
 import { ChatInterface } from "@/components/chat/ChatInterface";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -28,59 +30,60 @@ export default function Home() {
         </SignedIn>
 
         <SignedOut>
-          <div className="relative flex h-full items-center justify-center overflow-y-auto px-6 py-12">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,color-mix(in_oklab,var(--brand)_12%,transparent),transparent_30%),radial-gradient(circle_at_85%_80%,color-mix(in_oklab,var(--brand)_10%,transparent),transparent_32%)]" />
-            <div className="relative w-full max-w-3xl rounded-3xl border bg-[var(--surface-panel)] p-8 shadow-[var(--shadow-panel)] backdrop-blur-md md:p-12">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#D4E2DA] bg-[var(--brand-softer)] px-3 py-1 text-xs font-medium uppercase tracking-[0.12em] text-[var(--brand)]">
-              <Brain className="h-3.5 w-3.5" />
-              0xMem
-            </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--text-strong)] md:text-4xl">
-              Research + writing memory workspace
-            </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--text-muted)] md:text-base">
-              Turn conversations into a growing knowledge vault. Chat, save notes, and
-              connect ideas in your personal graph.
-            </p>
+          <div className="relative flex h-full items-center justify-center overflow-y-auto px-5 py-8 sm:px-8">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_8%_15%,color-mix(in_oklab,var(--brand)_9%,transparent),transparent_26rem),radial-gradient(circle_at_92%_85%,color-mix(in_oklab,var(--brand)_7%,transparent),transparent_30rem)]" />
+            <Card className="relative w-full max-w-5xl overflow-hidden border-border/80 bg-card/95 shadow-[var(--shadow-panel)]">
+              <CardContent className="grid p-0 md:grid-cols-[1.15fr_0.85fr]">
+                <div className="p-7 sm:p-10 md:p-12">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-[0.7rem] bg-primary text-primary-foreground shadow-[var(--shadow-control)]">
+                      <Orbit className="h-[1.1rem] w-[1.1rem]" />
+                    </div>
+                    <span className="text-sm font-semibold tracking-[-0.025em]">0xMem</span>
+                  </div>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              <SignUpButton>
-                <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--brand-hover)]">
-                  Get started
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              </SignUpButton>
-              <SignInButton>
-                <button className="rounded-xl border border-[var(--border-soft)] bg-white px-4 py-2.5 text-sm font-medium text-[var(--text-strong)] hover:bg-[var(--brand-softer)]">
-                  Sign in
-                </button>
-              </SignInButton>
-            </div>
+                  <div className="mt-10 eyebrow">Your thinking workspace</div>
+                  <h1 className="mt-2 max-w-xl text-4xl font-semibold tracking-[-0.05em] text-[var(--text-strong)] sm:text-5xl">
+                    Let your notes become a mind you can talk to.
+                  </h1>
+                  <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+                    Research, write, and connect ideas with an AI that works directly from your markdown vault.
+                  </p>
 
-            <div className="mt-8 grid gap-3 md:grid-cols-3">
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-3.5">
-                <Sparkles className="h-4 w-4 text-[var(--brand)]" />
-                <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-[var(--text-faint)]">
-                  AI Assistant
-                </p>
-                <p className="mt-1 text-sm text-[var(--text-muted)]">Focused research and writing support.</p>
-              </div>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-3.5">
-                <ShieldCheck className="h-4 w-4 text-[var(--brand)]" />
-                <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-[var(--text-faint)]">
-                  Personal Vault
-                </p>
-                <p className="mt-1 text-sm text-[var(--text-muted)]">Your notes stay organized as markdown files.</p>
-              </div>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-3.5">
-                <Brain className="h-4 w-4 text-[var(--brand)]" />
-                <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-[var(--text-faint)]">
-                  Knowledge Graph
-                </p>
-                <p className="mt-1 text-sm text-[var(--text-muted)]">Discover links across your ideas and projects.</p>
-              </div>
-            </div>
-            </div>
+                  <div className="mt-8 flex flex-wrap gap-2.5">
+                    <SignUpButton>
+                      <Button size="lg">
+                        Start building your vault
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </SignUpButton>
+                    <SignInButton>
+                      <Button variant="outline" size="lg">Sign in</Button>
+                    </SignInButton>
+                  </div>
+                </div>
+
+                <div className="border-t bg-[var(--brand-softer)] p-6 md:border-l md:border-t-0 md:p-8">
+                  <div className="eyebrow">One continuous system</div>
+                  <div className="mt-4 space-y-3">
+                    {[
+                      [Sparkles, "Think in conversation", "Explore questions and turn rough ideas into durable notes."],
+                      [FileText, "Own the source", "Everything important lives as portable markdown in your vault."],
+                      [GitBranch, "See the connections", "Wikilinks become a navigable graph of your thinking."],
+                    ].map(([Icon, title, description]) => {
+                      const FeatureIcon = Icon as typeof Sparkles;
+                      return (
+                        <div key={title as string} className="rounded-xl border border-border/70 bg-card/80 p-4 shadow-[var(--shadow-control)]">
+                          <FeatureIcon className="h-4 w-4 text-primary" />
+                          <p className="mt-3 text-sm font-semibold text-foreground">{title as string}</p>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description as string}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </SignedOut>
       </ClerkLoaded>

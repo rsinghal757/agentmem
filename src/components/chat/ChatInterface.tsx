@@ -14,6 +14,7 @@ import {
   Sparkles,
   Network,
   FileText,
+  Orbit,
 } from "lucide-react";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { cn, DEFAULT_THREAD_ID } from "@/lib/utils";
@@ -21,6 +22,7 @@ import { SidebarTabs } from "@/components/layout/BottomTabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   collectUnsavedHistoryMessages,
   getHistoryMessageSignature,
@@ -198,7 +200,7 @@ export function ChatInterface() {
   const starterPrompts = [
     { icon: FileText, title: "Summarize notes", prompt: "Summarize my latest notes and pull out open questions." },
     { icon: Network, title: "Find connections", prompt: "Find connections between my current projects and saved research." },
-    { icon: Sparkles, title: "Draft from memory", prompt: "Draft a concise brief using what you know from my vault." },
+    { icon: Sparkles, title: "Draft from vault", prompt: "Draft a concise brief using what you know from my vault." },
   ];
 
   return (
@@ -208,7 +210,7 @@ export function ChatInterface() {
           type="button"
           aria-label="Close chat history"
           onClick={() => setIsHistoryOpen(false)}
-          className="absolute inset-0 z-20 bg-black/25 lg:hidden"
+          className="absolute inset-0 z-20 bg-foreground/20 backdrop-blur-[1px] lg:hidden"
         />
       )}
 
@@ -218,49 +220,58 @@ export function ChatInterface() {
           isHistoryOpen ? "translate-x-0" : "-translate-x-[112%] lg:translate-x-0",
         )}
       >
-        <div className="mb-4 flex items-center justify-between lg:hidden">
+        <div className="mb-3 flex items-center justify-between lg:hidden">
           <p className="text-sm font-semibold text-[var(--text-strong)]">Conversations</p>
-          <button type="button" onClick={() => setIsHistoryOpen(false)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Close chat history">
+          <Button type="button" onClick={() => setIsHistoryOpen(false)} variant="ghost" size="icon" className="h-8 w-8" aria-label="Close chat history">
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
 
-        <div className="mb-3 rounded-2xl border border-[var(--border-subtle)] bg-[linear-gradient(135deg,var(--brand-softer),rgba(255,255,255,0.82))] p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">Workspace</div>
-              <div className="mt-1 text-xl font-semibold tracking-tight text-[var(--text-strong)]">0xMem</div>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Research memory, notes, and graph.</p>
+        <Card className="mb-3 border-border/80 bg-card/80 shadow-none">
+          <CardContent className="flex items-start justify-between gap-3 p-3.5">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.7rem] bg-primary text-primary-foreground shadow-[var(--shadow-control)]">
+                <Orbit className="h-[1.1rem] w-[1.1rem]" />
+              </div>
+              <div className="min-w-0">
+                <div className="eyebrow">Workspace</div>
+                <div className="truncate text-base font-semibold tracking-[-0.025em] text-[var(--text-strong)]">0xMem</div>
+                <p className="truncate text-[0.7rem] text-muted-foreground">Notes that think with you</p>
+              </div>
             </div>
             <SignedIn><UserButton /></SignedIn>
-            <SignedOut><SignInButton><button className="rounded-lg border border-[var(--border-soft)] bg-white px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent">Sign in</button></SignInButton></SignedOut>
-          </div>
-        </div>
+            <SignedOut><SignInButton><Button variant="outline" size="sm">Sign in</Button></SignInButton></SignedOut>
+          </CardContent>
+        </Card>
 
-        <Button onClick={createNewThread} variant="outline" className="mb-3 w-full justify-center rounded-xl bg-white/70">
+        <Button onClick={createNewThread} variant="outline" className="mb-3 w-full justify-center bg-card">
           <MessageSquarePlus className="h-4 w-4" />
           New chat
         </Button>
 
         <SidebarTabs />
 
-        <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Recent threads</div>
+        <div className="mb-1.5 px-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Recent threads</div>
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           <div className="space-y-1.5">
             {threads.map((thread) => (
-              <button
+              <Button
+                type="button"
+                variant="ghost"
                 key={thread.id}
                 onClick={() => { setActiveThreadId(thread.id); setIsHistoryOpen(false); }}
                 className={cn(
-                  "w-full rounded-2xl px-3 py-2.5 text-left transition-[background-color,border-color,box-shadow]",
+                  "h-auto w-full justify-start whitespace-normal rounded-[0.7rem] border px-3 py-2.5 text-left shadow-none",
                   thread.id === activeThreadId
-                    ? "border border-[color-mix(in_oklab,var(--brand),white_70%)] bg-[var(--brand-softer)] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)]"
-                    : "border border-transparent hover:border-[var(--border-subtle)] hover:bg-white/70",
+                    ? "border-[color-mix(in_oklab,var(--brand),white_76%)] bg-[var(--brand-softer)] hover:bg-[var(--brand-softer)]"
+                    : "border-transparent text-foreground hover:border-border hover:bg-card",
                 )}
               >
-                <div className="truncate text-sm font-medium text-[var(--text-strong)]">{thread.title || "New chat"}</div>
-                <div className="mt-0.5 truncate text-xs text-muted-foreground">{thread.preview || "No messages yet"}</div>
-              </button>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium text-[var(--text-strong)]">{thread.title || "New chat"}</div>
+                  <div className="mt-0.5 truncate text-[0.72rem] font-normal text-muted-foreground">{thread.preview || "No messages yet"}</div>
+                </div>
+              </Button>
             ))}
           </div>
         </div>
@@ -273,7 +284,7 @@ export function ChatInterface() {
               <PanelLeft className="h-4 w-4" />
             </Button>
             <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">Chat</div>
+              <div className="eyebrow">Chat</div>
               <h1 className="truncate text-base font-semibold tracking-tight text-[var(--text-strong)] sm:text-lg">{activeThread?.title || "New chat"}</h1>
               <p className="hidden text-xs text-muted-foreground sm:block">Calm workspace for research, synthesis, and vault-aware writing.</p>
             </div>
@@ -285,7 +296,7 @@ export function ChatInterface() {
               Clear thread
             </Button>
           ) : (
-            <span className="hidden rounded-full bg-[var(--brand-softer)] px-3 py-1 text-xs font-medium text-[var(--brand)] sm:inline-flex">Ready</span>
+            <Badge variant="secondary" className="hidden px-2.5 text-primary sm:inline-flex">Ready</Badge>
           )}
         </div>
 
@@ -295,26 +306,28 @@ export function ChatInterface() {
               <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
           ) : messages.length === 0 ? (
-            <div className="flex h-full items-center justify-center p-4">
-              <Card className="max-w-2xl border-[var(--border-soft)] bg-[var(--surface-raised)] text-center shadow-[var(--shadow-raised)]">
-                <CardContent className="px-5 py-7 sm:px-8">
-                  <div className="brand-pill mx-auto"><Sparkles className="h-3.5 w-3.5" />Start with memory</div>
-                  <CardTitle className="mt-4 text-2xl font-semibold tracking-tight text-[var(--text-strong)]">Welcome to 0xMem</CardTitle>
-                  <CardDescription className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">Ask questions, shape notes, and let your research workspace surface useful context.</CardDescription>
-                  <div className="mt-6 grid gap-2 sm:grid-cols-3">
+            <div className="flex min-h-full items-center justify-center py-8 sm:py-12">
+              <Card className="w-full max-w-[44rem] border-border/80 bg-card/95 shadow-[var(--shadow-panel)]">
+                <CardContent className="px-5 py-6 sm:px-8 sm:py-8">
+                  <div className="brand-pill"><Sparkles className="h-3.5 w-3.5" />Vault-aware assistant</div>
+                  <CardTitle className="mt-4 max-w-lg text-2xl font-semibold tracking-[-0.035em] text-[var(--text-strong)] sm:text-[1.75rem]">Turn a scattered thought into connected knowledge.</CardTitle>
+                  <CardDescription className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">Ask a question, develop an argument, or synthesize your notes. 0xMem can read and maintain the markdown vault as it works.</CardDescription>
+                  <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
                     {starterPrompts.map(({ icon: Icon, title, prompt }) => (
-                      <button key={title} type="button" onClick={() => setInput(prompt)} className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--brand-softer)] p-3 text-left hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--brand),white_65%)] hover:bg-white">
-                        <Icon className="h-4 w-4 text-primary" />
-                        <div className="mt-2 text-sm font-semibold text-[var(--text-strong)]">{title}</div>
-                        <div className="mt-1 text-xs leading-relaxed text-muted-foreground">{prompt}</div>
-                      </button>
+                      <Button key={title} type="button" variant="outline" onClick={() => { setInput(prompt); inputRef.current?.focus(); }} className="h-auto min-h-28 items-start justify-start whitespace-normal border-border/80 bg-background/60 p-3.5 text-left shadow-none hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--brand),white_68%)] hover:bg-[var(--brand-softer)]">
+                        <span className="block">
+                          <Icon className="h-4 w-4 text-primary" />
+                          <span className="mt-2 block text-sm font-semibold text-[var(--text-strong)]">{title}</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-muted-foreground">{prompt}</span>
+                        </span>
+                      </Button>
                     ))}
                   </div>
                 </CardContent>
               </Card>
             </div>
           ) : (
-            <div className="space-y-1 pb-8 pt-7">
+            <div className="mx-auto w-full max-w-[58rem] space-y-1 pb-8 pt-6">
               {messages.map((message) => (
                 <Message key={message.id} message={message} />
               ))}
@@ -333,8 +346,8 @@ export function ChatInterface() {
           )}
         </div>
 
-        <div className="border-t border-[var(--border-subtle)] bg-[linear-gradient(180deg,rgba(255,255,255,0.42),var(--brand-softer))] px-3 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] pt-4 sm:px-6 lg:px-10">
-          <div className="relative mx-auto max-w-4xl">
+        <div className="border-t border-[var(--border-subtle)] bg-card/80 px-3 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] pt-3 backdrop-blur-xl sm:px-6 lg:px-10">
+          <div className="relative mx-auto max-w-[58rem]">
             <Textarea
               ref={inputRef}
               value={input}
@@ -343,8 +356,7 @@ export function ChatInterface() {
               placeholder="Ask 0xMem anything…"
               rows={1}
               className={cn(
-                "max-h-40 w-full resize-none rounded-2xl border border-[var(--border-soft)] bg-white/92 px-4 py-3 pr-14 text-[15px] font-normal text-foreground placeholder:text-muted-foreground focus-visible:border-[color-mix(in_oklab,var(--brand),white_50%)] focus-visible:ring-[var(--focus-ring)]",
-                "shadow-[0_16px_44px_-34px_rgba(16,44,33,0.75)]",
+                "max-h-40 w-full resize-none rounded-xl border border-input bg-card px-4 py-3 pr-14 text-[15px] font-normal text-foreground placeholder:text-muted-foreground",
               )}
               style={{
                 height: "auto",
@@ -362,7 +374,7 @@ export function ChatInterface() {
               disabled={!input.trim() || isLoading}
               size="icon"
               className={cn(
-                "absolute bottom-2 right-2 h-10 w-10 rounded-[10px] transition-colors",
+                "absolute bottom-2 right-2 h-9 w-9 rounded-lg transition-colors",
                 input.trim() && !isLoading
                   ? "bg-primary text-primary-foreground hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)]"
                   : "bg-muted text-muted-foreground",
@@ -375,6 +387,7 @@ export function ChatInterface() {
               )}
             </Button>
           </div>
+          <p className="mx-auto mt-1.5 hidden max-w-[58rem] text-center text-[0.68rem] text-muted-foreground sm:block">Enter to send · Shift + Enter for a new line</p>
         </div>
       </div>
     </div>

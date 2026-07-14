@@ -8,6 +8,10 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Completed the shadcn/ui migration across the active product surface: established a restrained warm-neutral/moss token system; added reusable `Badge`, `Input`, and `Skeleton` primitives; and migrated chat, navigation, file creation, vault empty states, note viewing/editing, tool activity, graph chrome, and the signed-out landing page to the shared UI layer. Removed obsolete unused header/sidebar/activity components.
+
+- [x] Removed the Mem0 integration completely: deleted the SDK dependency and lockfile graph, `MEM0_API_KEY`, `/api/memory`, the Mem0 client/injection modules, Mem0-specific types, and post-chat extraction. The agent now uses the user-owned markdown vault as its only memory source through `_core.md` context and the six vault tools (`src/lib/agent/system-prompt.ts`).
+
 - [x] Unified mobile sidebar behavior across Chat/Vault/Graph: vault routes now use the same off-canvas collapsible sidebar pattern as chat (with backdrop + icon-only trigger), and the chat history trigger now shows icon-only (no "History" label) for a consistent compact mobile header control (src/app/vault/layout.tsx, src/components/layout/VaultSidebar.tsx, src/components/chat/ChatInterface.tsx)
 
 - [x] Fixed chat sidebar conversation history scrolling: made the chat history rail a bounded flex column with an internal `overflow-y-auto` list region so long thread lists are scrollable without pushing content off-screen (src/components/chat/ChatInterface.tsx)
@@ -98,29 +102,28 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | `src/app/vault/` | Vault explorer, note viewer, graph | ✅ Ready |
 | `src/app/api/chat/` | ToolLoopAgent streaming endpoint | ✅ Ready |
 | `src/app/api/vault/` | Vault CRUD + search + graph APIs | ✅ Ready |
-| `src/app/api/memory/` | Mem0 memory retrieval | ✅ Ready |
-| `src/components/chat/` | ChatInterface, Message, ToolCallBadge, VaultActivityFeed | ✅ Ready |
+| `src/components/chat/` | ChatInterface, Message, ToolCallBadge | ✅ Ready |
 | `src/components/vault/` | FileTree, NoteViewer, GraphView | ✅ Ready |
-| `src/components/layout/` | Header, Sidebar | ✅ Ready |
+| `src/components/layout/` | Responsive workspace sidebars and navigation tabs | ✅ Ready |
 | `src/lib/vault/` | Storage, tools, markdown, graph, search | ✅ Ready |
-| `src/lib/memory/` | Mem0 client, memory injection | ✅ Ready |
-| `src/lib/agent/` | ToolLoopAgent factory | ✅ Ready |
+| `src/lib/agent/` | ToolLoopAgent factory + vault-owned system context | ✅ Ready |
 | `src/hooks/` | useVaultFiles, useVaultGraph, useVaultSearch | ✅ Ready |
-| `src/types/` | TypeScript types for vault and agent | ✅ Ready |
+| `src/types/` | Vault and knowledge-graph types | ✅ Ready |
 
 ## Architecture Highlights
 
-- **AI SDK 6**: Uses `ToolLoopAgent` with `prepareCall` for dynamic system prompt injection
-- **Dual-track memory**: Mem0 for semantic short-term + vault database for structured long-term
+- **AI SDK 6**: Uses `ToolLoopAgent` with `prepareCall` for vault-owned system context
+- **Single-source memory**: PostgreSQL-backed markdown vault, `_core.md`, and explicit vault search/read tools
 - **Chat history**: PostgreSQL-persisted conversation history with clear chat option
 - **6 vault tools**: read, write, search, list, link, delete — all with zod/v4 schemas
 - **D3 force graph**: Interactive visualization of vault wikilink connections
-- **Local dev**: Vault stored in database (SQLite via @kilocode/app-builder-db)
+- **UI system**: shadcn-style primitives with Tailwind CSS 4 semantic design tokens
+- **Storage**: PostgreSQL via Drizzle ORM and postgres-js
 
 ## To Run
 
 1. Copy `.env.example` to `.env.local`
-2. Add `DATABASE_URL` (PostgreSQL), `OPENAI_API_KEY` and optionally `MEM0_API_KEY`
+2. Add `DATABASE_URL`, `OPENROUTER_API_KEY`, and Clerk keys
 3. `bun install && bun run build && bun start`
 
 ## Pending Improvements
@@ -172,3 +175,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Started shadcn/ui upgrade: configured `components.json`, added shared `Button`/`Card`/`Textarea` primitives, and migrated core chat surface elements to use the new UI layer + theme tokens. |
 | 2026-03-14 | Tweaked vault explorer create-file button styling/content: switched to a plus-icon action and corrected sizing/alignment to prevent clipping in the sidebar form. |
 | 2026-06-26 | Refreshed 0xMem signed-in workspace branding: semantic green design tokens, premium shell spacing, polished chat/vault sidebars, readable assistant answer surfaces, command-bar composer, and consistent onboarding empty states across Chat, Vault, and Graph. |
+| 2026-07-14 | Finished the shadcn/ui migration and visual-system refinement across all active surfaces; removed unused legacy chrome components. Removed Mem0 and made the PostgreSQL-backed markdown vault the sole memory source. Typecheck, lint, and production build pass. |

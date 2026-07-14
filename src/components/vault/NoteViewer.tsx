@@ -10,6 +10,11 @@ import {
   markdownWithWikiLinks,
 } from "@/components/shared/MarkdownContent";
 import { buildVaultHref, resolveVaultLinkTarget } from "@/lib/vault/links";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 
 interface NoteViewerProps {
   path: string;
@@ -205,20 +210,23 @@ export function NoteViewer({ path }: NoteViewerProps) {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center py-16 text-[15px] text-[#6B6B6B]">
-        Loading note viewer...
+      <div className="mx-auto max-w-3xl space-y-5 px-5 py-8 sm:px-8">
+        <Skeleton className="h-40 w-full rounded-[var(--radius-panel)]" />
+        <Skeleton className="h-[28rem] w-full rounded-[var(--radius-panel)]" />
       </div>
     );
   }
 
   if (error || !content) {
     return (
-      <div className="flex h-full flex-col items-center justify-center px-6 py-16">
-        <FileText className="mb-4 h-12 w-12 text-[#C7CCC6]" />
-        <p className="text-[15px] text-[#6B6B6B]">Note not found</p>
+      <div className="flex h-full flex-col items-center justify-center px-6 py-16 text-center">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+          <FileText className="h-6 w-6" />
+        </div>
+        <p className="text-sm font-medium text-foreground">Note not found</p>
         <Link
           href="/vault"
-          className="mt-4 text-[15px] text-[#0B6B3A] hover:text-[#0F7A43]"
+          className="mt-2 text-sm font-medium text-primary hover:text-[var(--brand-hover)]"
         >
           Open vault root
         </Link>
@@ -227,39 +235,42 @@ export function NoteViewer({ path }: NoteViewerProps) {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-6 py-8">
+    <div className="h-full overflow-y-auto px-4 py-5 sm:px-8 sm:py-8">
         <div className="mx-auto max-w-3xl">
           {/* Header */}
-          <div className="mb-8 rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-            <h1 className="mb-3 text-[24px] font-medium text-[#1C1C1C]">
+          <Card className="mb-5 border-border/80 bg-card/95 shadow-[var(--shadow-raised)]">
+            <CardContent className="p-5 sm:p-6">
+            <div className="eyebrow">Vault note</div>
+            <h1 className="mb-4 mt-1.5 text-2xl font-semibold tracking-[-0.035em] text-[var(--text-strong)] sm:text-[1.7rem]">
               {frontmatter?.title || path.split("/").pop()?.replace(".md", "")}
             </h1>
 
             <div className="mb-4 flex flex-wrap items-center gap-2">
               {!isEditing ? (
-                <button
+                <Button
                   onClick={() => {
                     setIsEditing(true);
                     setEditorMode("visual");
                     setDraftBody(body);
                     setVisualHtml(markdownToHtml(body));
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-3 py-1.5 text-[13px] font-medium text-[#1C1C1C] transition-colors hover:border-[#0B6B3A]/40"
+                  variant="outline"
+                  size="sm"
                 >
                   <Pencil className="h-3.5 w-3.5" />
                   Edit note
-                </button>
+                </Button>
               ) : (
                 <>
-                  <button
+                  <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#0B6B3A] bg-[#0B6B3A] px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-[#0F7A43] disabled:cursor-not-allowed disabled:opacity-70"
+                    size="sm"
                   >
                     <Save className="h-3.5 w-3.5" />
                     {isSaving ? "Saving..." : "Save changes"}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => {
                       setIsEditing(false);
                       setSaveError(null);
@@ -268,21 +279,22 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       setVisualHtml(markdownToHtml(body));
                     }}
                     disabled={isSaving}
-                    className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-3 py-1.5 text-[13px] font-medium text-[#1C1C1C] transition-colors hover:border-[#BFC5BE] disabled:cursor-not-allowed disabled:opacity-70"
+                    variant="outline"
+                    size="sm"
                   >
                     <X className="h-3.5 w-3.5" />
                     Cancel
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
 
         {/* Metadata */}
-        <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#6B6B6B]">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           {frontmatter?.type && (
-            <span className="rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-2.5 py-1 font-medium capitalize text-[#1C1C1C]">
+            <Badge variant="secondary" className="capitalize">
               {frontmatter.type}
-            </span>
+            </Badge>
           )}
           {frontmatter?.updated && (
             <span className="flex items-center gap-1">
@@ -297,37 +309,42 @@ export function NoteViewer({ path }: NoteViewerProps) {
         {frontmatter?.tags && frontmatter.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {frontmatter.tags.map((tag: string) => (
-              <span
+              <Badge
                 key={tag}
-                className="inline-flex items-center gap-1 rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] px-2.5 py-1 text-[13px] font-medium text-[#0B6B3A]"
+                variant="outline"
+                className="text-primary"
               >
                 <Tag className="h-2.5 w-2.5" />
                 {tag}
-              </span>
+              </Badge>
             ))}
           </div>
         )}
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Content */}
-          <div className="max-w-none rounded-[10px] border border-[#E8EAE7] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <Card className="max-w-none border-border/80 bg-card/95 shadow-[var(--shadow-raised)]">
+            <CardContent className="p-5 sm:p-7">
             {isEditing ? (
               <div>
-                <div className="mb-3 inline-flex rounded-[8px] border border-[#E8EAE7] bg-[#F7F8F6] p-1">
-                  <button
+                <div className="mb-4 inline-flex rounded-lg border bg-muted/70 p-1">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={editorMode === "visual" ? "outline" : "ghost"}
                     onClick={() => {
                       setEditorMode("visual");
                       setVisualHtml(markdownToHtml(draftBody));
                     }}
-                    className={`rounded-[6px] px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                      editorMode === "visual"
-                        ? "bg-white text-[#1C1C1C] shadow-[0_1px_1px_rgba(0,0,0,0.08)]"
-                        : "text-[#6B6B6B] hover:text-[#1C1C1C]"
-                    }`}
+                    className="h-7 shadow-none"
                   >
                     Visual
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={editorMode === "markdown" ? "outline" : "ghost"}
                     onClick={() => {
                       const markdownFromVisual = htmlToMarkdown(
                         visualEditorRef.current?.innerHTML || visualHtml,
@@ -335,14 +352,10 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       setDraftBody(markdownFromVisual);
                       setEditorMode("markdown");
                     }}
-                    className={`rounded-[6px] px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                      editorMode === "markdown"
-                        ? "bg-white text-[#1C1C1C] shadow-[0_1px_1px_rgba(0,0,0,0.08)]"
-                        : "text-[#6B6B6B] hover:text-[#1C1C1C]"
-                    }`}
+                    className="h-7 shadow-none"
                   >
                     Markdown
-                  </button>
+                  </Button>
                 </div>
                 {editorMode === "visual" ? (
                   <div
@@ -353,32 +366,33 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       const nextHtml = event.currentTarget.innerHTML;
                       setVisualHtml(nextHtml);
                     }}
-                    className="markdown-content min-h-[420px] w-full rounded-[8px] border border-[#E8EAE7] bg-[#FDFEFC] p-4 text-[15px] leading-[1.6] text-[#1C1C1C] outline-none transition-colors focus:border-[#0B6B3A]/50"
+                    className="markdown-content min-h-[420px] w-full rounded-xl border border-input bg-background/70 p-4 outline-none focus:border-ring focus:ring-[3px] focus:ring-[var(--focus-ring)]"
                   />
                 ) : (
-                  <textarea
+                  <Textarea
                     value={draftBody}
                     onChange={(event) => setDraftBody(event.target.value)}
-                    className="min-h-[420px] w-full resize-y rounded-[8px] border border-[#E8EAE7] bg-[#FDFEFC] p-4 font-mono text-[13px] leading-[1.6] text-[#1C1C1C] outline-none transition-colors focus:border-[#0B6B3A]/50"
+                    className="min-h-[420px] w-full resize-y rounded-xl bg-background/70 p-4 font-mono text-[13px] leading-[1.65] shadow-none"
                     spellCheck={false}
                   />
                 )}
                 {saveError && (
-                  <p className="mt-3 text-[13px] text-[#B42318]">{saveError}</p>
+                  <p className="mt-3 text-xs text-destructive">{saveError}</p>
                 )}
               </div>
             ) : (
               <MarkdownContent
                 content={markdownWithWikiLinks(body, files)}
-                className="text-[15px] leading-[1.6] text-[#1C1C1C]"
+                className="text-[15px]"
               />
             )}
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Wikilinks */}
           {wikilinks.length > 0 && (
-            <div className="mt-8 border-t border-[#E8EAE7] pt-6">
-              <h3 className="mb-3 text-[18px] font-medium text-[#1C1C1C]">
+            <div className="mt-6 border-t pt-5">
+              <h3 className="mb-3 text-base font-semibold text-foreground">
                 Links ({wikilinks.length})
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -386,7 +400,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                   <Link
                     key={link}
                     href={buildVaultHref(resolveVaultLinkTarget(link, files) || link)}
-                    className="rounded-[8px] border border-[#E8EAE7] bg-white px-3 py-1.5 text-[13px] font-medium text-[#6B6B6B] transition-colors hover:border-[#0B6B3A]/40 hover:text-[#1C1C1C]"
+                    className="focus-ring rounded-lg border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-control)] hover:border-[color-mix(in_oklab,var(--brand),white_70%)] hover:text-foreground"
                   >
                     {link}
                   </Link>

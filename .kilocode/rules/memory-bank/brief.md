@@ -1,48 +1,46 @@
-# Project Brief: Next.js Starter Template
+# Project Brief: 0xMem
 
 ## Purpose
 
-This is a minimal Next.js starter template designed for AI-assisted development. It provides a clean foundation that can be extended to build any type of web application through interaction with an AI assistant.
+0xMem is a personal research and writing workspace where an AI assistant can converse with the user while reading, creating, editing, and connecting an Obsidian-compatible markdown vault.
 
 ## Target Users
 
-- Developers wanting a clean Next.js starting point
-- Users building applications through AI-assisted coding
-- Teams needing a standardized, modern Next.js setup
+- Researchers and writers who want dialogue and durable notes in one workflow
+- Builders maintaining a personal knowledge graph in portable markdown
+- Users who want AI assistance grounded in a knowledge base they own
 
 ## Core Use Case
 
-Users describe what they want to build to an AI assistant, which then expands this template by:
-
-1. Adding components and pages as needed
-2. Installing additional dependencies
-3. Setting up databases, authentication, etc. using recipes
-4. Customizing styling and branding
+The user asks a question or develops an idea in chat. The agent searches relevant vault notes, answers with context, and deliberately maintains useful knowledge as atomic markdown notes and wikilinks. The user can inspect and edit every note or explore connections in the graph.
 
 ## Key Requirements
 
 ### Must Have
 
-- Modern Next.js 16 setup with App Router
-- TypeScript for type safety
-- Tailwind CSS 4 for styling
-- ESLint for code quality
-- Clean, minimal starting structure
-- Bun as package manager
+- Streaming, threaded AI chat with persisted message history
+- User-owned markdown vault with create, read, update, search, list, link, and delete tools
+- Vault-aware agent context without an external memory service
+- File explorer, WYSIWYG/markdown note editor, and interactive knowledge graph
+- Clerk-authenticated, per-user data isolation
+- Responsive, polished UI built from the shared shadcn-style component layer
+- PostgreSQL persistence and deployable Next.js production build
 
 ### Nice to Have
 
-- Recipe system for common additions (database, auth)
-- Memory bank for AI context persistence
-- Clear development guidelines
+- Semantic retrieval over the vault
+- Rate limiting and usage controls
+- Export/import workflows for external markdown vaults
 
 ## Success Metrics
 
-- Clean, zero-error TypeScript setup
-- Passing lint and type checks
+- The user can move from conversation to durable, linked knowledge without changing tools
+- Notes remain readable and portable outside 0xMem
+- TypeScript, ESLint, regression tests, and production build remain green
 
 ## Constraints
 
-- Minimal dependencies by default
-- Framework: Next.js 16 + React 19 + Tailwind CSS 4
-- Package manager: Bun
+- The markdown vault is the sole source of long-term memory
+- Avoid hidden third-party fact extraction or memory stores
+- Framework: Next.js 16, React 19, Tailwind CSS 4, AI SDK 6
+- Package manager/runtime: Bun in deployment

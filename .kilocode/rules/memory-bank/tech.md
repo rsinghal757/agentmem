@@ -9,8 +9,11 @@
 | TypeScript   | 5.9.x   | Type-safe JavaScript            |
 | Tailwind CSS | 4.x     | Utility-first CSS               |
 | Bun          | Latest  | Package manager & runtime       |
-| SQLite       | -       | Persistent vault storage        |
+| PostgreSQL   | 16+     | Vault and chat persistence       |
 | Drizzle ORM  | 0.45.x  | Database ORM                    |
+| shadcn/ui    | New York | Reusable UI primitives          |
+| Clerk        | 6.x     | Authentication                  |
+| AI SDK       | 6.x     | Agent loop and streaming chat   |
 
 ## Database
 
@@ -70,7 +73,11 @@ bun typecheck      # Run TypeScript type checking
 {
   "next": "^16.1.3", // Framework
   "react": "^19.2.3", // UI library
-  "react-dom": "^19.2.3" // React DOM
+  "react-dom": "^19.2.3", // React DOM
+  "ai": "^6.0.99", // ToolLoopAgent + streaming
+  "@clerk/nextjs": "^6.24.0", // Authentication
+  "drizzle-orm": "^0.45.1", // PostgreSQL ORM
+  "d3": "^7.9.0" // Knowledge graph
 }
 ```
 
@@ -100,23 +107,23 @@ bun typecheck      # Run TypeScript type checking
 ├── tsconfig.json           # TypeScript configuration
 ├── postcss.config.mjs      # PostCSS (Tailwind) config
 ├── eslint.config.mjs       # ESLint configuration
-├── public/                 # Static assets
-│   └── .gitkeep
-└── src/                    # Source code
-    └── app/                # Next.js App Router
-        ├── layout.tsx      # Root layout
-        ├── page.tsx        # Home page
-        ├── globals.css     # Global styles
-        └── favicon.ico     # Site icon
+└── src/
+    ├── app/                # Pages, layouts, API routes
+    ├── components/ui/      # shadcn-style primitives
+    ├── components/chat/    # Streaming chat surface
+    ├── components/vault/   # File tree, editor, graph
+    ├── db/                 # Drizzle schema + migrations
+    └── lib/                # Agent, auth, chat, vault logic
 ```
 
 ## Technical Constraints
 
-### Starting Point
+### Runtime configuration
 
-- Minimal structure - expand as needed
-- No database by default (use recipe to add)
-- No authentication by default (add when needed)
+- `DATABASE_URL` for PostgreSQL
+- `OPENROUTER_API_KEY` for the model provider
+- Clerk publishable/secret keys for authenticated use
+- The app has no third-party memory service or memory API key
 
 ### Browser Support
 
