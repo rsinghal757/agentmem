@@ -329,10 +329,7 @@ export function ChatInterface() {
                 <Message key={message.id} message={message} />
               ))}
               {isLoading && messages[messages.length - 1]?.role === "user" && (
-                <div className="flex gap-3 px-2 py-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground">
-                    0x
-                  </div>
+                <div className="flex px-2 py-3">
                   <div className="flex items-center gap-2 text-[15px] text-muted-foreground">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     Thinking...

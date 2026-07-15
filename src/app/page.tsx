@@ -30,11 +30,11 @@ export default function Home() {
         </SignedIn>
 
         <SignedOut>
-          <div className="relative flex h-full items-center justify-center overflow-y-auto px-5 py-8 sm:px-8">
+          <div className="relative flex h-full min-h-0 items-start justify-center overflow-y-auto px-4 py-4 sm:px-8 sm:py-8 md:items-center">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_8%_15%,color-mix(in_oklab,var(--brand)_9%,transparent),transparent_26rem),radial-gradient(circle_at_92%_85%,color-mix(in_oklab,var(--brand)_7%,transparent),transparent_30rem)]" />
             <Card className="relative w-full max-w-5xl overflow-hidden border-border/80 bg-card/95 shadow-[var(--shadow-panel)]">
               <CardContent className="grid p-0 md:grid-cols-[1.15fr_0.85fr]">
-                <div className="p-7 sm:p-10 md:p-12">
+                <div className="p-6 sm:p-10 md:p-12">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-9 w-9 items-center justify-center rounded-[0.7rem] bg-primary text-primary-foreground shadow-[var(--shadow-control)]">
                       <Orbit className="h-[1.1rem] w-[1.1rem]" />
@@ -42,8 +42,8 @@ export default function Home() {
                     <span className="text-sm font-semibold tracking-[-0.025em]">GizzNote</span>
                   </div>
 
-                  <div className="mt-10 eyebrow">Your thinking workspace</div>
-                  <h1 className="mt-2 max-w-xl text-4xl font-semibold tracking-[-0.05em] text-[var(--text-strong)] sm:text-5xl">
+                  <div className="mt-8 eyebrow sm:mt-10">Your thinking workspace</div>
+                  <h1 className="mt-2 max-w-xl text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.05em] text-[var(--text-strong)] sm:text-5xl">
                     Let your notes become a mind you can talk to.
                   </h1>
                   <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
