@@ -34,10 +34,33 @@ export function Message({ message }: MessageProps) {
     .map((part) => part.text)
     .join("\n\n");
   const isLongAssistant = !isUser && textContent.length > 520;
-  const hasReasoning = message.parts.some(
-    (part) => isReasoningPart(part) && part.text.trim(),
-  );
-  const toolParts = message.parts.filter(isToolUIPart);
+
+  const isActivityPart = (part: UIMessage["parts"][number]) =>
+    isToolUIPart(part) || (isReasoningPart(part) && part.text.trim().length > 0);
+
+  const ActivityPill = ({ part }: { part: UIMessage["parts"][number] }) => {
+    if (isReasoningPart(part)) {
+      return (
+        <Badge
+          variant="outline"
+          className="gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]"
+        >
+          <Brain className="text-primary" />
+          <span className="font-medium text-foreground">Thought for a while</span>
+        </Badge>
+      );
+    }
+
+    if (isToolUIPart(part)) {
+      const toolName = getToolName(part) || "unknown";
+      const args = (part.input ?? {}) as Record<string, unknown>;
+      const result = part.output as Record<string, unknown> | undefined;
+
+      return <ToolCallBadge toolName={toolName} args={args} result={result} />;
+    }
+
+    return null;
+  };
 
   return (
     <div className={cn("flex w-full px-1 py-2.5 sm:px-2", isUser ? "justify-end" : "justify-center")}>
@@ -54,34 +77,6 @@ export function Message({ message }: MessageProps) {
         )}
 
         <div className={cn("flex min-w-0 flex-col gap-2", isUser ? "max-w-[82%] items-end" : "flex-1 items-start")}>
-          {!isUser && (hasReasoning || toolParts.length > 0) && (
-            <div className="flex max-w-full flex-wrap items-center gap-2">
-              {hasReasoning && (
-                <Badge
-                  variant="outline"
-                  className="gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]"
-                >
-                  <Brain className="text-primary" />
-                  <span className="font-medium text-foreground">Thought for a while</span>
-                </Badge>
-              )}
-              {toolParts.map((part, index) => {
-                const toolName = getToolName(part) || "unknown";
-                const args = (part.input ?? {}) as Record<string, unknown>;
-                const result = part.output as Record<string, unknown> | undefined;
-
-                return (
-                  <ToolCallBadge
-                    key={`tool-${index}`}
-                    toolName={toolName}
-                    args={args}
-                    result={result}
-                  />
-                );
-              })}
-            </div>
-          )}
-
           {message.parts.map((part, index) => {
             if (isTextUIPart(part)) {
               if (!part.text.trim()) return null;
@@ -107,7 +102,27 @@ export function Message({ message }: MessageProps) {
               );
             }
 
-            return null;
+            if (!isActivityPart(part)) return null;
+
+            const previousPart = message.parts[index - 1];
+            if (previousPart && isActivityPart(previousPart)) return null;
+
+            const activityParts: UIMessage["parts"] = [];
+            for (
+              let activityIndex = index;
+              activityIndex < message.parts.length && isActivityPart(message.parts[activityIndex]);
+              activityIndex += 1
+            ) {
+              activityParts.push(message.parts[activityIndex]);
+            }
+
+            return (
+              <div key={index} className="flex max-w-full flex-wrap items-center gap-2">
+                {activityParts.map((activityPart, pillIndex) => (
+                  <ActivityPill key={`${index}-${pillIndex}`} part={activityPart} />
+                ))}
+              </div>
+            );
           })}
         </div>
 
