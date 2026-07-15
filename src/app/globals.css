@@ -54,7 +54,7 @@
   --typeset-font-mono: var(--font-geist-mono);
   --typeset-size: 16px;
   --typeset-leading: 1.75;
-  --typeset-flow: 1.2em;
+  --typeset-flow: 1.45em;
 }
 
 .typeset-note {
@@ -63,7 +63,19 @@
   --typeset-font-mono: var(--font-geist-mono);
   --typeset-size: 16px;
   --typeset-leading: 1.8;
-  --typeset-flow: 1.35em;
+  --typeset-flow: 1.6em;
+}
+
+/*
+ * Streamdown adds `space-y-4` to its root. Utilities intentionally outrank
+ * Typeset's component-layer element rules, so let the block margins fall
+ * back through the utility layer to Typeset's own per-element
+ * rhythm (including heading multipliers and first-child handling).
+ */
+@layer utilities {
+  .typeset.typeset-streamdown > * {
+    margin-block: revert-layer;
+  }
 }
 
 .typeset-inverted {
