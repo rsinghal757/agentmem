@@ -366,7 +366,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       const nextHtml = event.currentTarget.innerHTML;
                       setVisualHtml(nextHtml);
                     }}
-                    className="markdown-content min-h-[420px] w-full rounded-xl border border-input bg-background/70 p-4 outline-none focus:border-ring focus:ring-[3px] focus:ring-[var(--focus-ring)]"
+                    className="typeset typeset-note min-h-[420px] w-full rounded-xl border border-input bg-background/70 p-4 outline-none focus:border-ring focus:ring-[3px] focus:ring-[var(--focus-ring)]"
                   />
                 ) : (
                   <Textarea
@@ -383,7 +383,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
             ) : (
               <MarkdownContent
                 content={markdownWithWikiLinks(body, files)}
-                className="text-[15px]"
+                variant="note"
               />
             )}
             </CardContent>

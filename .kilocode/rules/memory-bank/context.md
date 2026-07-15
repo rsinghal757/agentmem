@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Upgraded rich Markdown rendering to Streamdown with the official shadcn/typeset stylesheet and tuned chat/note presets; improved GFM tables, lists, code, links, wikilinks, and streaming stability. Activity pills now use the full message width across invisible stream markers, the repeated `0x` agent badge is removed, and the signed-out landing page starts at the top on mobile instead of clipping its brand header (src/app/typeset.css, src/app/globals.css, src/components/shared/MarkdownContent.tsx, src/components/chat/Message.tsx, src/components/chat/ChatInterface.tsx, src/components/vault/NoteViewer.tsx, src/app/page.tsx).
+
 - [x] Renamed the user-facing product to GizzNote, added an Orbit-mark favicon, removed redundant all-caps workspace/chat/file headings, condensed assistant reasoning and tool activity into wrap-friendly non-expandable chips, and fixed user-message markdown to render in white (src/app/layout.tsx, src/app/icon.svg, src/app/page.tsx, src/components/chat/Message.tsx, src/components/chat/ChatInterface.tsx, src/components/chat/ToolCallBadge.tsx, src/components/layout/VaultSidebar.tsx, src/components/shared/MarkdownContent.tsx).
 
 - [x] Completed the shadcn/ui migration across the active product surface: established a restrained warm-neutral/moss token system; added reusable `Badge`, `Input`, and `Skeleton` primitives; and migrated chat, navigation, file creation, vault empty states, note viewing/editing, tool activity, graph chrome, and the signed-out landing page to the shared UI layer. Removed obsolete unused header/sidebar/activity components.

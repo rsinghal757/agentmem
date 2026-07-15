@@ -4,7 +4,10 @@ import type { UIMessage } from "ai";
 import { isTextUIPart, isToolUIPart, getToolName } from "ai";
 import { Brain } from "lucide-react";
 import { ToolCallBadge } from "./ToolCallBadge";
-import { MarkdownContent } from "@/components/shared/MarkdownContent";
+import {
+  MarkdownContent,
+  markdownWithWikiLinks,
+} from "@/components/shared/MarkdownContent";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -28,12 +31,6 @@ export function Message({ message }: MessageProps) {
       typeof part.text === "string"
     );
   };
-
-  const textContent = message.parts
-    .filter(isTextUIPart)
-    .map((part) => part.text)
-    .join("\n\n");
-  const isLongAssistant = !isUser && textContent.length > 520;
 
   const isActivityPart = (part: UIMessage["parts"][number]) =>
     isToolUIPart(part) || (isReasoningPart(part) && part.text.trim().length > 0);
@@ -64,22 +61,12 @@ export function Message({ message }: MessageProps) {
 
   return (
     <div className={cn("flex w-full px-1 py-2.5 sm:px-2", isUser ? "justify-end" : "justify-center")}>
-      <div
-        className={cn(
-          "flex w-full gap-3",
-          isUser ? "max-w-3xl justify-end" : "max-w-4xl justify-start",
-        )}
-      >
-        {!isUser && (
-          <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.65rem] bg-primary text-[0.65rem] font-semibold text-primary-foreground shadow-[var(--shadow-control)]">
-            0x
-          </div>
-        )}
-
+      <div className={cn("flex w-full", isUser ? "max-w-3xl justify-end" : "max-w-4xl justify-start")}>
         <div className={cn("flex min-w-0 flex-col gap-2", isUser ? "max-w-[82%] items-end" : "flex-1 items-start")}>
           {message.parts.map((part, index) => {
             if (isTextUIPart(part)) {
               if (!part.text.trim()) return null;
+              const isLongPart = !isUser && part.text.length > 520;
 
               return (
                 <div
@@ -88,15 +75,15 @@ export function Message({ message }: MessageProps) {
                     "text-[15px] leading-relaxed",
                     isUser
                       ? "rounded-2xl rounded-tr-md bg-primary px-4 py-2.5 text-primary-foreground shadow-[var(--shadow-control)]"
-                      : isLongAssistant
+                      : isLongPart
                         ? "w-full rounded-[var(--radius-panel)] border bg-card px-5 py-5 text-foreground shadow-[var(--shadow-raised)] sm:px-7 sm:py-6"
                         : "max-w-2xl rounded-[var(--radius-panel)] border bg-card px-4 py-3 text-foreground shadow-[var(--shadow-control)]",
                   )}
                 >
                   <MarkdownContent
-                    content={part.text}
+                    content={markdownWithWikiLinks(part.text)}
                     isInverted={isUser}
-                    className={cn(isUser && "prose-code:text-white")}
+                    variant="chat"
                   />
                 </div>
               );
@@ -104,20 +91,26 @@ export function Message({ message }: MessageProps) {
 
             if (!isActivityPart(part)) return null;
 
-            const previousPart = message.parts[index - 1];
-            if (previousPart && isActivityPart(previousPart)) return null;
+            const previousVisiblePart = message.parts.slice(0, index).findLast(
+              (candidate) =>
+                isActivityPart(candidate) ||
+                (isTextUIPart(candidate) && candidate.text.trim().length > 0),
+            );
+            if (previousVisiblePart && isActivityPart(previousVisiblePart)) return null;
 
             const activityParts: UIMessage["parts"] = [];
             for (
               let activityIndex = index;
-              activityIndex < message.parts.length && isActivityPart(message.parts[activityIndex]);
+              activityIndex < message.parts.length;
               activityIndex += 1
             ) {
-              activityParts.push(message.parts[activityIndex]);
+              const candidate = message.parts[activityIndex];
+              if (isTextUIPart(candidate) && candidate.text.trim().length > 0) break;
+              if (isActivityPart(candidate)) activityParts.push(candidate);
             }
 
             return (
-              <div key={index} className="flex max-w-full flex-wrap items-center gap-2">
+              <div key={index} className="flex w-full flex-wrap items-center gap-2">
                 {activityParts.map((activityPart, pillIndex) => (
                   <ActivityPill key={`${index}-${pillIndex}`} part={activityPart} />
                 ))}

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "streamdown/styles.css";
+@import "./typeset.css";
 
 :root {
   color-scheme: light;
@@ -44,6 +46,36 @@
   --shadow-control: 0 1px 2px rgb(20 45 32 / 0.06), 0 8px 24px -20px rgb(20 45 32 / 0.26);
   --radius-panel: 1rem;
   --radius-control: 0.625rem;
+}
+
+.typeset-chat {
+  --typeset-font-body: var(--font-geist-sans);
+  --typeset-font-heading: var(--font-geist-sans);
+  --typeset-font-mono: var(--font-geist-mono);
+  --typeset-size: 15px;
+  --typeset-leading: 1.65;
+  --typeset-flow: 0.9em;
+}
+
+.typeset-note {
+  --typeset-font-body: var(--font-geist-sans);
+  --typeset-font-heading: var(--font-geist-sans);
+  --typeset-font-mono: var(--font-geist-mono);
+  --typeset-size: 15px;
+  --typeset-leading: 1.72;
+  --typeset-flow: 1.15em;
+}
+
+.typeset-inverted {
+  --color-foreground: var(--primary-foreground);
+  --color-muted-foreground: color-mix(
+    in oklab,
+    var(--primary-foreground),
+    transparent 24%
+  );
+  --color-muted: color-mix(in oklab, var(--primary-foreground), transparent 88%);
+  --color-border: color-mix(in oklab, var(--primary-foreground), transparent 72%);
+  --color-ring: var(--primary-foreground);
 }
 
 @theme inline {
@@ -183,71 +215,6 @@
   .focus-ring {
     @apply outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--focus-ring)];
   }
-}
-
-.markdown-content {
-  color: var(--foreground);
-  font-size: 0.95rem;
-  line-height: 1.78;
-}
-
-.markdown-content h1,
-.markdown-content h2,
-.markdown-content h3,
-.markdown-content h4,
-.markdown-content h5,
-.markdown-content h6 {
-  color: var(--text-strong);
-  line-height: 1.25;
-  margin-bottom: 0.55rem;
-  margin-top: 1.4rem;
-}
-
-.markdown-content h1 { font-size: 1.5rem; }
-.markdown-content h2 { font-size: 1.25rem; }
-.markdown-content h3 { font-size: 1.08rem; }
-.markdown-content p { margin: 0.65rem 0; }
-.markdown-content ul,
-.markdown-content ol { margin: 0.65rem 0; padding-left: 1.3rem; }
-.markdown-content ul { list-style: disc; }
-.markdown-content ol { list-style: decimal; }
-
-.markdown-content blockquote {
-  border-left: 2px solid var(--primary);
-  color: var(--text-muted);
-  margin: 0.85rem 0;
-  padding-left: 0.9rem;
-}
-
-.markdown-content a {
-  color: var(--primary);
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in oklab, var(--primary), transparent 65%);
-  text-underline-offset: 3px;
-}
-
-.markdown-content code {
-  background: var(--brand-softer);
-  border: 1px solid var(--border-subtle);
-  border-radius: 0.35rem;
-  font-size: 0.88em;
-  padding: 0.1rem 0.32rem;
-}
-
-.markdown-content pre {
-  background: oklch(0.23 0.015 150);
-  border-radius: 0.75rem;
-  color: oklch(0.94 0.008 145);
-  margin: 0.9rem 0;
-  overflow-x: auto;
-  padding: 0.9rem 1rem;
-}
-
-.markdown-content pre code {
-  background: transparent;
-  border: 0;
-  padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
