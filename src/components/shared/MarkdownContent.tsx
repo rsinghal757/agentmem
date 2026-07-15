@@ -165,7 +165,9 @@ export function MarkdownContent({
       controls={false}
       parseIncompleteMarkdown={variant === "chat"}
       className={cn(
-        "typeset w-full min-w-0 max-w-none space-y-0 overflow-hidden break-words",
+        // Streamdown injects a root space-y utility. The typeset-streamdown
+        // adapter restores Typeset's element-specific rhythm over that utility.
+        "typeset typeset-streamdown w-full min-w-0 max-w-none overflow-hidden break-words",
         variant === "chat" ? "typeset-chat" : "typeset-note",
         isInverted && "typeset-inverted",
         className,

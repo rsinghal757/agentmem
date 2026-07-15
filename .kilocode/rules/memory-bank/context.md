@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Restored the intended shadcn/Typeset document rhythm by removing the explicit `space-y-0` override and adding a Streamdown adapter that lets its injected root spacing utility fall back to Typeset's element-specific block margins; increased chat and note flow presets so paragraphs, headings, lists, tables, and other Markdown sections have a coherent reading cadence (src/components/shared/MarkdownContent.tsx, src/app/globals.css).
+
 - [x] Relaxed the shared Typeset chat and note presets with a larger 16px body size, roomier line-height, and more generous block spacing so Markdown is easier to read across messages and vault notes (src/app/globals.css).
 
 - [x] Upgraded rich Markdown rendering to Streamdown with the official shadcn/typeset stylesheet and tuned chat/note presets; improved GFM tables, lists, code, links, wikilinks, and streaming stability. Activity pills now use the full message width across invisible stream markers, the repeated `0x` agent badge is removed, and the signed-out landing page starts at the top on mobile instead of clipping its brand header (src/app/typeset.css, src/app/globals.css, src/components/shared/MarkdownContent.tsx, src/components/chat/Message.tsx, src/components/chat/ChatInterface.tsx, src/components/vault/NoteViewer.tsx, src/app/page.tsx).
