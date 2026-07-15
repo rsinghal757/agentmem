@@ -52,18 +52,18 @@
   --typeset-font-body: var(--font-geist-sans);
   --typeset-font-heading: var(--font-geist-sans);
   --typeset-font-mono: var(--font-geist-mono);
-  --typeset-size: 15px;
-  --typeset-leading: 1.65;
-  --typeset-flow: 0.9em;
+  --typeset-size: 16px;
+  --typeset-leading: 1.75;
+  --typeset-flow: 1.2em;
 }
 
 .typeset-note {
   --typeset-font-body: var(--font-geist-sans);
   --typeset-font-heading: var(--font-geist-sans);
   --typeset-font-mono: var(--font-geist-mono);
-  --typeset-size: 15px;
-  --typeset-leading: 1.72;
-  --typeset-flow: 1.15em;
+  --typeset-size: 16px;
+  --typeset-leading: 1.8;
+  --typeset-flow: 1.35em;
 }
 
 .typeset-inverted {
