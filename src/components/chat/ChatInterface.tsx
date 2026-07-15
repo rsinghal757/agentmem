@@ -234,8 +234,7 @@ export function ChatInterface() {
                 <Orbit className="h-[1.1rem] w-[1.1rem]" />
               </div>
               <div className="min-w-0">
-                <div className="eyebrow">Workspace</div>
-                <div className="truncate text-base font-semibold tracking-[-0.025em] text-[var(--text-strong)]">0xMem</div>
+                <div className="truncate text-base font-semibold tracking-[-0.025em] text-[var(--text-strong)]">GizzNote</div>
                 <p className="truncate text-[0.7rem] text-muted-foreground">Notes that think with you</p>
               </div>
             </div>
@@ -251,7 +250,6 @@ export function ChatInterface() {
 
         <SidebarTabs />
 
-        <div className="mb-1.5 px-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Recent threads</div>
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           <div className="space-y-1.5">
             {threads.map((thread) => (
@@ -284,7 +282,6 @@ export function ChatInterface() {
               <PanelLeft className="h-4 w-4" />
             </Button>
             <div className="min-w-0">
-              <div className="eyebrow">Chat</div>
               <h1 className="truncate text-base font-semibold tracking-tight text-[var(--text-strong)] sm:text-lg">{activeThread?.title || "New chat"}</h1>
               <p className="hidden text-xs text-muted-foreground sm:block">Calm workspace for research, synthesis, and vault-aware writing.</p>
             </div>
@@ -311,7 +308,7 @@ export function ChatInterface() {
                 <CardContent className="px-5 py-6 sm:px-8 sm:py-8">
                   <div className="brand-pill"><Sparkles className="h-3.5 w-3.5" />Vault-aware assistant</div>
                   <CardTitle className="mt-4 max-w-lg text-2xl font-semibold tracking-[-0.035em] text-[var(--text-strong)] sm:text-[1.75rem]">Turn a scattered thought into connected knowledge.</CardTitle>
-                  <CardDescription className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">Ask a question, develop an argument, or synthesize your notes. 0xMem can read and maintain the markdown vault as it works.</CardDescription>
+                  <CardDescription className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">Ask a question, develop an argument, or synthesize your notes. GizzNote can read and maintain the markdown vault as it works.</CardDescription>
                   <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
                     {starterPrompts.map(({ icon: Icon, title, prompt }) => (
                       <Button key={title} type="button" variant="outline" onClick={() => { setInput(prompt); inputRef.current?.focus(); }} className="h-auto min-h-28 items-start justify-start whitespace-normal border-border/80 bg-background/60 p-3.5 text-left shadow-none hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--brand),white_68%)] hover:bg-[var(--brand-softer)]">
@@ -353,7 +350,7 @@ export function ChatInterface() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask 0xMem anything…"
+              placeholder="Ask GizzNote anything…"
               rows={1}
               className={cn(
                 "max-h-40 w-full resize-none rounded-xl border border-input bg-card px-4 py-3 pr-14 text-[15px] font-normal text-foreground placeholder:text-muted-foreground",

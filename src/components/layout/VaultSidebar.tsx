@@ -43,8 +43,7 @@ export function VaultSidebar({ isOpen = true, onClose }: VaultSidebarProps) {
               <Orbit className="h-[1.1rem] w-[1.1rem]" />
             </div>
             <div className="min-w-0">
-              <div className="eyebrow">Workspace</div>
-              <div className="truncate text-base font-semibold tracking-[-0.025em] text-[var(--text-strong)]">0xMem</div>
+              <div className="truncate text-base font-semibold tracking-[-0.025em] text-[var(--text-strong)]">GizzNote</div>
               <p className="truncate text-[0.7rem] text-muted-foreground">Notes that think with you</p>
             </div>
           </div>
@@ -70,10 +69,6 @@ export function VaultSidebar({ isOpen = true, onClose }: VaultSidebarProps) {
       </Link>
 
       <SidebarTabs />
-
-      <div className="mb-1.5 px-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-        Filesystem
-      </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <FileTree panel />

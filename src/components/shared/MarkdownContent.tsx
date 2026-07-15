@@ -127,7 +127,7 @@ export function MarkdownContent({
     <div
       className={cn(
         "markdown-content max-w-none break-words text-[15px] leading-[1.6]",
-        isInverted ? "text-white" : "text-foreground",
+        isInverted ? "text-white [&_*]:!text-white" : "text-foreground",
         className,
       )}
       dangerouslySetInnerHTML={{

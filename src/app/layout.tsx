@@ -14,9 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "0xMem — Research Memory Workspace",
+  title: "GizzNote — Research Memory Workspace",
   description:
     "A calm AI workspace for research, writing, markdown notes, and connected memory.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {

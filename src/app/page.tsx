@@ -39,7 +39,7 @@ export default function Home() {
                     <div className="flex h-9 w-9 items-center justify-center rounded-[0.7rem] bg-primary text-primary-foreground shadow-[var(--shadow-control)]">
                       <Orbit className="h-[1.1rem] w-[1.1rem]" />
                     </div>
-                    <span className="text-sm font-semibold tracking-[-0.025em]">0xMem</span>
+                    <span className="text-sm font-semibold tracking-[-0.025em]">GizzNote</span>
                   </div>
 
                   <div className="mt-10 eyebrow">Your thinking workspace</div>
