@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Renamed the user-facing product to GizzNote, added an Orbit-mark favicon, removed redundant all-caps workspace/chat/file headings, condensed assistant reasoning and tool activity into wrap-friendly non-expandable chips, and fixed user-message markdown to render in white (src/app/layout.tsx, src/app/icon.svg, src/app/page.tsx, src/components/chat/Message.tsx, src/components/chat/ChatInterface.tsx, src/components/chat/ToolCallBadge.tsx, src/components/layout/VaultSidebar.tsx, src/components/shared/MarkdownContent.tsx).
+
 - [x] Completed the shadcn/ui migration across the active product surface: established a restrained warm-neutral/moss token system; added reusable `Badge`, `Input`, and `Skeleton` primitives; and migrated chat, navigation, file creation, vault empty states, note viewing/editing, tool activity, graph chrome, and the signed-out landing page to the shared UI layer. Removed obsolete unused header/sidebar/activity components.
 
 - [x] Removed the Mem0 integration completely: deleted the SDK dependency and lockfile graph, `MEM0_API_KEY`, `/api/memory`, the Mem0 client/injection modules, Mem0-specific types, and post-chat extraction. The agent now uses the user-owned markdown vault as its only memory source through `_core.md` context and the six vault tools (`src/lib/agent/system-prompt.ts`).

@@ -2,8 +2,10 @@
 
 import type { UIMessage } from "ai";
 import { isTextUIPart, isToolUIPart, getToolName } from "ai";
+import { Brain } from "lucide-react";
 import { ToolCallBadge } from "./ToolCallBadge";
 import { MarkdownContent } from "@/components/shared/MarkdownContent";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface MessageProps {
@@ -32,6 +34,10 @@ export function Message({ message }: MessageProps) {
     .map((part) => part.text)
     .join("\n\n");
   const isLongAssistant = !isUser && textContent.length > 520;
+  const hasReasoning = message.parts.some(
+    (part) => isReasoningPart(part) && part.text.trim(),
+  );
+  const toolParts = message.parts.filter(isToolUIPart);
 
   return (
     <div className={cn("flex w-full px-1 py-2.5 sm:px-2", isUser ? "justify-end" : "justify-center")}>
@@ -48,6 +54,34 @@ export function Message({ message }: MessageProps) {
         )}
 
         <div className={cn("flex min-w-0 flex-col gap-2", isUser ? "max-w-[82%] items-end" : "flex-1 items-start")}>
+          {!isUser && (hasReasoning || toolParts.length > 0) && (
+            <div className="flex max-w-full flex-wrap items-center gap-2">
+              {hasReasoning && (
+                <Badge
+                  variant="outline"
+                  className="gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]"
+                >
+                  <Brain className="text-primary" />
+                  <span className="font-medium text-foreground">Thought for a while</span>
+                </Badge>
+              )}
+              {toolParts.map((part, index) => {
+                const toolName = getToolName(part) || "unknown";
+                const args = (part.input ?? {}) as Record<string, unknown>;
+                const result = part.output as Record<string, unknown> | undefined;
+
+                return (
+                  <ToolCallBadge
+                    key={`tool-${index}`}
+                    toolName={toolName}
+                    args={args}
+                    result={result}
+                  />
+                );
+              })}
+            </div>
+          )}
+
           {message.parts.map((part, index) => {
             if (isTextUIPart(part)) {
               if (!part.text.trim()) return null;
@@ -71,33 +105,6 @@ export function Message({ message }: MessageProps) {
                   />
                 </div>
               );
-            }
-
-            if (isReasoningPart(part)) {
-              if (!part.text.trim()) return null;
-
-              return (
-                <details
-                  key={index}
-                  className="group w-full rounded-xl border border-dashed bg-muted/65 px-4 py-3 text-sm leading-relaxed text-muted-foreground"
-                >
-                  <summary className="cursor-pointer list-none text-[0.65rem] font-semibold uppercase tracking-[0.13em] text-primary marker:content-['']">
-                    <span className="group-open:hidden">Show reasoning</span>
-                    <span className="hidden group-open:inline">Hide reasoning</span>
-                  </summary>
-                  <div className="mt-2">
-                    <MarkdownContent content={part.text} isInverted={isUser} />
-                  </div>
-                </details>
-              );
-            }
-
-            if (isToolUIPart(part)) {
-              const toolName = getToolName(part) || "unknown";
-              const args = (part.input ?? {}) as Record<string, unknown>;
-              const result = part.output as Record<string, unknown> | undefined;
-
-              return <ToolCallBadge key={index} toolName={toolName} args={args} result={result} />;
             }
 
             return null;
