@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Added a reproducible Cloud Agent development environment: committed `.cursor/environment.json` plus `install.sh` (PostgreSQL + Bun + `bun install` + local `.env.local` + dev DB init), `start.sh` (start Postgres + ensure dev DB), and `dev.sh` (`bun dev`). Validated `bun install` idempotence, auto-migrations, `typecheck`/`lint`/`bun test`, the DB-backed vault data layer end-to-end, and the dev server (Clerk keyless). `OPENROUTER_API_KEY` is required for the AI chat; Clerk keys are optional (keyless dev) but enable `bun run build` (.cursor/environment.json, .cursor/install.sh, .cursor/start.sh, .cursor/dev.sh).
+
 - [x] Restored the intended shadcn/Typeset document rhythm by removing the explicit `space-y-0` override and adding a Streamdown adapter that lets its injected root spacing utility fall back to Typeset's element-specific block margins; increased chat and note flow presets so paragraphs, headings, lists, tables, and other Markdown sections have a coherent reading cadence (src/components/shared/MarkdownContent.tsx, src/app/globals.css).
 
 - [x] Relaxed the shared Typeset chat and note presets with a larger 16px body size, roomier line-height, and more generous block spacing so Markdown is easier to read across messages and vault notes (src/app/globals.css).
@@ -184,3 +186,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Tweaked vault explorer create-file button styling/content: switched to a plus-icon action and corrected sizing/alignment to prevent clipping in the sidebar form. |
 | 2026-06-26 | Refreshed 0xMem signed-in workspace branding: semantic green design tokens, premium shell spacing, polished chat/vault sidebars, readable assistant answer surfaces, command-bar composer, and consistent onboarding empty states across Chat, Vault, and Graph. |
 | 2026-07-14 | Finished the shadcn/ui migration and visual-system refinement across all active surfaces; removed unused legacy chrome components. Removed Mem0 and made the PostgreSQL-backed markdown vault the sole memory source. Typecheck, lint, and production build pass. |
+| 2026-08-21 | Added a committed Cloud Agent development environment (`.cursor/environment.json` + `install.sh`/`start.sh`/`dev.sh`) provisioning Bun + PostgreSQL. Validated install idempotence, auto-migrations, typecheck/lint/tests, the DB-backed vault data layer, and the keyless-Clerk dev server. |
