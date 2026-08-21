@@ -10,14 +10,14 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
 const TYPE_COLORS: Record<string, string> = {
-  concept: "#7B77A8",
-  person: "#3D8A63",
-  project: "#B9825C",
-  decision: "#B3A252",
-  daily: "#8E948E",
-  fleeting: "#9677A8",
-  reference: "#5F95A1",
-  "core-memory": "#AF6666",
+  concept: "#8A7EAE",
+  person: "#4F7F62",
+  project: "#C08A62",
+  decision: "#C2A45A",
+  daily: "#8B8A82",
+  fleeting: "#B0849A",
+  reference: "#6A9AA6",
+  "core-memory": "#B56B6B",
 };
 
 interface SimNode extends d3.SimulationNodeDatum {
@@ -91,7 +91,7 @@ export function GraphView() {
         .selectAll("line")
         .data(simLinks)
         .join("line")
-        .attr("stroke", "#D9DED8")
+        .attr("stroke", "#E8E0D2")
         .attr("stroke-width", 0.9)
         .attr("stroke-opacity", 0.75);
 
@@ -102,7 +102,7 @@ export function GraphView() {
         .data(simNodes)
         .join("circle")
         .attr("r", (d) => Math.log(d.backlinks + 1) * 8 + 4)
-        .attr("fill", (d) => TYPE_COLORS[d.type || "concept"] || "#8b5cf6")
+        .attr("fill", (d) => TYPE_COLORS[d.type || "concept"] || "#8A7EAE")
         .attr("stroke", "#FFFFFF")
         .attr("stroke-width", 2)
         .attr("cursor", "pointer")
@@ -136,7 +136,7 @@ export function GraphView() {
         .join("text")
         .text((d) => d.title || d.id.split("/").pop()?.replace(".md", "") || "")
         .attr("font-size", 10)
-        .attr("fill", "#667169")
+        .attr("fill", "#7A7268")
         .attr("text-anchor", "middle")
         .attr("dy", (d) => Math.log(d.backlinks + 1) * 8 + 16)
         .attr("pointer-events", "none");
@@ -187,10 +187,10 @@ export function GraphView() {
   if (nodes.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-softer)] text-primary">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[30%] bg-[var(--wash-lilac)] text-primary">
           <Network className="h-6 w-6" />
         </div>
-        <p className="text-sm font-medium text-foreground">Your graph is waiting for its first link.</p>
+        <p className="font-display text-xl tracking-[-0.03em] text-[var(--text-strong)]">The graph is waiting for its first link.</p>
         <p className="mt-1 text-xs text-muted-foreground">
           Create notes and connect them with wikilinks.
         </p>
@@ -199,7 +199,7 @@ export function GraphView() {
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-background">
+    <div className="relative h-full w-full overflow-hidden bg-transparent">
       <svg
         ref={svgRef}
         className="h-full w-full"
@@ -208,15 +208,15 @@ export function GraphView() {
 
       <div className="pointer-events-none absolute left-5 right-5 top-5 flex items-start justify-between gap-3">
         <div>
-          <div className="eyebrow">Knowledge graph</div>
-          <h1 className="mt-0.5 text-lg font-semibold tracking-[-0.03em] text-[var(--text-strong)]">Connections across your vault</h1>
+          <div className="eyebrow">Graph</div>
+          <h1 className="display-title mt-1 text-[1.55rem] text-[var(--text-strong)]">Connections across your vault</h1>
           <p className="mt-0.5 hidden text-xs text-muted-foreground sm:block">Drag to rearrange · Scroll to zoom · Select a node to open it</p>
         </div>
-        <Badge variant="outline" className="bg-card/90 backdrop-blur">{nodes.length} notes</Badge>
+        <Badge variant="outline" className="bg-card/80 px-3 py-1 backdrop-blur">{nodes.length} notes</Badge>
       </div>
 
       {/* Legend */}
-      <Card className="absolute bottom-5 left-5 border-border/80 bg-card/90 shadow-[var(--shadow-raised)] backdrop-blur">
+      <Card className="absolute bottom-5 left-5 border-[var(--border-subtle)] bg-card/80 shadow-[var(--shadow-raised)] backdrop-blur">
         <CardContent className="p-3.5">
         <div className="mb-2.5 text-xs font-medium text-foreground">Node types</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4">

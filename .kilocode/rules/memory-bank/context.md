@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Completed a full GizzNote brand reidentity: warm paper canvas, dusty sage + pastel washes, Fraunces display type, folio-and-spark mark, editorial landing, and refined chat/vault/graph chrome without changing product behavior (src/app/globals.css, src/app/layout.tsx, src/app/icon.svg, src/components/brand, src/components/landing, chat/vault/layout surfaces).
+
 - [x] Restored the intended shadcn/Typeset document rhythm by removing the explicit `space-y-0` override and adding a Streamdown adapter that lets its injected root spacing utility fall back to Typeset's element-specific block margins; increased chat and note flow presets so paragraphs, headings, lists, tables, and other Markdown sections have a coherent reading cadence (src/components/shared/MarkdownContent.tsx, src/app/globals.css).
 
 - [x] Relaxed the shared Typeset chat and note presets with a larger 16px body size, roomier line-height, and more generous block spacing so Markdown is easier to read across messages and vault notes (src/app/globals.css).
@@ -106,6 +108,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | File/Directory | Purpose | Status |
 |----------------|---------|--------|
 | `src/app/page.tsx` | Auth-gated home (landing for signed-out, chat for signed-in) | ✅ Ready |
+| `src/components/landing/` | Editorial signed-out brand page | ✅ Ready |
+| `src/components/brand/` | Folio mark, lockup, workspace identity | ✅ Ready |
 | `src/app/layout.tsx` | Root layout shell (no global header bar) | ✅ Ready |
 | `src/app/vault/` | Vault explorer, note viewer, graph | ✅ Ready |
 | `src/app/api/chat/` | ToolLoopAgent streaming endpoint | ✅ Ready |
@@ -147,6 +151,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | Date | Changes |
 |------|---------|
 | Initial | Template created with base setup |
+| 2026-08-21 | Full GizzNote brand reidentity: warm paper tokens, Fraunces display type, folio mark, editorial landing, and premium chat/vault/graph chrome with no functional changes. |
 | 2026-02-25 | Full Obsidian Memory Agent implementation: AI SDK 6 ToolLoopAgent, 6 vault tools, Mem0 memory, chat UI, vault explorer, D3 graph, all API routes. Zero TS errors, zero lint warnings. |
 
 | 2026-02-25 | Improved vault write failure handling: `vault_write` now returns structured error payloads on failure and UI badge now labels failed writes explicitly. |

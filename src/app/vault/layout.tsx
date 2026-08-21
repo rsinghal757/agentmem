@@ -21,13 +21,13 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
 
       <VaultSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="workspace-panel flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="border-b border-[var(--border-subtle)] bg-card px-4 py-3 lg:hidden">
+        <div className="px-4 py-3 lg:hidden">
           <Button
             type="button"
             onClick={() => setIsSidebarOpen(true)}
             variant="outline"
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 rounded-full bg-card/80"
             aria-label="Open sidebar"
           >
             <PanelLeft className="h-4 w-4" />

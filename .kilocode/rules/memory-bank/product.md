@@ -1,8 +1,8 @@
-# Product Context: 0xMem
+# Product Context: GizzNote
 
 ## Why It Exists
 
-Chat is good for developing ideas; markdown is good for keeping them. Most AI tools separate the conversation from the user's durable knowledge. 0xMem makes them one continuous system: the assistant works directly with a transparent vault the user can read, edit, link, and take elsewhere.
+Chat is good for developing ideas; markdown is good for keeping them. Most AI tools separate the conversation from the user's durable knowledge. GizzNote makes them one continuous system: the assistant works directly with a transparent vault the user can read, edit, link, and take elsewhere.
 
 ## Problems It Solves
 
@@ -23,18 +23,28 @@ Chat is good for developing ideas; markdown is good for keeping them. Most AI to
 
 ## Experience Goals
 
-- **Calm and editorial**: dense knowledge work without dashboard noise.
-- **Transparent**: tool activity and note changes are visible.
+- **Cared-for and editorial**: a warm paper studio, not a generic chat dashboard.
+- **Quiet premium**: serif display type, generous radius, pastel washes, and restrained sage accents.
+- **Transparent**: tool activity and note changes are visible without shouting.
 - **Owned**: markdown remains the canonical knowledge format.
 - **Fast to navigate**: chat threads, files, and graph share consistent responsive navigation.
 - **Precise**: shadcn primitives and semantic tokens keep interactions and states consistent.
+
+## Brand Identity
+
+- **Name**: GizzNote
+- **Positioning**: a writing studio where conversation becomes a library
+- **Voice**: warm, precise, slightly literary; never SaaS-marketing
+- **Mark**: stacked folio pages with a spark, on a dusty sage plate
+- **Type**: Fraunces for display and wordmark; Geist for UI and body
+- **Palette**: warm cream canvas, dusty sage, sand/blush/lilac washes
 
 ## Product Surfaces
 
 - **Chat**: thread history, streaming answers, reasoning disclosures, vault tool activity, composer.
 - **Vault**: file creation, hierarchical browsing, note metadata, visual/markdown editing, wikilink navigation.
 - **Graph**: force-directed visualization derived from note links and metadata.
-- **Landing**: concise signed-out explanation and Clerk sign-in/sign-up entry points.
+- **Landing**: editorial signed-out studio page with Clerk sign-in/sign-up entry points.
 
 ## Integration Points
 

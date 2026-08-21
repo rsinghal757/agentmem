@@ -82,7 +82,7 @@ function TreeItem({
           type="button"
           variant="ghost"
           onClick={() => setIsOpen(!isOpen)}
-          className="h-9 w-full justify-start gap-1.5 rounded-lg px-2 text-[0.8rem] text-foreground shadow-none hover:bg-card"
+          className="h-9 w-full justify-start gap-1.5 rounded-xl px-2 text-[0.8rem] text-foreground shadow-none hover:bg-card/80"
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
         >
           {isOpen ? (
@@ -116,10 +116,10 @@ function TreeItem({
     <Link
       href={`/vault/${node.path}`}
       className={cn(
-        "focus-ring flex h-9 items-center gap-2 rounded-lg border px-2 text-[0.8rem] transition-colors",
+        "focus-ring flex h-9 items-center gap-2 rounded-xl border px-2 text-[0.8rem] transition-colors",
         isActive
-          ? "border-[color-mix(in_oklab,var(--brand),white_76%)] bg-[var(--brand-softer)] font-medium text-foreground"
-          : "border-transparent text-muted-foreground hover:border-border hover:bg-card hover:text-foreground",
+          ? "border-transparent bg-[var(--wash-sage)] font-medium text-foreground"
+          : "border-transparent text-muted-foreground hover:bg-card/80 hover:text-foreground",
       )}
       style={{ paddingLeft: `${depth * 16 + 24}px` }}
     >
@@ -210,7 +210,7 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
     >
       <form
         onSubmit={handleCreateFile}
-        className="mb-3 rounded-xl border border-border/80 bg-card p-2.5 shadow-[var(--shadow-control)]"
+        className="mb-3 rounded-[1.2rem] border border-[var(--border-subtle)] bg-card/80 p-2.5 shadow-[var(--shadow-control)]"
       >
         <label
           htmlFor="new-vault-file"
@@ -225,14 +225,14 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
             value={newFilePath}
             onChange={(event) => setNewFilePath(event.target.value)}
             placeholder="Folder/note-name"
-            className="h-9 min-w-0 flex-1 text-xs shadow-none"
+            className="h-9 min-w-0 flex-1 rounded-full text-xs shadow-none"
           />
           <Button
             type="submit"
             disabled={isCreating}
             aria-label={isCreating ? "Creating file" : "Create file"}
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 rounded-full"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
           </Button>
@@ -243,13 +243,13 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
       </form>
 
       {tree.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-card/70 px-6 py-12 text-center">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-softer)] text-primary">
+        <div className="flex flex-col items-center justify-center rounded-[1.4rem] border border-dashed border-[var(--border-soft)] bg-[var(--wash-sand)] px-6 py-12 text-center">
+          <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-[30%] bg-primary text-primary-foreground shadow-[var(--shadow-mark)]">
             <Library className="h-5 w-5" />
           </div>
-          <p className="text-sm font-medium text-foreground">Vault is empty</p>
+          <p className="font-display text-lg tracking-[-0.03em] text-[var(--text-strong)]">The vault is waiting</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Create a note or start a conversation.
+            Create a note, or begin in conversation.
           </p>
         </div>
       ) : (

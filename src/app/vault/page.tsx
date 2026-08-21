@@ -1,38 +1,54 @@
 import Link from "next/link";
 import { FileText, GitBranch, Sparkles } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default function VaultPage() {
   return (
     <div className="flex h-full flex-col bg-transparent">
       <div className="workspace-header">
         <div>
-          <div className="eyebrow">Vault</div>
-          <h2 className="text-lg font-semibold tracking-tight text-[var(--text-strong)] sm:text-2xl">Vault Explorer</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Browse markdown notes from the filesystem panel or <Link href="/vault/graph" className="font-medium text-primary hover:text-[var(--brand-hover)]">view graph</Link>.</p>
+          <p className="eyebrow">Library</p>
+          <h1 className="display-title mt-1 text-[1.7rem] text-[var(--text-strong)] sm:text-[2rem]">Vault</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Browse markdown notes from the library panel or{" "}
+            <Link href="/vault/graph" className="font-medium text-primary hover:text-[var(--brand-hover)]">
+              view the graph
+            </Link>
+            .
+          </p>
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center p-5 sm:p-8">
-        <Card className="w-full max-w-2xl border-border/80 bg-card/95 shadow-[var(--shadow-panel)]">
-          <CardContent className="p-6 sm:p-8">
-          <div className="brand-pill"><FileText className="h-3.5 w-3.5" />Markdown vault</div>
-          <p className="mt-4 max-w-lg text-2xl font-semibold tracking-[-0.035em] text-[var(--text-strong)]">Your ideas, in files you own.</p>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">Select a note from the sidebar, create a new one, or open the graph to see how your research connects.</p>
-          <div className="mt-5 grid gap-2 sm:grid-cols-2">
-            <div className="rounded-xl border border-border/80 bg-background/60 p-3.5 text-left">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <p className="mt-2 text-sm font-semibold text-[var(--text-strong)]">Capture research</p>
-              <p className="mt-1 text-xs text-muted-foreground">Turn chat outputs into durable markdown.</p>
+      <div className="flex flex-1 items-center justify-center px-5 py-8 sm:px-8">
+        <div className="w-full max-w-2xl">
+          <div className="brand-pill">
+            <FileText className="h-3.5 w-3.5" />
+            Markdown vault
+          </div>
+          <h2 className="display-title mt-5 max-w-lg text-[2rem] leading-[1.12] text-[var(--text-strong)] sm:text-[2.35rem]">
+            Your ideas, in files you own.
+          </h2>
+          <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-muted-foreground">
+            Select a note from the sidebar, create a new one, or open the graph to see how your research connects.
+          </p>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div
+              className="rounded-[1.4rem] border border-[var(--border-subtle)] p-4 shadow-[var(--shadow-control)]"
+              style={{ background: "var(--wash-sand)" }}
+            >
+              <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.6} />
+              <p className="display-title mt-3 text-[1.25rem] text-[var(--text-strong)]">Capture research</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">Turn chat into durable markdown you can keep.</p>
             </div>
-            <div className="rounded-xl border border-border/80 bg-background/60 p-3.5 text-left">
-              <GitBranch className="h-4 w-4 text-primary" />
-              <p className="mt-2 text-sm font-semibold text-[var(--text-strong)]">Map connections</p>
-              <p className="mt-1 text-xs text-muted-foreground">Open the graph to see linked ideas.</p>
+            <div
+              className="rounded-[1.4rem] border border-[var(--border-subtle)] p-4 shadow-[var(--shadow-control)]"
+              style={{ background: "var(--wash-lilac)" }}
+            >
+              <GitBranch className="h-4 w-4 text-primary" strokeWidth={1.6} />
+              <p className="display-title mt-3 text-[1.25rem] text-[var(--text-strong)]">Map connections</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">Open the graph to see linked ideas.</p>
             </div>
           </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   );

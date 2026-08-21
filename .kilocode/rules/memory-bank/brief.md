@@ -1,8 +1,8 @@
-# Project Brief: 0xMem
+# Project Brief: GizzNote
 
 ## Purpose
 
-0xMem is a personal research and writing workspace where an AI assistant can converse with the user while reading, creating, editing, and connecting an Obsidian-compatible markdown vault.
+GizzNote is a personal research and writing workspace where an AI assistant can converse with the user while reading, creating, editing, and connecting an Obsidian-compatible markdown vault.
 
 ## Target Users
 
@@ -24,6 +24,7 @@ The user asks a question or develops an idea in chat. The agent searches relevan
 - File explorer, WYSIWYG/markdown note editor, and interactive knowledge graph
 - Clerk-authenticated, per-user data isolation
 - Responsive, polished UI built from the shared shadcn-style component layer
+- A distinctive brand identity: warm paper studio, Fraunces display type, folio mark
 - PostgreSQL persistence and deployable Next.js production build
 
 ### Nice to Have
@@ -35,7 +36,8 @@ The user asks a question or develops an idea in chat. The agent searches relevan
 ## Success Metrics
 
 - The user can move from conversation to durable, linked knowledge without changing tools
-- Notes remain readable and portable outside 0xMem
+- Notes remain readable and portable outside GizzNote
+- The product feels tended and premium across landing, chat, vault, and graph
 - TypeScript, ESLint, regression tests, and production build remain green
 
 ## Constraints

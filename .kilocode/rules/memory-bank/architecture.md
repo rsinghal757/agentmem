@@ -1,4 +1,4 @@
-# System Patterns: 0xMem
+# System Patterns: GizzNote
 
 ## Current Architecture
 
@@ -6,7 +6,7 @@
 - `ToolLoopAgent` is created per authenticated user. `prepareCall` injects `_core.md`; the agent searches and updates all other context through explicit vault tools.
 - PostgreSQL is the source of truth for markdown notes, chat threads, and message parts. Drizzle migrations and a runtime bootstrap fallback keep deployed schemas compatible.
 - Chat history persistence is separate from model streaming: UI message parts are streamed through AI SDK and upserted through `/api/chat/history`.
-- Active controls use the shadcn-style primitives in `src/components/ui`; product composition lives in `chat`, `vault`, and `layout` component folders.
+- Brand primitives live in `src/components/brand` (mark, lockup, workspace identity). Active controls use the shadcn-style primitives in `src/components/ui`; product composition lives in `chat`, `vault`, `landing`, and `layout` component folders.
 - The knowledge graph is derived from parsed markdown frontmatter and wikilinks, then rendered client-side with D3.
 
 ## Architecture Overview
@@ -14,116 +14,43 @@
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── layout.tsx          # Root layout + metadata
-│   ├── page.tsx            # Home page
-│   ├── globals.css         # Tailwind imports + global styles
-│   └── favicon.ico         # Site icon
-└── (expand as needed)
-    ├── components/         # React components (add when needed)
-    ├── lib/                # Utilities and helpers (add when needed)
-    └── db/                 # Database files (add via recipe)
+│   ├── layout.tsx          # Root layout + metadata + display font
+│   ├── page.tsx            # Auth-gated home
+│   ├── globals.css         # Brand tokens + Tailwind
+│   └── icon.svg            # Folio mark favicon
+├── components/
+│   ├── brand/              # BrandMark, BrandLockup, WorkspaceIdentity
+│   ├── landing/            # Signed-out editorial landing
+│   ├── ui/                 # Shared primitives
+│   ├── chat/               # Chat workspace
+│   ├── vault/              # Notes, files, graph
+│   └── layout/             # Sidebars and navigation
+├── lib/                    # Agent, auth, vault, chat helpers
+└── db/                     # Drizzle schema + client
 ```
 
 ## Key Design Patterns
 
 ### 1. App Router Pattern
 
-Uses Next.js App Router with file-based routing:
-```
-src/app/
-├── page.tsx           # Route: /
-├── about/page.tsx     # Route: /about
-├── blog/
-│   ├── page.tsx       # Route: /blog
-│   └── [slug]/page.tsx # Route: /blog/:slug
-└── api/
-    └── route.ts       # API Route: /api
-```
+Uses Next.js App Router with file-based routing.
 
-### 2. Component Organization Pattern (When Expanding)
+### 2. Component Organization Pattern
 
 ```
 src/components/
-├── ui/                # Reusable UI components (Button, Card, etc.)
-├── layout/            # Layout components (Header, Footer)
-├── sections/          # Page sections (Hero, Features, etc.)
-└── forms/             # Form components
+├── brand/             # Identity primitives
+├── landing/           # Marketing / signed-out studio
+├── ui/                # Reusable UI components
+├── layout/            # Sidebars and navigation
+├── chat/              # Chat workspace
+└── vault/             # Notes, files, graph
 ```
 
 ### 3. Server Components by Default
 
-All components are Server Components unless marked with `"use client"`:
-```tsx
-// Server Component (default) - can fetch data, access DB
-export default function Page() {
-  return <div>Server rendered</div>;
-}
+All components are Server Components unless marked with `"use client"`.
 
-// Client Component - for interactivity
-"use client";
-export default function Counter() {
-  const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
-}
-```
+### 4. Brand token pattern
 
-### 4. Layout Pattern
-
-Layouts wrap pages and can be nested:
-```tsx
-// src/app/layout.tsx - Root layout
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
-}
-
-// src/app/dashboard/layout.tsx - Nested layout
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex">
-      <Sidebar />
-      <main>{children}</main>
-    </div>
-  );
-}
-```
-
-## Styling Conventions
-
-### Tailwind CSS Usage
-- Utility classes directly on elements
-- Component composition for repeated patterns
-- Responsive: `sm:`, `md:`, `lg:`, `xl:`
-
-### Common Patterns
-```tsx
-// Container
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-// Responsive grid
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-// Flexbox centering
-<div className="flex items-center justify-center">
-```
-
-## File Naming Conventions
-
-- Components: PascalCase (`Button.tsx`, `Header.tsx`)
-- Utilities: camelCase (`utils.ts`, `helpers.ts`)
-- Pages/Routes: lowercase (`page.tsx`, `layout.tsx`)
-- Directories: kebab-case (`api-routes/`) or lowercase (`components/`)
-
-## State Management
-
-For simple needs:
-- `useState` for local component state
-- `useContext` for shared state
-- Server Components for data fetching
-
-For complex needs (add when necessary):
-- Zustand for client state
-- React Query for server state
+Visual identity is encoded as CSS custom properties in `src/app/globals.css` (`--wash-*`, `--radius-panel`, `--font-display`) and reused across landing and product chrome.
