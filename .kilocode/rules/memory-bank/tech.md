@@ -1,4 +1,4 @@
-# Technical Context: Obsidian Memory Agent
+# Technical Context: GizzNote
 
 ## Technology Stack
 
@@ -14,6 +14,8 @@
 | shadcn/ui    | New York | Reusable UI primitives          |
 | Clerk        | 6.x     | Authentication                  |
 | AI SDK       | 6.x     | Agent loop and streaming chat   |
+| Fraunces     | Google  | Display / brand serif           |
+| Geist        | Google  | UI sans and mono                |
 
 ## Database
 
@@ -59,61 +61,34 @@ bun typecheck      # Run TypeScript type checking
 
 - Uses `@tailwindcss/postcss` plugin
 - CSS-first configuration (v4 style)
+- Brand tokens and display font live in `src/app/globals.css`
 
 ### ESLint (`eslint.config.mjs`)
 
 - Uses `eslint-config-next`
 - Flat config format
 
-## Key Dependencies
-
-### Production Dependencies
-
-```json
-{
-  "next": "^16.1.3", // Framework
-  "react": "^19.2.3", // UI library
-  "react-dom": "^19.2.3", // React DOM
-  "ai": "^6.0.99", // ToolLoopAgent + streaming
-  "@clerk/nextjs": "^6.24.0", // Authentication
-  "drizzle-orm": "^0.45.1", // PostgreSQL ORM
-  "d3": "^7.9.0" // Knowledge graph
-}
-```
-
-### Dev Dependencies
-
-```json
-{
-  "typescript": "^5.9.3",
-  "@types/node": "^24.10.2",
-  "@types/react": "^19.2.7",
-  "@types/react-dom": "^19.2.3",
-  "@tailwindcss/postcss": "^4.1.17",
-  "tailwindcss": "^4.1.17",
-  "eslint": "^9.39.1",
-  "eslint-config-next": "^16.0.0"
-}
-```
-
 ## File Structure
 
 ```
 /
-├── .gitignore              # Git ignore rules
-├── package.json            # Dependencies and scripts
-├── bun.lock                # Bun lockfile
-├── next.config.ts          # Next.js configuration
-├── tsconfig.json           # TypeScript configuration
-├── postcss.config.mjs      # PostCSS (Tailwind) config
-├── eslint.config.mjs       # ESLint configuration
+├── .gitignore
+├── package.json
+├── bun.lock
+├── next.config.ts
+├── tsconfig.json
+├── postcss.config.mjs
+├── eslint.config.mjs
 └── src/
-    ├── app/                # Pages, layouts, API routes
-    ├── components/ui/      # shadcn-style primitives
-    ├── components/chat/    # Streaming chat surface
-    ├── components/vault/   # File tree, editor, graph
-    ├── db/                 # Drizzle schema + migrations
-    └── lib/                # Agent, auth, chat, vault logic
+    ├── app/
+    ├── components/brand/
+    ├── components/landing/
+    ├── components/ui/
+    ├── components/chat/
+    ├── components/vault/
+    ├── components/layout/
+    ├── db/
+    └── lib/
 ```
 
 ## Technical Constraints
@@ -129,23 +104,6 @@ bun typecheck      # Run TypeScript type checking
 
 - Modern browsers (ES2020+)
 - No IE11 support
-
-## Performance Considerations
-
-### Image Optimization
-
-- Use Next.js `Image` component for optimization
-- Place images in `public/` directory
-
-### Bundle Size
-
-- Tree-shaking enabled by default
-- Tailwind CSS purges unused styles
-
-### Core Web Vitals
-
-- Server Components reduce client JavaScript
-- Streaming and Suspense for better UX
 
 ## Deployment
 

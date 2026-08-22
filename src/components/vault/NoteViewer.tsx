@@ -220,10 +220,10 @@ export function NoteViewer({ path }: NoteViewerProps) {
   if (error || !content) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 py-16 text-center">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[30%] bg-[var(--wash-sand)] text-muted-foreground">
           <FileText className="h-6 w-6" />
         </div>
-        <p className="text-sm font-medium text-foreground">Note not found</p>
+        <p className="font-display text-xl tracking-[-0.03em] text-[var(--text-strong)]">Note not found</p>
         <Link
           href="/vault"
           className="mt-2 text-sm font-medium text-primary hover:text-[var(--brand-hover)]"
@@ -238,10 +238,10 @@ export function NoteViewer({ path }: NoteViewerProps) {
     <div className="h-full overflow-y-auto px-4 py-5 sm:px-8 sm:py-8">
         <div className="mx-auto max-w-3xl">
           {/* Header */}
-          <Card className="mb-5 border-border/80 bg-card/95 shadow-[var(--shadow-raised)]">
+          <Card className="mb-5 border-[var(--border-subtle)] bg-card/85 shadow-[var(--shadow-raised)]">
             <CardContent className="p-5 sm:p-6">
-            <div className="eyebrow">Vault note</div>
-            <h1 className="mb-4 mt-1.5 text-2xl font-semibold tracking-[-0.035em] text-[var(--text-strong)] sm:text-[1.7rem]">
+            <div className="eyebrow">Note</div>
+            <h1 className="display-title mb-4 mt-2 text-[2rem] leading-[1.12] text-[var(--text-strong)] sm:text-[2.15rem]">
               {frontmatter?.title || path.split("/").pop()?.replace(".md", "")}
             </h1>
 
@@ -312,7 +312,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
               <Badge
                 key={tag}
                 variant="outline"
-                className="text-primary"
+                className="text-primary bg-[var(--wash-sand)]"
               >
                 <Tag className="h-2.5 w-2.5" />
                 {tag}
@@ -324,11 +324,11 @@ export function NoteViewer({ path }: NoteViewerProps) {
           </Card>
 
           {/* Content */}
-          <Card className="max-w-none border-border/80 bg-card/95 shadow-[var(--shadow-raised)]">
+          <Card className="max-w-none border-[var(--border-subtle)] bg-card/85 shadow-[var(--shadow-raised)]">
             <CardContent className="p-5 sm:p-7">
             {isEditing ? (
               <div>
-                <div className="mb-4 inline-flex rounded-lg border bg-muted/70 p-1">
+                <div className="mb-4 inline-flex rounded-full border border-[var(--border-subtle)] bg-secondary/80 p-1">
                   <Button
                     type="button"
                     size="sm"
@@ -337,7 +337,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       setEditorMode("visual");
                       setVisualHtml(markdownToHtml(draftBody));
                     }}
-                    className="h-7 shadow-none"
+                    className="h-7 rounded-full shadow-none"
                   >
                     Visual
                   </Button>
@@ -352,7 +352,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       setDraftBody(markdownFromVisual);
                       setEditorMode("markdown");
                     }}
-                    className="h-7 shadow-none"
+                    className="h-7 rounded-full shadow-none"
                   >
                     Markdown
                   </Button>
@@ -366,13 +366,13 @@ export function NoteViewer({ path }: NoteViewerProps) {
                       const nextHtml = event.currentTarget.innerHTML;
                       setVisualHtml(nextHtml);
                     }}
-                    className="typeset typeset-note min-h-[420px] w-full rounded-xl border border-input bg-background/70 p-4 outline-none focus:border-ring focus:ring-[3px] focus:ring-[var(--focus-ring)]"
+                    className="typeset typeset-note min-h-[420px] w-full rounded-[1.3rem] border border-input bg-[var(--wash-sand)]/40 p-5 outline-none focus:border-ring focus:ring-[3px] focus:ring-[var(--focus-ring)]"
                   />
                 ) : (
                   <Textarea
                     value={draftBody}
                     onChange={(event) => setDraftBody(event.target.value)}
-                    className="min-h-[420px] w-full resize-y rounded-xl bg-background/70 p-4 font-mono text-[13px] leading-[1.65] shadow-none"
+                    className="min-h-[420px] w-full resize-y rounded-[1.3rem] bg-[var(--wash-sand)]/40 p-5 font-mono text-[13px] leading-[1.65] shadow-none"
                     spellCheck={false}
                   />
                 )}
@@ -392,15 +392,16 @@ export function NoteViewer({ path }: NoteViewerProps) {
           {/* Wikilinks */}
           {wikilinks.length > 0 && (
             <div className="mt-6 border-t pt-5">
-              <h3 className="mb-3 text-base font-semibold text-foreground">
-                Links ({wikilinks.length})
+              <h3 className="display-title mb-3 text-xl text-[var(--text-strong)]">
+                Linked notes
+                <span className="ml-2 font-sans text-sm italic text-muted-foreground">{wikilinks.length}</span>
               </h3>
               <div className="flex flex-wrap gap-2">
                 {wikilinks.map((link: string) => (
                   <Link
                     key={link}
                     href={buildVaultHref(resolveVaultLinkTarget(link, files) || link)}
-                    className="focus-ring rounded-lg border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-control)] hover:border-[color-mix(in_oklab,var(--brand),white_70%)] hover:text-foreground"
+                    className="focus-ring rounded-full border border-[var(--border-subtle)] bg-[var(--wash-sand)] px-3 py-1.5 text-xs font-medium text-muted-foreground hover:border-[color-mix(in_oklab,var(--brand),white_70%)] hover:text-foreground"
                   >
                     {link}
                   </Link>

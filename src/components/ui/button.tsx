@@ -8,16 +8,16 @@ type ButtonSize = "default" | "sm" | "lg" | "icon";
 const variantClasses: Record<ButtonVariant, string> = {
   default: "bg-primary text-primary-foreground shadow-[var(--shadow-control)] hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)]",
   destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  outline: "border border-input bg-card text-foreground shadow-[var(--shadow-control)] hover:bg-accent hover:text-accent-foreground",
+  outline: "border border-input/90 bg-card/80 text-foreground shadow-[var(--shadow-control)] hover:bg-secondary hover:text-accent-foreground",
   secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-  ghost: "hover:bg-accent hover:text-accent-foreground",
+  ghost: "hover:bg-secondary hover:text-accent-foreground",
   link: "text-primary underline-offset-4 hover:underline",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
   default: "h-9 px-3.5 py-2",
-  sm: "h-8 rounded-md px-3 text-xs",
-  lg: "h-10 rounded-md px-6",
+  sm: "h-8 rounded-full px-3 text-xs",
+  lg: "h-11 rounded-full px-6",
   icon: "h-9 w-9",
 };
 

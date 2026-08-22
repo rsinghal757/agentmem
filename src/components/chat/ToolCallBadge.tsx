@@ -63,7 +63,7 @@ export function ToolCallBadge({
     <Badge
       variant="outline"
       className={cn(
-        "max-w-full gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]",
+        "max-w-full gap-1.5 rounded-full bg-[var(--wash-sage)] px-3 py-1.5 text-xs font-normal text-muted-foreground shadow-none",
         className,
       )}
     >

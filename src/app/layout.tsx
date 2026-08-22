@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { AuthBoundary } from "@/components/brand/AuthBoundary";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,10 +14,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
-  title: "GizzNote — Research Memory Workspace",
+  title: "GizzNote — A studio for thinking in writing",
   description:
-    "A calm AI workspace for research, writing, markdown notes, and connected memory.",
+    "A calm writing studio where conversation becomes a markdown library you own.",
   icons: {
     icon: "/icon.svg",
   },
@@ -36,11 +43,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full overflow-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden bg-background text-foreground antialiased selection:bg-primary/20`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full overflow-hidden bg-background font-sans text-foreground antialiased selection:bg-primary/20`}
       >
-        <ClerkProvider>
-          <main className="h-full w-full overflow-hidden">{children}</main>
-        </ClerkProvider>
+        <AuthBoundary>
+          <ClerkProvider>
+            <main className="h-full min-h-0 w-full overflow-hidden">{children}</main>
+          </ClerkProvider>
+        </AuthBoundary>
       </body>
     </html>
   );

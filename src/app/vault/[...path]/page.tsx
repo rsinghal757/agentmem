@@ -12,7 +12,7 @@ export default async function NotePage({ params }: NotePageProps) {
   const notePath = fullPath.endsWith(".md") ? fullPath : `${fullPath}.md`;
 
   return (
-    <div className="h-full overflow-y-auto bg-background">
+    <div className="h-full overflow-y-auto bg-transparent">
       <NoteViewer path={notePath} />
     </div>
   );
