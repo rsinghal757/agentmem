@@ -8,7 +8,7 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
-- [x] Completed a full GizzNote brand reidentity: warm paper canvas, dusty sage + pastel washes, Fraunces display type, folio-and-spark mark, editorial landing, and refined chat/vault/graph chrome without changing product behavior (src/app/globals.css, src/app/layout.tsx, src/app/icon.svg, src/components/brand, src/components/landing, chat/vault/layout surfaces).
+- [x] Completed a full GizzNote brand reidentity: warm paper canvas, dusty sage + pastel washes, Fraunces display type, folio-and-spark mark, editorial landing, and refined chat/vault/graph chrome without changing product behavior. The studio now appears while Clerk loads, and auth failures fall back to the landing instead of a blank page (src/app/globals.css, src/app/layout.tsx, src/app/icon.svg, src/components/brand, src/components/landing, chat/vault/layout surfaces).
 
 - [x] Restored the intended shadcn/Typeset document rhythm by removing the explicit `space-y-0` override and adding a Streamdown adapter that lets its injected root spacing utility fall back to Typeset's element-specific block margins; increased chat and note flow presets so paragraphs, headings, lists, tables, and other Markdown sections have a coherent reading cadence (src/components/shared/MarkdownContent.tsx, src/app/globals.css).
 

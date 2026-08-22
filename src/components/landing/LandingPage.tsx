@@ -1,5 +1,13 @@
+"use client";
+
 import { ArrowRight, BookOpen, GitBranch, MessageCircleHeart } from "lucide-react";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  SignInButton,
+  SignUpButton,
+} from "@clerk/nextjs";
+import type { ComponentProps } from "react";
 import { BrandLockup } from "@/components/brand/BrandLockup";
 import { Button } from "@/components/ui/button";
 
@@ -24,33 +32,32 @@ const rituals = [
   },
 ];
 
-export function LandingPage() {
+type LandingPageProps = {
+  auth?: "live" | "static";
+};
+
+export function LandingPage({ auth = "live" }: LandingPageProps) {
   return (
-    <div className="relative h-full overflow-y-auto">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="relative h-full min-h-0 overflow-y-auto overscroll-y-contain">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] overflow-hidden">
         <div className="absolute -left-24 top-[-8rem] h-[28rem] w-[28rem] rounded-full bg-[color-mix(in_oklab,var(--brand)_16%,transparent)] blur-3xl" />
         <div className="absolute right-[-6rem] top-24 h-[22rem] w-[22rem] rounded-full bg-[color-mix(in_oklab,var(--wash-blush)_80%,transparent)] blur-3xl" />
-        <div className="absolute bottom-[-8rem] left-1/3 h-[24rem] w-[24rem] rounded-full bg-[color-mix(in_oklab,var(--wash-lilac)_70%,transparent)] blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex min-h-full max-w-6xl flex-col px-5 pb-16 pt-6 sm:px-8 sm:pt-8 lg:px-10">
+      <div className="relative mx-auto flex max-w-6xl flex-col px-5 pb-20 pt-6 sm:px-8 sm:pb-24 sm:pt-8 lg:px-10">
         <header className="flex items-center justify-between gap-4">
           <BrandLockup markSize={40} showTagline={false} />
           <div className="flex items-center gap-2">
-            <SignInButton>
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                Sign in
-              </Button>
-            </SignInButton>
-            <SignUpButton>
-              <Button size="sm" className="rounded-full px-4">
-                Begin
-              </Button>
-            </SignUpButton>
+            <AuthButton action="sign-in" variant="ghost" size="sm" className="hidden sm:inline-flex" auth={auth}>
+              Sign in
+            </AuthButton>
+            <AuthButton action="sign-up" size="sm" className="rounded-full px-4" auth={auth}>
+              Begin
+            </AuthButton>
           </div>
         </header>
 
-        <section className="mx-auto mt-14 max-w-3xl text-center sm:mt-20">
+        <section className="mx-auto mt-10 max-w-3xl text-center sm:mt-14">
           <p className="eyebrow">A writing studio</p>
           <h1 className="display-title mx-auto mt-4 max-w-[18ch] text-[2.7rem] leading-[1.04] text-[var(--text-strong)] sm:text-6xl">
             Where a thought can become a library.
@@ -60,21 +67,17 @@ export function LandingPage() {
             The assistant reads your vault, tends it with care, and leaves every idea in markdown.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <SignUpButton>
-              <Button size="lg" className="rounded-full px-6">
-                Start your vault
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </SignUpButton>
-            <SignInButton>
-              <Button variant="outline" size="lg" className="rounded-full px-6">
-                Sign in
-              </Button>
-            </SignInButton>
+            <AuthButton action="sign-up" size="lg" className="rounded-full px-6" auth={auth}>
+              Start your vault
+              <ArrowRight className="h-4 w-4" />
+            </AuthButton>
+            <AuthButton action="sign-in" variant="outline" size="lg" className="rounded-full px-6" auth={auth}>
+              Sign in
+            </AuthButton>
           </div>
         </section>
 
-        <section className="mx-auto mt-14 w-full max-w-4xl sm:mt-20">
+        <section className="mx-auto mt-10 w-full max-w-4xl sm:mt-14">
           <div className="paper-vignette overflow-hidden rounded-[2rem] border border-[var(--border-subtle)] p-3 sm:p-4">
             <div className="rounded-[1.55rem] bg-[var(--surface-panel)] px-5 py-6 sm:px-8 sm:py-8">
               <div className="flex items-center justify-between gap-3">
@@ -101,7 +104,7 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section className="mx-auto mt-14 grid w-full max-w-5xl gap-4 sm:mt-16 sm:grid-cols-3">
+        <section className="mx-auto mt-10 grid w-full max-w-5xl gap-4 sm:mt-12 sm:grid-cols-3">
           {rituals.map(({ wash, icon: Icon, title, body }) => (
             <article
               key={title}
@@ -124,5 +127,35 @@ export function LandingPage() {
         </footer>
       </div>
     </div>
+  );
+}
+
+function AuthButton({
+  action,
+  auth = "live",
+  children,
+  ...buttonProps
+}: ComponentProps<typeof Button> & { action: "sign-in" | "sign-up"; auth?: "live" | "static" }) {
+  if (auth === "static") {
+    return <Button {...buttonProps}>{children}</Button>;
+  }
+
+  return (
+    <>
+      <ClerkLoaded>
+        {action === "sign-up" ? (
+          <SignUpButton>
+            <Button {...buttonProps}>{children}</Button>
+          </SignUpButton>
+        ) : (
+          <SignInButton>
+            <Button {...buttonProps}>{children}</Button>
+          </SignInButton>
+        )}
+      </ClerkLoaded>
+      <ClerkLoading>
+        <Button {...buttonProps}>{children}</Button>
+      </ClerkLoading>
+    </>
   );
 }
