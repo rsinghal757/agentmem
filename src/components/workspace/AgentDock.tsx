@@ -308,7 +308,7 @@ export function AgentDock({ onClose }: { onClose?: () => void }) {
               <Loader2 className="h-4 w-4 animate-spin text-[var(--text-faint)]" />
             </div>
           ) : messages.length === 0 ? (
-            <div className="flex h-full flex-col justify-end pb-2">
+            <div className="pt-1">
               <p className="text-[13px] leading-relaxed text-[var(--text-muted)]">
                 The agent reads and writes the same markdown files you do. Ask it something,
                 or start here.

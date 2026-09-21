@@ -1,65 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Check, Loader2, Plus, Search, Share2, X } from "lucide-react";
 import { useVaultFiles } from "@/hooks/useVaultFiles";
+import { useCreateNote } from "@/hooks/useCreateNote";
 import { VaultTree } from "@/components/vault/VaultTree";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function NoteRail({ onNavigate }: { onNavigate?: () => void }) {
-  const router = useRouter();
   const pathname = usePathname();
-  const { files, isLoading, refresh } = useVaultFiles("", true);
+  const { files, isLoading } = useVaultFiles("", true);
+  const { create, isCreating, error: createError, clearError } = useCreateNote();
 
   const [query, setQuery] = useState("");
   const [isComposing, setIsComposing] = useState(false);
   const [newNotePath, setNewNotePath] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
 
   const noteCount = files.filter((file) => file.endsWith(".md")).length;
 
   async function createNote(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isCreating) return;
 
-    const trimmed = newNotePath.trim();
-    if (!trimmed) {
-      setCreateError("Give the note a name first.");
-      return;
-    }
-
-    const path = trimmed.endsWith(".md") ? trimmed : `${trimmed}.md`;
-    const title = path.split("/").pop()?.replace(/\.md$/, "") || "Untitled";
-
-    setCreateError(null);
-    setIsCreating(true);
-
-    try {
-      const response = await fetch("/api/vault/files", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path, content: `# ${title}\n\n` }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data?.error || "Could not create that note.");
-      }
-
-      const data = await response.json();
-      await refresh();
+    if (await create(newNotePath)) {
       setNewNotePath("");
       setIsComposing(false);
-      router.push(`/vault/${data.path}`);
       onNavigate?.();
-    } catch (error) {
-      setCreateError(error instanceof Error ? error.message : "Could not create that note.");
-    } finally {
-      setIsCreating(false);
     }
   }
 
@@ -87,7 +55,7 @@ export function NoteRail({ onNavigate }: { onNavigate?: () => void }) {
             size="icon"
             onClick={() => {
               setIsComposing(!isComposing);
-              setCreateError(null);
+              clearError();
             }}
             aria-label={isComposing ? "Cancel new note" : "New note"}
             title={isComposing ? "Cancel new note" : "New note"}

@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowRight, CalendarDays, Loader2, PenLine, Share2 } from "lucide-react";
+import { ArrowRight, CalendarDays, Loader2, PenLine, Plus, Share2 } from "lucide-react";
 import { useRecentNotes } from "@/hooks/useRecentNotes";
+import { useCreateNote } from "@/hooks/useCreateNote";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTodayDate } from "@/lib/utils";
 
@@ -33,6 +35,8 @@ function relativeTime(value: string | null) {
 export function Desk() {
   const router = useRouter();
   const { notes, isLoading, refresh } = useRecentNotes(9);
+  const { create, isCreating, error: createError } = useCreateNote();
+  const [newNotePath, setNewNotePath] = useState("");
   const [isOpeningJournal, setIsOpeningJournal] = useState(false);
 
   const today = getTodayDate();
@@ -117,15 +121,40 @@ export function Desk() {
             </span>
           </Link>
 
-          <div className="sq-card flex flex-col items-start border border-border bg-[var(--surface-sunken)] p-4 text-left">
-            <PenLine className="h-4 w-4 text-[var(--text-faint)]" strokeWidth={1.5} />
-            <span className="mt-3 text-[14px] font-medium text-[var(--text-strong)]">
+          <form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              if (await create(newNotePath)) setNewNotePath("");
+            }}
+            className="sq-card flex flex-col items-start border border-border bg-card p-4 text-left shadow-[var(--shadow-card)] transition-colors focus-within:border-[color-mix(in_oklab,var(--brand),transparent_40%)]"
+          >
+            <PenLine className="h-4 w-4 text-[var(--brand)]" strokeWidth={1.5} />
+            <label
+              htmlFor="desk-new-note"
+              className="mt-3 text-[14px] font-medium text-[var(--text-strong)]"
+            >
               New note
+            </label>
+            <div className="mt-2 flex w-full items-center gap-1.5">
+              <input
+                id="desk-new-note"
+                value={newNotePath}
+                onChange={(event) => setNewNotePath(event.target.value)}
+                placeholder="folder/note-name"
+                className="sq-control h-7 w-full min-w-0 flex-1 border border-border bg-[var(--surface-sunken)] px-2 font-mono text-[11.5px] text-[var(--text-strong)] outline-none placeholder:text-[var(--text-faint)] focus:border-ring"
+              />
+              <Button type="submit" size="icon-sm" disabled={isCreating} aria-label="Create note">
+                {isCreating ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.5} />
+                ) : (
+                  <Plus className="h-3.5 w-3.5" strokeWidth={2} />
+                )}
+              </Button>
+            </div>
+            <span className="mt-1.5 text-[11px] leading-snug text-[var(--text-faint)]">
+              {createError || "Slashes make folders."}
             </span>
-            <span className="mt-1 text-[12.5px] leading-snug text-[var(--text-muted)]">
-              Use <span className="font-mono">+</span> in the notes rail. Slashes make folders.
-            </span>
-          </div>
+          </form>
         </div>
 
         <div className="mt-12">
