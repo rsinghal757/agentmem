@@ -8,6 +8,8 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Applied the Sleek UI Zapier design system: cream/light and dark semantic tokens, Inter/JetBrains Mono fonts, compact radii, shared controls, persisted theme toggle (dark by default), currentColor keyboard focus, and reduced-motion support. Adapted orange foregrounds, muted text, destructive colors, legacy surfaces, and graph labels for contrast. Source JSON has no motion or library dependencies.
+
 - [x] Restored the intended shadcn/Typeset document rhythm by removing the explicit `space-y-0` override and adding a Streamdown adapter that lets its injected root spacing utility fall back to Typeset's element-specific block margins; increased chat and note flow presets so paragraphs, headings, lists, tables, and other Markdown sections have a coherent reading cadence (src/components/shared/MarkdownContent.tsx, src/app/globals.css).
 
 - [x] Relaxed the shared Typeset chat and note presets with a larger 16px body size, roomier line-height, and more generous block spacing so Markdown is easier to read across messages and vault notes (src/app/globals.css).
