@@ -8,6 +8,12 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 ## Recently Completed
 
+- [x] Re-laid out GizzNote as a document workspace rather than a chat app with a vault attached. All signed-in routes now live under a `(workspace)` route group wrapped by a persistent three-pane `WorkspaceShell`: a note rail on the left, the document in the middle, and the agent docked on the right, under a slim top bar. Both side panes collapse to off-canvas overlays on narrow viewports and keep their state across navigation. Rebuilt the design tokens around warm paper neutrals, a single low-chroma azure accent, four radii and shallow warm-tinted shadows, with a full dark theme driven by a `data-theme` attribute set before first paint. Typography splits three ways: Inter for chrome, Source Serif 4 for note bodies, Source Code Pro for paths and code. This supersedes the Zapier palette below, which restyled the previous chat-centric layout (src/app/(workspace)/**, src/components/workspace/**, src/app/globals.css, src/app/layout.tsx, docs/design-system.md).
+
+- [x] Made the visual editor round-trip markdown without loss or collateral reflow. `parseMarkdownForEditor` records how the source wrapped each paragraph, quote, list item and table, and `htmlToMarkdown` reuses that wrapping for blocks the writer did not touch, so saving a note produces a diff limited to what actually changed instead of reflowing the whole file. Added hard-wrapped paragraph joining, nested and ordered lists, GFM tables, rules, and fenced-code language preservation, covered by tests that exercise the reverse direction under happy-dom (src/lib/vault/markdown-html.ts, src/lib/vault/markdown-html.test.ts, src/components/vault/NoteDocument.tsx).
+
+- [x] Scaled the connections graph to its pane: spacing derives from the available area and node count, the collision radius reserves each label's width so titles stop overprinting, and the layout settles headlessly before being framed inside the overlaid header and legend (src/components/vault/GraphView.tsx).
+
 - [x] Applied the Sleek UI Zapier design system: cream/light and dark semantic tokens, Inter/JetBrains Mono fonts, compact radii, shared controls, persisted theme toggle (dark by default), currentColor keyboard focus, and reduced-motion support. Adapted orange foregrounds, muted text, destructive colors, legacy surfaces, and graph labels for contrast. Source JSON has no motion or library dependencies.
 
 - [x] Restored the intended shadcn/Typeset document rhythm by removing the explicit `space-y-0` override and adding a Streamdown adapter that lets its injected root spacing utility fall back to Typeset's element-specific block margins; increased chat and note flow presets so paragraphs, headings, lists, tables, and other Markdown sections have a coherent reading cadence (src/components/shared/MarkdownContent.tsx, src/app/globals.css).
@@ -107,14 +113,15 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 
 | File/Directory | Purpose | Status |
 |----------------|---------|--------|
-| `src/app/page.tsx` | Auth-gated home (landing for signed-out, chat for signed-in) | ✅ Ready |
-| `src/app/layout.tsx` | Root layout shell (no global header bar) | ✅ Ready |
-| `src/app/vault/` | Vault explorer, note viewer, graph | ✅ Ready |
+| `src/app/(workspace)/layout.tsx` | Landing for signed-out, three-pane shell for signed-in | ✅ Ready |
+| `src/app/(workspace)/page.tsx` | Desk: greeting, quick actions, recently edited notes | ✅ Ready |
+| `src/app/layout.tsx` | Root layout: fonts and pre-paint theme script | ✅ Ready |
+| `src/app/(workspace)/vault/` | Note document and connections graph | ✅ Ready |
 | `src/app/api/chat/` | ToolLoopAgent streaming endpoint | ✅ Ready |
 | `src/app/api/vault/` | Vault CRUD + search + graph APIs | ✅ Ready |
-| `src/components/chat/` | ChatInterface, Message, ToolCallBadge | ✅ Ready |
-| `src/components/vault/` | FileTree, NoteViewer, GraphView | ✅ Ready |
-| `src/components/layout/` | Responsive workspace sidebars and navigation tabs | ✅ Ready |
+| `src/components/workspace/` | WorkspaceShell, TopBar, NoteRail, AgentDock, Desk | ✅ Ready |
+| `src/components/chat/` | Message, ToolCallBadge | ✅ Ready |
+| `src/components/vault/` | VaultTree, NoteDocument, EditorRibbon, GraphView | ✅ Ready |
 | `src/lib/vault/` | Storage, tools, markdown, graph, search | ✅ Ready |
 | `src/lib/agent/` | ToolLoopAgent factory + vault-owned system context | ✅ Ready |
 | `src/hooks/` | useVaultFiles, useVaultGraph, useVaultSearch | ✅ Ready |
@@ -186,3 +193,4 @@ The project has been transformed from a minimal Next.js starter into a full Obsi
 | 2026-03-14 | Tweaked vault explorer create-file button styling/content: switched to a plus-icon action and corrected sizing/alignment to prevent clipping in the sidebar form. |
 | 2026-06-26 | Refreshed 0xMem signed-in workspace branding: semantic green design tokens, premium shell spacing, polished chat/vault sidebars, readable assistant answer surfaces, command-bar composer, and consistent onboarding empty states across Chat, Vault, and Graph. |
 | 2026-07-14 | Finished the shadcn/ui migration and visual-system refinement across all active surfaces; removed unused legacy chrome components. Removed Mem0 and made the PostgreSQL-backed markdown vault the sole memory source. Typecheck, lint, and production build pass. |
+| 2026-09-21 | Re-laid out the product as a three-pane document workspace (rail, document canvas, agent dock) under a persistent shell, with a new warm-paper token system, serif note typesetting, and a full dark theme. Made the visual editor preserve the source's own line wrapping so saving an unedited note is a no-op diff, and scaled the connections graph to its pane. Typecheck, lint, 21 tests, and the production build pass. |
