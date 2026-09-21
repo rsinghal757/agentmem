@@ -4,10 +4,8 @@ import type { UIMessage } from "ai";
 import { isTextUIPart, isToolUIPart, getToolName } from "ai";
 import { Brain } from "lucide-react";
 import { ToolCallBadge } from "./ToolCallBadge";
-import {
-  MarkdownContent,
-  markdownWithWikiLinks,
-} from "@/components/shared/MarkdownContent";
+import { MarkdownContent } from "@/components/shared/MarkdownContent";
+import { markdownWithWikiLinks } from "@/lib/vault/links";
 import { cn } from "@/lib/utils";
 
 interface MessageProps {

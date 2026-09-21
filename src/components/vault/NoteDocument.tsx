@@ -4,22 +4,23 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Clock, FileQuestion, Link2, Pencil, Tag } from "lucide-react";
 import { useVaultFile, useVaultFiles } from "@/hooks/useVaultFiles";
-import {
-  MarkdownContent,
-  markdownToHtml,
-  markdownWithWikiLinks,
-} from "@/components/shared/MarkdownContent";
+import { MarkdownContent } from "@/components/shared/MarkdownContent";
 import {
   EditorRibbon,
   type EditorMode,
   type RibbonCommand,
 } from "@/components/vault/EditorRibbon";
-import { buildVaultHref, resolveVaultLinkTarget } from "@/lib/vault/links";
+import {
+  buildVaultHref,
+  markdownWithWikiLinks,
+  resolveVaultLinkTarget,
+} from "@/lib/vault/links";
 import {
   htmlToMarkdown,
+  markdownToHtml,
   serializeNoteContent,
   splitNoteContent,
-} from "@/lib/vault/html-to-markdown";
+} from "@/lib/vault/markdown-html";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";

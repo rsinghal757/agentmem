@@ -41,3 +41,14 @@ export function resolveVaultLinkTarget(
 
   return null;
 }
+
+/** Rewrite `[[wikilinks]]` into markdown links pointing at vault routes. */
+export function markdownWithWikiLinks(content: string, allPaths: string[] = []) {
+  return content.replace(/\[\[([^\]]+)\]\]/g, (_, raw) => {
+    const [target, display] = String(raw).split("|");
+    const trimmedTarget = target.trim();
+    const text = (display || target).trim();
+    const resolvedPath = resolveVaultLinkTarget(trimmedTarget, allPaths) || trimmedTarget;
+    return `[${text}](${buildVaultHref(resolvedPath)})`;
+  });
+}
