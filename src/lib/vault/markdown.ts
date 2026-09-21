@@ -1,15 +1,25 @@
 import matter from "gray-matter";
 import type { FrontMatter } from "@/types/vault";
 
+/**
+ * YAML coerces bare dates and numbers, so `title: 2026-09-21` arrives as a
+ * Date. Notes are text: render whatever the writer typed.
+ */
+function asText(value: unknown): string {
+  if (value === undefined || value === null || value === "") return "";
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value);
+}
+
 /** Parse frontmatter from markdown content */
 export function parseFrontmatter(content: string): FrontMatter | null {
   try {
     const { data } = matter(content);
     return {
-      title: data.title || "",
-      created: data.created || new Date().toISOString(),
-      updated: data.updated || new Date().toISOString(),
-      tags: Array.isArray(data.tags) ? data.tags : [],
+      title: asText(data.title),
+      created: asText(data.created) || new Date().toISOString(),
+      updated: asText(data.updated) || new Date().toISOString(),
+      tags: Array.isArray(data.tags) ? data.tags.map(asText) : [],
       type: data.type || "concept",
       links: Array.isArray(data.links) ? data.links : [],
       confidence: data.confidence,

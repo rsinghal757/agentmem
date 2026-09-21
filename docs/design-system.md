@@ -1,42 +1,68 @@
-# Zapier design system
+# GizzNote design system
 
-Source: https://luongnv.com/sleek-ui/designs/zapier.json (version 1.0.0).
+The workspace is a place to read and write, so the design gets out of the way:
+warm paper neutrals, one accent, shallow shadows, and generous measure. Tokens
+live in `src/app/globals.css` — `:root` for light, `[data-theme="dark"]` for
+dark — and are exposed to Tailwind through `@theme inline`.
 
-The Tailwind 4/shadcn semantic palette is defined in `src/app/globals.css` on
-`:root` and `.dark`. Existing workspace surface aliases resolve to those tokens.
-Dark is the source's default; the landing page and both workspace sidebars expose
-a keyboard-accessible theme toggle. A saved choice is restored before rendering.
+Dark mode keys off a `data-theme` attribute on `<html>` rather than a class, set
+by `ThemeScript` before first paint so the page never flashes the wrong theme.
+`ThemeToggle` flips the attribute and stores the choice in `localStorage`.
 
-Inter and JetBrains Mono load through Google Fonts links in the shared root
-layout, with local sans/monospace fallbacks; Georgia supplies the serif family.
-Controls use the 6px default radius, cards the 8px large radius and source shadow.
-Card sections retain shadcn's 24px padding, with existing compact layout overrides.
+## Palette
 
-## Accessibility adaptations
+The page is never pure white. The workspace sits on cream and only the document
+card is `#ffffff`, so the note the writer is working on is always the brightest
+object on screen. Surfaces step down from `--card` through `--canvas`,
+`--surface-rail` and `--surface-sunken`.
 
-- Keep the original orange primary fill, but use near-black foreground text
-  instead of white to meet the source's 4.5:1 text contrast target.
-- Use a darker orange `primary-text` token for links/icons on light surfaces.
-  Filled controls continue using `primary` and `primary-foreground`.
-- Darken light-mode muted text and adjust destructive fills for readable labels;
-  use a separate light red `destructive-text` token for dark-mode error text.
-- Inverted chat Markdown inherits the primary foreground, including muted copy.
-- Replace white-only surfaces, green surface aliases, and graph label colors with
-  semantic variables that respond to theme changes.
-- Keyboard focus uses a 2px currentColor outline with 2px offset. Orange-filled
-  controls add an orange halo so their dark outline remains visible on dark pages.
-- Disable repeated CSS animation and effectively remove transitions when reduced
-  motion is requested. The source defines no `tokens.motion` or `libraries`, so
-  no animation packages or invented easing/keyframe mappings were added.
+Text runs through four weights of the same warm brown rather than opacity:
+`--text-strong` for headings, `--text` for body, `--text-muted` for secondary
+chrome, `--text-faint` for the quietest metadata.
 
-## Verification
+One accent, a low-chroma azure (`--azure`), carries links, focus rings, the
+active rail item and the primary button. `--brand-tint` and `--brand-wash` are
+its two backgrounds, used for the active navigation state and the user's own
+chat bubbles.
 
-TypeScript and ESLint pass. Next.js production compilation passes, but a full
-production build requires the deployment's Clerk publishable key for prerendering.
+## Typography
 
-All 30 semantic foreground/background combinations tested across light and dark
-pass 4.5:1 WCAG contrast (minimum 4.76:1). The orange button pairing is 6.09:1.
-The actual stylesheet also compiles through Tailwind/PostCSS in isolation.
-Browser visual checks could not run: Playwright's Chromium download timed out.
-Authenticated chat/vault flows and visual mobile/theme-toggle checks still need
-verification in a configured preview before merging.
+| Role | Family | Used for |
+| --- | --- | --- |
+| Sans | Inter (`--font-sans`) | All UI chrome: rails, toolbars, metadata |
+| Serif | Source Serif 4 (`--font-serif`) | Note bodies and document headings |
+| Mono | Source Code Pro (`--font-mono`) | Paths, code, frontmatter values |
+
+Fonts load through `next/font/google` in the root layout, which self-hosts them
+and avoids a render-blocking stylesheet. Note bodies are capped at `--measure`
+(46rem) so lines stay in a readable range regardless of viewport width.
+
+## Geometry and elevation
+
+Four radii, scaled to the size of the thing they round: `--radius-control` (6px)
+for buttons and inputs, `--radius-card` (12px), `--radius-panel` (16px) and
+`--radius-frame` (22px) for the document card. The `sq-*` utility classes apply
+them.
+
+Shadows are deliberately shallow and tinted with the warm neutral rather than
+pure black, so elevation reads as paper lifting rather than a drop shadow.
+`--shadow-control` is nearly invisible by design; `--shadow-hero` is reserved
+for the landing page's product frame.
+
+## Shell metrics
+
+The three-pane layout is driven by `--topbar-height`, `--rail-width` and
+`--dock-width`, exposed to Tailwind as `spacing-topbar`, `spacing-rail` and
+`spacing-dock`. Both side panes collapse to off-canvas overlays on narrow
+viewports; `WorkspaceShell` owns that state so it survives navigation between
+the Desk, a note and the graph.
+
+## Accessibility
+
+- Focus is a 2px `--ring` outline with a 2px offset, applied through the
+  `focus-ring` utility and by Typeset for prose links.
+- Text pairings target 4.5:1. The azure accent is deliberately low-chroma and
+  dark enough (`--azure-deep`) to carry link text on light surfaces.
+- The graph's node fills are the only place colour alone conveys type, so every
+  node also carries its title as a label and a `<title>` tooltip.
+- Reduced-motion preferences remove transitions and repeated animation.

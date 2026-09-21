@@ -1,13 +1,31 @@
-/* Google Fonts links intentionally live in the shared App Router root layout. */
-/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Inter, Source_Code_Pro, Source_Serif_4 } from "next/font/google";
+import { ThemeScript } from "@/components/workspace/ThemeScript";
 import "./globals.css";
 
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const sourceCode = Source_Code_Pro({
+  variable: "--font-source-code",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "GizzNote — Research Memory Workspace",
+  title: "GizzNote — A markdown desk for thinkers",
   description:
-    "A calm AI workspace for research, writing, markdown notes, and connected memory.",
+    "GizzNote is a markdown notebook where the note stays the centre of the screen and an agent works in the margin.",
   icons: {
     icon: "/icon.svg",
   },
@@ -25,19 +43,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark h-full overflow-hidden" suppressHydrationWarning>
+    <html lang="en" className="h-full overflow-hidden" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
-        <script dangerouslySetInnerHTML={{ __html: `try { document.documentElement.classList.toggle('dark', localStorage.getItem('gizznote-theme') !== 'light'); } catch {}` }} />
+        <ThemeScript />
       </head>
       <body
-        className="h-full overflow-hidden bg-background text-foreground antialiased selection:bg-primary/20"
+        className={`${inter.variable} ${sourceSerif.variable} ${sourceCode.variable} h-full overflow-hidden bg-background text-foreground`}
       >
         <ClerkProvider>
-          <main className="h-full w-full overflow-hidden">{children}</main>
+          <div className="h-full w-full overflow-hidden">{children}</div>
         </ClerkProvider>
       </body>
     </html>
