@@ -29,7 +29,7 @@ export function useVaultFiles(directory: string = "", recursive: boolean = true)
 /** Hook to read a specific vault file */
 export function useVaultFile(path: string | null) {
   const { data, error, isLoading, mutate } = useSWR(
-    path ? `/api/vault/files` : null,
+    path ? ["/api/vault/files", path] : null,
     path
       ? () =>
           fetch("/api/vault/files", {

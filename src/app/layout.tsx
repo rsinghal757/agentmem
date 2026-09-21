@@ -1,22 +1,31 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Source_Code_Pro, Source_Serif_4 } from "next/font/google";
+import { ThemeScript } from "@/components/workspace/ThemeScript";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const sourceCode = Source_Code_Pro({
+  variable: "--font-source-code",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "GizzNote — Research Memory Workspace",
+  title: "GizzNote — A markdown desk for thinkers",
   description:
-    "A calm AI workspace for research, writing, markdown notes, and connected memory.",
+    "GizzNote is a markdown notebook where the note stays the centre of the screen and an agent works in the margin.",
   icons: {
     icon: "/icon.svg",
   },
@@ -34,12 +43,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full overflow-hidden">
+    <html lang="en" className="h-full overflow-hidden" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden bg-background text-foreground antialiased selection:bg-primary/20`}
+        className={`${inter.variable} ${sourceSerif.variable} ${sourceCode.variable} h-full overflow-hidden bg-background text-foreground`}
       >
         <ClerkProvider>
-          <main className="h-full w-full overflow-hidden">{children}</main>
+          <div className="h-full w-full overflow-hidden">{children}</div>
         </ClerkProvider>
       </body>
     </html>

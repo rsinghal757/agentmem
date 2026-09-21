@@ -3,8 +3,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
-  CircleCheck,
-  CircleX,
+  CircleAlert,
   FilePenLine,
   FolderTree,
   Link2,
@@ -12,7 +11,6 @@ import {
   Trash2,
   Wrench,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const toolIcons: Record<string, LucideIcon> = {
@@ -25,12 +23,12 @@ const toolIcons: Record<string, LucideIcon> = {
 };
 
 const toolLabels: Record<string, string> = {
-  vault_read: "Read note",
-  vault_write: "Wrote note",
-  vault_search: "Searched vault",
-  vault_link: "Linked notes",
-  vault_list: "Listed files",
-  vault_delete: "Deleted note",
+  vault_read: "Read",
+  vault_write: "Wrote",
+  vault_search: "Searched",
+  vault_link: "Linked",
+  vault_list: "Listed",
+  vault_delete: "Deleted",
 };
 
 interface ToolCallBadgeProps {
@@ -40,6 +38,9 @@ interface ToolCallBadgeProps {
   className?: string;
 }
 
+/**
+ * A single quiet line of provenance: what the agent touched in the vault.
+ */
 export function ToolCallBadge({
   toolName,
   args,
@@ -49,34 +50,26 @@ export function ToolCallBadge({
   const safeToolName = toolName || "unknown";
   const Icon = toolIcons[safeToolName] || Wrench;
   const succeeded = !(result && "success" in result && result.success === false);
-  const defaultLabel = toolLabels[safeToolName] || safeToolName;
-  const label = succeeded
-    ? defaultLabel
-    : safeToolName === "vault_write"
-      ? "Write failed"
-      : `${defaultLabel} failed`;
+  const label = toolLabels[safeToolName] || safeToolName;
   const safeArgs = args || {};
   const path = (safeArgs.path || safeArgs.fromPath || safeArgs.query || "") as string;
-  const StatusIcon = succeeded ? CircleCheck : CircleX;
 
   return (
-    <Badge
-      variant="outline"
+    <span
       className={cn(
-        "max-w-full gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]",
+        "flex max-w-full items-center gap-1.5 text-[11px] text-[var(--text-faint)]",
+        !succeeded && "text-destructive",
         className,
       )}
     >
-      <Icon className="text-primary" />
-      <span className="font-medium text-foreground">{label}</span>
-      {path && (
-        <span className="max-w-48 truncate">
-          {path.length > 44 ? `…${path.slice(-43)}` : path}
+      <Icon className="h-3 w-3 shrink-0" strokeWidth={1.5} />
+      <span className="shrink-0">{succeeded ? label : `${label} failed`}</span>
+      {path ? (
+        <span className="truncate font-mono text-[10.5px] text-[var(--text-faint)]">
+          {path.length > 42 ? `…${path.slice(-41)}` : path}
         </span>
-      )}
-      {result && (
-        <StatusIcon className={succeeded ? "text-primary" : "text-destructive"} />
-      )}
-    </Badge>
+      ) : null}
+      {!succeeded ? <CircleAlert className="h-3 w-3 shrink-0" strokeWidth={1.5} /> : null}
+    </span>
   );
 }
