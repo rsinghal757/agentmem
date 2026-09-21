@@ -67,7 +67,7 @@ export function ToolCallBadge({
         className,
       )}
     >
-      <Icon className="text-primary" />
+      <Icon className="text-primary-text" />
       <span className="font-medium text-foreground">{label}</span>
       {path && (
         <span className="max-w-48 truncate">
@@ -75,7 +75,7 @@ export function ToolCallBadge({
         </span>
       )}
       {result && (
-        <StatusIcon className={succeeded ? "text-primary" : "text-destructive"} />
+        <StatusIcon className={succeeded ? "text-primary-text" : "text-destructive-text"} />
       )}
     </Badge>
   );

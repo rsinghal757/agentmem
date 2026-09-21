@@ -10,6 +10,7 @@ import {
   SignUpButton,
 } from "@clerk/nextjs";
 import { ChatInterface } from "@/components/chat/ChatInterface";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -40,6 +41,7 @@ export default function Home() {
                       <Orbit className="h-[1.1rem] w-[1.1rem]" />
                     </div>
                     <span className="text-sm font-semibold tracking-[-0.025em]">GizzNote</span>
+                    <ThemeToggle />
                   </div>
 
                   <div className="mt-8 eyebrow sm:mt-10">Your thinking workspace</div>
@@ -74,7 +76,7 @@ export default function Home() {
                       const FeatureIcon = Icon as typeof Sparkles;
                       return (
                         <div key={title as string} className="rounded-xl border border-border/70 bg-card/80 p-4 shadow-[var(--shadow-control)]">
-                          <FeatureIcon className="h-4 w-4 text-primary" />
+                          <FeatureIcon className="h-4 w-4 text-primary-text" />
                           <p className="mt-3 text-sm font-semibold text-foreground">{title as string}</p>
                           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description as string}</p>
                         </div>

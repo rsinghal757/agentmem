@@ -2,65 +2,99 @@
 @import "streamdown/styles.css";
 @import "./typeset.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Sleek UI Zapier v1.0.0. Contrast adaptations are documented in docs/design-system.md. */
 :root {
   color-scheme: light;
-  --background: oklch(0.982 0.006 135);
-  --foreground: oklch(0.19 0.018 150);
-  --card: oklch(0.998 0.002 135);
-  --card-foreground: var(--foreground);
-  --popover: oklch(1 0 0);
-  --popover-foreground: var(--foreground);
-  --primary: oklch(0.39 0.085 151);
-  --primary-foreground: oklch(0.99 0.003 145);
-  --secondary: oklch(0.955 0.012 142);
-  --secondary-foreground: oklch(0.28 0.03 150);
-  --muted: oklch(0.96 0.008 142);
-  --muted-foreground: oklch(0.51 0.02 150);
-  --accent: oklch(0.94 0.022 145);
-  --accent-foreground: oklch(0.27 0.038 150);
-  --destructive: oklch(0.58 0.205 27);
-  --destructive-foreground: oklch(0.985 0.002 145);
-  --border: oklch(0.9 0.012 142);
-  --input: oklch(0.88 0.014 142);
-  --ring: oklch(0.5 0.09 151);
-  --radius: 0.75rem;
-
-  --brand: var(--primary);
-  --brand-hover: oklch(0.34 0.08 151);
-  --brand-active: oklch(0.3 0.07 151);
-  --brand-soft: oklch(0.93 0.033 145);
-  --brand-softer: oklch(0.966 0.015 145);
-  --canvas: var(--background);
-  --surface-sidebar: oklch(0.968 0.008 142);
-  --surface-panel: oklch(0.99 0.004 142);
-  --surface-raised: oklch(1 0 0 / 0.96);
-  --text-strong: oklch(0.17 0.018 150);
-  --text: var(--foreground);
-  --text-muted: oklch(0.48 0.02 150);
-  --text-faint: oklch(0.62 0.016 150);
-  --border-soft: oklch(0.89 0.013 142);
-  --border-subtle: oklch(0.925 0.009 142);
-  --focus-ring: oklch(0.5 0.09 151 / 0.22);
-  --shadow-panel: 0 30px 70px -50px rgb(20 45 32 / 0.34);
-  --shadow-raised: 0 18px 44px -34px rgb(20 45 32 / 0.28);
-  --shadow-control: 0 1px 2px rgb(20 45 32 / 0.06), 0 8px 24px -20px rgb(20 45 32 / 0.26);
-  --radius-panel: 1rem;
-  --radius-control: 0.625rem;
+  --background: hsl(45 100% 99%);
+  --foreground: hsl(240 10% 3.9%);
+  --muted: hsl(240 4.8% 95.9%);
+  --muted-foreground: hsl(240 3.8% 42%);
+  --primary: hsl(19 100% 50%);
+  --primary-foreground: hsl(240 10% 3.9%);
+  --secondary: hsl(240 4.8% 95.9%);
+  --secondary-foreground: hsl(240 10% 3.9%);
+  --accent: hsl(240 4.8% 95.9%);
+  --accent-foreground: hsl(240 10% 3.9%);
+  --destructive: hsl(0 72% 42%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(240 5.9% 90%);
+  --input: hsl(240 5.9% 90%);
+  --ring: hsl(19 100% 50%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(240 10% 3.9%);
+  --primary-text: hsl(19 100% 34%);
+  --destructive-text: hsl(0 72% 42%);
 }
 
+.dark {
+  color-scheme: dark;
+  --background: hsl(0 21% 10%);
+  --foreground: hsl(0 0% 95%);
+  --muted: hsl(240 33% 19%);
+  --muted-foreground: hsl(240 5% 64.9%);
+  --primary: hsl(19 100% 50%);
+  --primary-foreground: hsl(240 10% 3.9%);
+  --secondary: hsl(240 33% 19%);
+  --secondary-foreground: hsl(0 0% 95%);
+  --accent: hsl(240 33% 19%);
+  --accent-foreground: hsl(0 0% 95%);
+  --destructive: hsl(0 72% 42%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(240 33% 22%);
+  --input: hsl(240 33% 22%);
+  --ring: hsl(19 100% 50%);
+  --card: hsl(240 33% 17%);
+  --card-foreground: hsl(0 0% 95%);
+  --primary-text: var(--primary);
+  --destructive-text: hsl(0 90% 75%);
+}
+
+:root {
+  --radius: 0.375rem;
+  --font-sans: "Inter", Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+  --brand: var(--primary);
+  --brand-hover: hsl(19 100% 55%);
+  --brand-active: hsl(19 100% 60%);
+  --brand-soft: var(--accent);
+  --brand-softer: var(--muted);
+  --canvas: var(--background);
+  --surface-sidebar: var(--muted);
+  --surface-panel: var(--background);
+  --surface-raised: var(--card);
+  --text-strong: var(--foreground);
+  --text: var(--foreground);
+  --text-muted: var(--muted-foreground);
+  --text-faint: var(--muted-foreground);
+  --border-soft: var(--border);
+  --border-subtle: var(--border);
+  --focus-ring: currentColor;
+  --shadow-panel: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-raised: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-control: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --radius-panel: 0.5rem;
+  --radius-control: var(--radius);
+}
+
+
 .typeset-chat {
-  --typeset-font-body: var(--font-geist-sans);
-  --typeset-font-heading: var(--font-geist-sans);
-  --typeset-font-mono: var(--font-geist-mono);
+  --typeset-font-body: var(--font-sans);
+  --typeset-font-heading: var(--font-sans);
+  --typeset-font-mono: var(--font-mono);
   --typeset-size: 16px;
   --typeset-leading: 1.75;
   --typeset-flow: 1.45em;
 }
 
 .typeset-note {
-  --typeset-font-body: var(--font-geist-sans);
-  --typeset-font-heading: var(--font-geist-sans);
-  --typeset-font-mono: var(--font-geist-mono);
+  --typeset-font-body: var(--font-sans);
+  --typeset-font-heading: var(--font-sans);
+  --typeset-font-mono: var(--font-mono);
   --typeset-size: 16px;
   --typeset-leading: 1.8;
   --typeset-flow: 1.6em;
@@ -80,17 +114,15 @@
 
 .typeset-inverted {
   --color-foreground: var(--primary-foreground);
-  --color-muted-foreground: color-mix(
-    in oklab,
-    var(--primary-foreground),
-    transparent 24%
-  );
+  --color-muted-foreground: var(--primary-foreground);
   --color-muted: color-mix(in oklab, var(--primary-foreground), transparent 88%);
   --color-border: color-mix(in oklab, var(--primary-foreground), transparent 72%);
   --color-ring: var(--primary-foreground);
 }
 
 @theme inline {
+  --color-primary-text: var(--primary-text);
+  --color-destructive-text: var(--destructive-text);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -111,8 +143,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: 0.5rem;
   --radius-xl: calc(var(--radius) + 4px);
 }
 
@@ -131,9 +163,8 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    background:
-      radial-gradient(circle at 6% 4%, rgb(255 255 255 / 0.9), transparent 28rem),
-      var(--background);
+    background: var(--background);
+    font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     letter-spacing: -0.012em;
     line-height: 1.55;
@@ -215,17 +246,17 @@
   }
 
   .eyebrow {
-    @apply text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-primary;
+    @apply text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-primary-text;
   }
 
   .brand-pill {
-    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-primary;
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-primary-text;
     background: var(--brand-softer);
-    border-color: color-mix(in oklab, var(--brand), white 76%);
+    border-color: color-mix(in oklab, var(--brand), var(--background) 76%);
   }
 
   .focus-ring {
-    @apply outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--focus-ring)];
+    @apply outline-none;
   }
 }
 
@@ -235,5 +266,17 @@
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
+}
+
+/* Keep keyboard focus consistent, including native and contenteditable controls. */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.bg-primary:focus-visible {
+  box-shadow: 0 0 0 4px var(--primary);
 }

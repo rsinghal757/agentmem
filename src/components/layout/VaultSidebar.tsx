@@ -6,6 +6,7 @@ import { MessageSquarePlus, Orbit, X } from "lucide-react";
 import { SidebarTabs } from "@/components/layout/BottomTabs";
 import { cn } from "@/lib/utils";
 import { FileTree } from "@/components/vault/FileTree";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -73,6 +74,7 @@ export function VaultSidebar({ isOpen = true, onClose }: VaultSidebarProps) {
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <FileTree panel />
       </div>
+      <ThemeToggle />
     </aside>
   );
 }

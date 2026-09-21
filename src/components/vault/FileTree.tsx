@@ -118,12 +118,12 @@ function TreeItem({
       className={cn(
         "focus-ring flex h-9 items-center gap-2 rounded-lg border px-2 text-[0.8rem] transition-colors",
         isActive
-          ? "border-[color-mix(in_oklab,var(--brand),white_76%)] bg-[var(--brand-softer)] font-medium text-foreground"
+          ? "border-[color-mix(in_oklab,var(--brand),var(--background)_76%)] bg-[var(--brand-softer)] font-medium text-foreground"
           : "border-transparent text-muted-foreground hover:border-border hover:bg-card hover:text-foreground",
       )}
       style={{ paddingLeft: `${depth * 16 + 24}px` }}
     >
-      <FileText className="h-3.5 w-3.5 shrink-0 text-primary" />
+      <FileText className="h-3.5 w-3.5 shrink-0 text-primary-text" />
       <span className="truncate">{node.name.replace(/\.md$/, "")}</span>
     </Link>
   );
@@ -238,13 +238,13 @@ export function FileTree({ activePath, panel = false }: FileTreeProps) {
           </Button>
         </div>
         {createError && (
-          <p className="mt-2 text-xs text-destructive">{createError}</p>
+          <p className="mt-2 text-xs text-destructive-text">{createError}</p>
         )}
       </form>
 
       {tree.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-card/70 px-6 py-12 text-center">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-softer)] text-primary">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-softer)] text-primary-text">
             <Library className="h-5 w-5" />
           </div>
           <p className="text-sm font-medium text-foreground">Vault is empty</p>
