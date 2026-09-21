@@ -1,17 +1,8 @@
+/* Google Fonts links intentionally live in the shared App Router root layout. */
+/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "GizzNote — Research Memory Workspace",
@@ -34,9 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full overflow-hidden">
+    <html lang="en" className="dark h-full overflow-hidden" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
+        <script dangerouslySetInnerHTML={{ __html: `try { document.documentElement.classList.toggle('dark', localStorage.getItem('gizznote-theme') !== 'light'); } catch {}` }} />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden bg-background text-foreground antialiased selection:bg-primary/20`}
+        className="h-full overflow-hidden bg-background text-foreground antialiased selection:bg-primary/20"
       >
         <ClerkProvider>
           <main className="h-full w-full overflow-hidden">{children}</main>

@@ -53,7 +53,7 @@ function NavigationTabs({ orientation }: { orientation: "bottom" | "sidebar" }) 
                   ? "focus-ring relative flex flex-1 items-center justify-center gap-1.5 rounded-[0.55rem] px-2 py-2 text-xs font-medium transition-[color,background-color,box-shadow]"
                   : "relative flex flex-1 flex-col items-center justify-center gap-1 transition-[color,background-color,box-shadow]",
                 isActive
-                  ? "text-primary"
+                  ? "text-primary-text"
                   : "text-muted-foreground active:text-foreground",
                 isSidebar && isActive && "bg-card shadow-[var(--shadow-control)]",
               )}

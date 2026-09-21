@@ -42,7 +42,7 @@ export function Message({ message }: MessageProps) {
           variant="outline"
           className="gap-1.5 rounded-lg bg-card px-2.5 py-1.5 text-xs font-normal text-muted-foreground shadow-[var(--shadow-control)]"
         >
-          <Brain className="text-primary" />
+          <Brain className="text-primary-text" />
           <span className="font-medium text-foreground">Thought for a while</span>
         </Badge>
       );

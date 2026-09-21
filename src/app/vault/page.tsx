@@ -9,7 +9,7 @@ export default function VaultPage() {
         <div>
           <div className="eyebrow">Vault</div>
           <h2 className="text-lg font-semibold tracking-tight text-[var(--text-strong)] sm:text-2xl">Vault Explorer</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Browse markdown notes from the filesystem panel or <Link href="/vault/graph" className="font-medium text-primary hover:text-[var(--brand-hover)]">view graph</Link>.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Browse markdown notes from the filesystem panel or <Link href="/vault/graph" className="font-medium text-primary-text hover:text-primary-text hover:underline">view graph</Link>.</p>
         </div>
       </div>
 
@@ -21,12 +21,12 @@ export default function VaultPage() {
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">Select a note from the sidebar, create a new one, or open the graph to see how your research connects.</p>
           <div className="mt-5 grid gap-2 sm:grid-cols-2">
             <div className="rounded-xl border border-border/80 bg-background/60 p-3.5 text-left">
-              <Sparkles className="h-4 w-4 text-primary" />
+              <Sparkles className="h-4 w-4 text-primary-text" />
               <p className="mt-2 text-sm font-semibold text-[var(--text-strong)]">Capture research</p>
               <p className="mt-1 text-xs text-muted-foreground">Turn chat outputs into durable markdown.</p>
             </div>
             <div className="rounded-xl border border-border/80 bg-background/60 p-3.5 text-left">
-              <GitBranch className="h-4 w-4 text-primary" />
+              <GitBranch className="h-4 w-4 text-primary-text" />
               <p className="mt-2 text-sm font-semibold text-[var(--text-strong)]">Map connections</p>
               <p className="mt-1 text-xs text-muted-foreground">Open the graph to see linked ideas.</p>
             </div>

@@ -91,7 +91,7 @@ export function GraphView() {
         .selectAll("line")
         .data(simLinks)
         .join("line")
-        .attr("stroke", "#D9DED8")
+        .attr("stroke", "var(--border)")
         .attr("stroke-width", 0.9)
         .attr("stroke-opacity", 0.75);
 
@@ -103,7 +103,7 @@ export function GraphView() {
         .join("circle")
         .attr("r", (d) => Math.log(d.backlinks + 1) * 8 + 4)
         .attr("fill", (d) => TYPE_COLORS[d.type || "concept"] || "#8b5cf6")
-        .attr("stroke", "#FFFFFF")
+        .attr("stroke", "var(--card)")
         .attr("stroke-width", 2)
         .attr("cursor", "pointer")
         .on("click", (_event, d) => {
@@ -136,7 +136,7 @@ export function GraphView() {
         .join("text")
         .text((d) => d.title || d.id.split("/").pop()?.replace(".md", "") || "")
         .attr("font-size", 10)
-        .attr("fill", "#667169")
+        .attr("fill", "var(--muted-foreground)")
         .attr("text-anchor", "middle")
         .attr("dy", (d) => Math.log(d.backlinks + 1) * 8 + 16)
         .attr("pointer-events", "none");
@@ -187,7 +187,7 @@ export function GraphView() {
   if (nodes.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-softer)] text-primary">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-softer)] text-primary-text">
           <Network className="h-6 w-6" />
         </div>
         <p className="text-sm font-medium text-foreground">Your graph is waiting for its first link.</p>

@@ -226,7 +226,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
         <p className="text-sm font-medium text-foreground">Note not found</p>
         <Link
           href="/vault"
-          className="mt-2 text-sm font-medium text-primary hover:text-[var(--brand-hover)]"
+          className="mt-2 text-sm font-medium text-primary-text hover:text-primary-text hover:underline"
         >
           Open vault root
         </Link>
@@ -312,7 +312,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
               <Badge
                 key={tag}
                 variant="outline"
-                className="text-primary"
+                className="text-primary-text"
               >
                 <Tag className="h-2.5 w-2.5" />
                 {tag}
@@ -377,7 +377,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                   />
                 )}
                 {saveError && (
-                  <p className="mt-3 text-xs text-destructive">{saveError}</p>
+                  <p className="mt-3 text-xs text-destructive-text">{saveError}</p>
                 )}
               </div>
             ) : (
@@ -400,7 +400,7 @@ export function NoteViewer({ path }: NoteViewerProps) {
                   <Link
                     key={link}
                     href={buildVaultHref(resolveVaultLinkTarget(link, files) || link)}
-                    className="focus-ring rounded-lg border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-control)] hover:border-[color-mix(in_oklab,var(--brand),white_70%)] hover:text-foreground"
+                    className="focus-ring rounded-lg border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-[var(--shadow-control)] hover:border-[color-mix(in_oklab,var(--brand),var(--background)_70%)] hover:text-foreground"
                   >
                     {link}
                   </Link>
