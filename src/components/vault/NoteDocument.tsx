@@ -17,7 +17,8 @@ import {
 } from "@/lib/vault/links";
 import {
   htmlToMarkdown,
-  markdownToHtml,
+  parseMarkdownForEditor,
+  type WrapMemory,
   serializeNoteContent,
   splitNoteContent,
 } from "@/lib/vault/markdown-html";
@@ -69,10 +70,25 @@ export function NoteDocument({ path }: NoteDocumentProps) {
 
   const visualRef = useRef<HTMLDivElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
+  // How the file on disk wrapped each block, so an untouched paragraph is
+  // written back byte for byte instead of reflowed onto one line.
+  const wrapMemoryRef = useRef<WrapMemory>(new Map());
 
   const { frontmatterBlock, body } = useMemo(
     () => splitNoteContent(content || ""),
     [content],
+  );
+
+  const toVisualHtml = useCallback((markdown: string) => {
+    const { html, wrapMemory } = parseMarkdownForEditor(markdown);
+    wrapMemoryRef.current = wrapMemory;
+    return html;
+  }, []);
+
+  const toMarkdown = useCallback(
+    (fallbackHtml: string) =>
+      htmlToMarkdown(visualRef.current?.innerHTML || fallbackHtml, wrapMemoryRef.current),
+    [],
   );
 
   useEffect(() => {
@@ -83,8 +99,8 @@ export function NoteDocument({ path }: NoteDocumentProps) {
   useEffect(() => {
     if (isEditing || typeof content !== "string") return;
     setDraftBody(body);
-    setVisualHtml(markdownToHtml(body));
-  }, [body, content, isEditing]);
+    setVisualHtml(toVisualHtml(body));
+  }, [body, content, isEditing, toVisualHtml]);
 
   useEffect(() => {
     if (!isEditing || mode !== "visual" || !visualRef.current) return;
@@ -200,16 +216,16 @@ export function NoteDocument({ path }: NoteDocumentProps) {
     if (next === mode) return;
 
     if (next === "markdown") {
-      setDraftBody(htmlToMarkdown(visualRef.current?.innerHTML || visualHtml));
+      setDraftBody(toMarkdown(visualHtml));
     } else {
-      setVisualHtml(markdownToHtml(draftBody));
+      setVisualHtml(toVisualHtml(draftBody));
     }
     setMode(next);
   }
 
   function startEditing() {
     setDraftBody(body);
-    setVisualHtml(markdownToHtml(body));
+    setVisualHtml(toVisualHtml(body));
     setMode("visual");
     setSaveError(null);
     setIsEditing(true);
@@ -217,7 +233,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
 
   function discard() {
     setDraftBody(body);
-    setVisualHtml(markdownToHtml(body));
+    setVisualHtml(toVisualHtml(body));
     setMode("visual");
     setSaveError(null);
     setIsEditing(false);
@@ -230,7 +246,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
     try {
       const nextBody =
         mode === "visual"
-          ? htmlToMarkdown(visualRef.current?.innerHTML || visualHtml)
+          ? toMarkdown(visualHtml)
           : draftBody;
 
       const response = await fetch("/api/vault/files", {

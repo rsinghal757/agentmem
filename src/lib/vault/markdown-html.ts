@@ -6,7 +6,17 @@
  * in the source, nested lists, GFM tables, rules and fenced code. Wikilinks
  * are deliberately left as literal `[[text]]` so the writer edits the link
  * rather than a resolved href.
+ *
+ * Markdown collapses a single newline into a space, so a hard-wrapped
+ * paragraph has to become one `<p>`. Writing it back out as one long line
+ * would be semantically identical but would reflow the whole file, burying a
+ * one-word edit in a whole-note diff. `parseMarkdownForEditor` therefore
+ * hands back a memory of how each block was wrapped, and `htmlToMarkdown`
+ * reuses it for every block the writer left alone.
  */
+
+/** Original wrapping for each block, keyed by that block's unwrapped text. */
+export type WrapMemory = Map<string, string[]>;
 
 function escapeHtml(input: string) {
   return input
@@ -47,20 +57,61 @@ function splitTableRow(line: string) {
     .map((cell) => cell.trim());
 }
 
-/** Convert markdown source into the HTML the contenteditable surface shows. */
-export function markdownToHtml(markdown: string) {
+/** The single-line form of a block, used to key its original wrapping. */
+function unwrap(lines: string[]) {
+  return lines.map((line) => line.trim()).join(" ");
+}
+
+/** Build the exact string `renderTable` emits, so tables can be looked up. */
+function tableKey(header: string[], rows: string[][]) {
+  return [
+    `| ${header.join(" | ")} |`,
+    `| ${header.map(() => "---").join(" | ")} |`,
+    ...rows.map((row) => `| ${row.join(" | ")} |`),
+  ].join("\n");
+}
+
+/**
+ * Convert markdown source into the HTML the contenteditable surface shows,
+ * along with a record of how the source wrapped each block.
+ */
+export function parseMarkdownForEditor(markdown: string): {
+  html: string;
+  wrapMemory: WrapMemory;
+} {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   const html: string[] = [];
   const listStack: ListFrame[] = [];
+  const wrapMemory: WrapMemory = new Map();
   let paragraph: string[] = [];
+
+  /** Only worth remembering when the source actually spanned several lines. */
+  const remember = (key: string, original: string[]) => {
+    if (original.length > 1 && key) wrapMemory.set(key, original);
+  };
+
+  // A list item's text can continue across lines, so it is accumulated until
+  // the next item or the end of the list.
+  let openItem: string[] | null = null;
+
+  const closeItem = () => {
+    if (!openItem) return;
+    // The marker belongs to the list, not the item's text.
+    const [first, ...rest] = openItem;
+    const withoutMarker = first.replace(LIST_ITEM, "$3");
+    remember(unwrap([withoutMarker, ...rest]), [withoutMarker, ...rest]);
+    openItem = null;
+  };
 
   const closeParagraph = () => {
     if (paragraph.length === 0) return;
-    html.push(`<p>${renderInlineMarkdown(paragraph.join(" "))}</p>`);
+    remember(unwrap(paragraph), [...paragraph]);
+    html.push(`<p>${renderInlineMarkdown(unwrap(paragraph))}</p>`);
     paragraph = [];
   };
 
   const closeLists = (toIndent = -1) => {
+    if (listStack.length > 0) closeItem();
     while (listStack.length > 0 && listStack[listStack.length - 1].indent > toIndent) {
       html.push(`</li></${listStack.pop()!.tag}>`);
     }
@@ -119,12 +170,17 @@ export function markdownToHtml(markdown: string) {
       const header = splitTableRow(trimmed);
       index += 2;
 
+      const originalTable = [lines[index - 2], lines[index - 1]];
       const rows: string[][] = [];
       while (index < lines.length && lines[index].trim().includes("|")) {
+        originalTable.push(lines[index]);
         rows.push(splitTableRow(lines[index]));
         index += 1;
       }
       index -= 1;
+
+      // Tables are remembered so aligned pipe padding is not squashed.
+      wrapMemory.set(tableKey(header, rows), originalTable);
 
       const headCells = header
         .map((cell) => `<th>${renderInlineMarkdown(cell)}</th>`)
@@ -145,6 +201,7 @@ export function markdownToHtml(markdown: string) {
     const listItem = line.match(LIST_ITEM);
     if (listItem) {
       closeParagraph();
+      closeItem();
       const indent = listItem[1].length;
       const tag: "ul" | "ol" = /\d/.test(listItem[2]) ? "ol" : "ul";
       const top = listStack[listStack.length - 1];
@@ -167,40 +224,57 @@ export function markdownToHtml(markdown: string) {
         }
       }
 
+      // Opened only after the stack settles, since closing a level flushes
+      // whichever item is currently open.
+      openItem = [line];
       html.push(renderInlineMarkdown(listItem[3]));
       continue;
     }
 
     if (trimmed.startsWith(">")) {
       closeBlocks();
+      const original: string[] = [line];
       const quote: string[] = [trimmed.replace(/^>\s?/, "")];
       while (index + 1 < lines.length && lines[index + 1].trim().startsWith(">")) {
         index += 1;
+        original.push(lines[index]);
         quote.push(lines[index].trim().replace(/^>\s?/, ""));
       }
-      html.push(`<blockquote>${renderInlineMarkdown(quote.join(" "))}</blockquote>`);
+      remember(unwrap(quote), original);
+      html.push(`<blockquote>${renderInlineMarkdown(unwrap(quote))}</blockquote>`);
       continue;
     }
 
     // A continuation of the current paragraph: markdown treats a single
     // newline as a space, so hard-wrapped source must not become <p> per line.
     if (listStack.length > 0) {
+      openItem?.push(line);
       html.push(` ${renderInlineMarkdown(trimmed)}`);
       continue;
     }
 
-    paragraph.push(trimmed);
+    paragraph.push(line);
   }
 
   closeBlocks();
-  return html.join("\n");
+  return { html: html.join("\n"), wrapMemory };
 }
 
-/** Convert the contenteditable surface's HTML back into markdown. */
-export function htmlToMarkdown(html: string) {
+/** Convert markdown source into the HTML the contenteditable surface shows. */
+export function markdownToHtml(markdown: string) {
+  return parseMarkdownForEditor(markdown).html;
+}
+
+/**
+ * Convert the contenteditable surface's HTML back into markdown, restoring the
+ * source's own line wrapping for any block the writer did not change.
+ */
+export function htmlToMarkdown(html: string, wrapMemory?: WrapMemory) {
   if (typeof window === "undefined") {
     return "";
   }
+
+  const rewrap = (key: string) => wrapMemory?.get(key);
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
@@ -251,7 +325,12 @@ export function htmlToMarkdown(html: string) {
         }
 
         const marker = ordered ? `${position + 1}.` : "-";
-        const line = `${indent}${marker} ${inline.join("").replace(/\s+/g, " ").trim()}`;
+        const text = inline.join("").replace(/\s+/g, " ").trim();
+        const remembered = rewrap(text);
+        // Continuation lines keep the indentation the source gave them.
+        const line = remembered
+          ? [`${indent}${marker} ${remembered[0]}`, ...remembered.slice(1)].join("\n")
+          : `${indent}${marker} ${text}`;
         return nested.length > 0 ? `${line}\n${nested.join("\n")}` : line;
       })
       .join("\n");
@@ -268,12 +347,10 @@ export function htmlToMarkdown(html: string) {
 
     const [headerRow, ...bodyRows] = rows;
     const header = toCells(headerRow);
+    const body = bodyRows.map(toCells);
 
-    return [
-      `| ${header.join(" | ")} |`,
-      `| ${header.map(() => "---").join(" | ")} |`,
-      ...bodyRows.map((row) => `| ${toCells(row).join(" | ")} |`),
-    ].join("\n");
+    const normalized = tableKey(header, body);
+    return rewrap(normalized)?.join("\n") ?? normalized;
   };
 
   const renderBlock = (node: ChildNode): string => {
@@ -297,6 +374,9 @@ export function htmlToMarkdown(html: string) {
     if (tag === "ul" || tag === "ol") return renderList(node, tag === "ol", 0);
 
     if (tag === "blockquote") {
+      const remembered = rewrap(inlineContent);
+      if (remembered) return remembered.join("\n");
+
       return inlineContent
         .split("\n")
         .filter(Boolean)
@@ -305,11 +385,15 @@ export function htmlToMarkdown(html: string) {
     }
 
     if (tag === "pre") {
-      const code = node.querySelector("code")?.textContent || node.textContent || "";
-      return `\`\`\`\n${code.trimEnd()}\n\`\`\``;
+      const codeElement = node.querySelector("code");
+      const code = codeElement?.textContent || node.textContent || "";
+      const language =
+        codeElement?.className.match(/language-([\w+-]+)/)?.[1] ?? "";
+      return `\`\`\`${language}\n${code.trimEnd()}\n\`\`\``;
     }
 
-    return inlineContent;
+    const remembered = rewrap(inlineContent);
+    return remembered ? remembered.join("\n") : inlineContent;
   };
 
   return Array.from(doc.body.childNodes)
