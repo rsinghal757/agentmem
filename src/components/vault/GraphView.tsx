@@ -31,10 +31,28 @@ interface SimLink extends d3.SimulationLinkDatum<SimNode> {
   target: string | SimNode;
 }
 
+const LABEL_SIZE = 10.5;
+/** Room the header, the legend and the counter chip need to stay clear of nodes. */
+const FIT_INSET = { top: 78, right: 28, bottom: 96, left: 28 };
+
+function nodeRadius(d: SimNode) {
+  return Math.log(d.backlinks + 1) * 8 + 4;
+}
+
+function nodeLabel(d: SimNode) {
+  return d.title || d.id.split("/").pop()?.replace(".md", "") || "";
+}
+
+/** Inter at 10.5px averages a little over half the font size per glyph. */
+function labelHalfWidth(d: SimNode) {
+  return (nodeLabel(d).length * LABEL_SIZE * 0.53) / 2;
+}
+
 export function GraphView() {
   const { nodes, edges, isLoading } = useVaultGraph();
   const svgRef = useRef<SVGSVGElement>(null);
   const simulationRef = useRef<d3.Simulation<SimNode, SimLink> | null>(null);
+  const fitRef = useRef<(() => void) | null>(null);
   const router = useRouter();
 
   const renderGraph = useCallback(
@@ -56,6 +74,10 @@ export function GraphView() {
         })
         .map((e) => ({ ...e }));
 
+      // Spacing is derived from the pane so a handful of notes spreads out
+      // instead of balling up in the middle of an empty canvas.
+      const spacing = Math.sqrt((width * height) / Math.max(simNodes.length, 4));
+
       const simulation = d3
         .forceSimulation(simNodes)
         .force(
@@ -63,24 +85,83 @@ export function GraphView() {
           d3
             .forceLink<SimNode, SimLink>(simLinks)
             .id((d) => d.id)
-            .distance(92),
+            .distance(Math.max(80, spacing * 0.6)),
         )
-        .force("charge", d3.forceManyBody().strength(-220))
+        .force("charge", d3.forceManyBody().strength(-Math.max(200, spacing * 2.2)))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide().radius(32));
+        .force(
+          "collision",
+          // Reserve the label's own width so titles do not print over each other.
+          d3.forceCollide<SimNode>().radius((d) => nodeRadius(d) + 10 + Math.min(labelHalfWidth(d), 46)),
+        )
+        // Settled headlessly further down so the graph never appears mid-tangle.
+        .stop();
 
       simulationRef.current = simulation;
 
       const g = svg.append("g");
 
-      (svg as unknown as d3.Selection<SVGSVGElement, unknown, null, undefined>).call(
-        d3
-          .zoom<SVGSVGElement, unknown>()
-          .scaleExtent([0.1, 4])
-          .on("zoom", (event) => {
-            g.attr("transform", event.transform);
-          }),
-      );
+      const svgSelection = svg as unknown as d3.Selection<
+        SVGSVGElement,
+        unknown,
+        null,
+        undefined
+      >;
+
+      const zoom = d3
+        .zoom<SVGSVGElement, unknown>()
+        .scaleExtent([0.1, 4])
+        .on("zoom", (event) => {
+          g.attr("transform", event.transform);
+        });
+
+      svgSelection.call(zoom);
+
+      /** Frame the settled layout inside the pane, clear of the overlaid chrome. */
+      const fitToViewport = (animate: boolean) => {
+        const element = svgRef.current;
+        if (!element) return;
+
+        const paneWidth = element.clientWidth - FIT_INSET.left - FIT_INSET.right;
+        const paneHeight = element.clientHeight - FIT_INSET.top - FIT_INSET.bottom;
+        if (paneWidth <= 0 || paneHeight <= 0) return;
+
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+
+        for (const d of simNodes) {
+          const x = d.x ?? 0;
+          const y = d.y ?? 0;
+          const extent = Math.max(nodeRadius(d), labelHalfWidth(d));
+          minX = Math.min(minX, x - extent);
+          maxX = Math.max(maxX, x + extent);
+          minY = Math.min(minY, y - nodeRadius(d));
+          // Labels hang below their node.
+          maxY = Math.max(maxY, y + nodeRadius(d) + LABEL_SIZE + 8);
+        }
+
+        const graphWidth = maxX - minX;
+        const graphHeight = maxY - minY;
+        if (!Number.isFinite(graphWidth) || graphWidth <= 0 || graphHeight <= 0) return;
+
+        const scale = Math.min(1.6, paneWidth / graphWidth, paneHeight / graphHeight);
+        const transform = d3.zoomIdentity
+          .translate(
+            FIT_INSET.left + paneWidth / 2 - (scale * (minX + maxX)) / 2,
+            FIT_INSET.top + paneHeight / 2 - (scale * (minY + maxY)) / 2,
+          )
+          .scale(scale);
+
+        if (animate) {
+          svgSelection.transition().duration(450).call(zoom.transform, transform);
+        } else {
+          svgSelection.call(zoom.transform, transform);
+        }
+      };
+
+      fitRef.current = () => fitToViewport(true);
 
       const link = g
         .append("g")
@@ -95,7 +176,7 @@ export function GraphView() {
         .selectAll<SVGCircleElement, SimNode>("circle")
         .data(simNodes)
         .join("circle")
-        .attr("r", (d) => Math.log(d.backlinks + 1) * 8 + 4)
+        .attr("r", nodeRadius)
         .style("fill", (d) => TYPE_COLORS[d.type || "concept"] || TYPE_COLORS.concept)
         .style("stroke", "var(--card)")
         .style("stroke-width", 2)
@@ -127,10 +208,10 @@ export function GraphView() {
         .selectAll("text")
         .data(simNodes)
         .join("text")
-        .text((d) => d.title || d.id.split("/").pop()?.replace(".md", "") || "")
-        .attr("font-size", 10.5)
+        .text(nodeLabel)
+        .attr("font-size", LABEL_SIZE)
         .attr("text-anchor", "middle")
-        .attr("dy", (d) => Math.log(d.backlinks + 1) * 8 + 17)
+        .attr("dy", (d) => nodeRadius(d) + 13)
         .attr("pointer-events", "none")
         .style("fill", "var(--text-muted)")
         .style("font-family", "var(--font-sans)");
@@ -142,7 +223,7 @@ export function GraphView() {
             `${d.title || d.id}\nType: ${d.type || "unknown"}\nTags: ${d.tags.join(", ") || "none"}\nBacklinks: ${d.backlinks}`,
         );
 
-      simulation.on("tick", () => {
+      const draw = () => {
         link
           .attr("x1", (d) => (d.source as SimNode).x || 0)
           .attr("y1", (d) => (d.source as SimNode).y || 0)
@@ -151,11 +232,22 @@ export function GraphView() {
 
         node.attr("cx", (d) => d.x || 0).attr("cy", (d) => d.y || 0);
         label.attr("x", (d) => d.x || 0).attr("y", (d) => d.y || 0);
-      });
+      };
+
+      simulation.on("tick", draw);
+
+      // Run the layout to rest before the first paint, then frame it. Watching
+      // a force graph unwind from a knot is noise, not information.
+      simulation.tick(300);
+      draw();
+      fitToViewport(false);
+      // Hand the simulation back to the ticker so dragging stays live.
+      simulation.restart();
 
       return () => {
         simulation.stop();
         simulationRef.current = null;
+        fitRef.current = null;
       };
     },
     [router],
@@ -178,7 +270,7 @@ export function GraphView() {
         "center",
         d3.forceCenter(element.clientWidth / 2, element.clientHeight / 2),
       );
-      simulation.alpha(0.3).restart();
+      fitRef.current?.();
     });
 
     observer.observe(element);
