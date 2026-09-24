@@ -215,13 +215,23 @@
   --typeset-font-heading: var(--font-source-serif);
   --typeset-font-mono: var(--font-source-code);
   --typeset-size: 17px;
-  --typeset-leading: 1.72;
-  --typeset-flow: 1.35em;
+  --typeset-leading: 1.7;
+  --typeset-flow: 1.28em;
+  --typeset-mobile-scale: 0.94;
+  --typeset-weight-heading: 500;
+  --typeset-weight-strong: 580;
   letter-spacing: 0;
 }
 
 .typeset-note :where(h1, h2, h3, h4) {
   letter-spacing: -0.015em;
+}
+
+@media (max-width: 47.999rem) {
+  .typeset-note {
+    --typeset-leading: 1.66;
+    --typeset-flow: 1.2em;
+  }
 }
 
 /*
