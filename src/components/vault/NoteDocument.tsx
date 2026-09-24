@@ -345,23 +345,23 @@ export function NoteDocument({ path }: NoteDocumentProps) {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-6 sm:py-8">
+      <div className="min-h-0 flex-1 overflow-y-auto px-2.5 py-4 sm:px-6 sm:py-8">
         <article
           className={cn(
-            "sq-panel mx-auto w-full max-w-[var(--measure)] border border-border bg-[var(--paper)] px-6 py-10 shadow-[var(--shadow-raised)] sm:px-12 sm:py-14",
+            "sq-panel mx-auto w-full max-w-[var(--measure)] border border-border bg-[var(--paper)] px-5 py-7 shadow-[var(--shadow-raised)] sm:px-12 sm:py-14",
           )}
         >
-          <header className="mb-8">
+          <header className="mb-7 sm:mb-8">
             {folder ? (
               <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-faint)]">
                 {folder}
               </p>
             ) : null}
-            <h1 className="font-serif text-[clamp(28px,3.4vw,38px)] font-normal leading-[1.12] tracking-[-0.025em] text-[var(--text-strong)]">
+            <h1 className="font-serif text-[clamp(24px,6.6vw,30px)] font-normal leading-[1.14] tracking-[-0.022em] text-[var(--text-strong)] sm:text-[clamp(28px,3.4vw,38px)] sm:leading-[1.12] sm:tracking-[-0.025em]">
               {title}
             </h1>
 
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-3 text-[11.5px] text-[var(--text-faint)]">
+            <div className="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border pt-2.5 text-[12px] text-[var(--text-faint)] sm:mt-4 sm:gap-y-2 sm:pt-3 sm:text-[11.5px]">
               {frontmatter?.type ? (
                 <span className="capitalize">{frontmatter.type}</span>
               ) : null}
@@ -376,7 +376,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
                 <span className="flex flex-wrap items-center gap-2">
                   <Tag className="h-3 w-3" strokeWidth={1.5} />
                   {frontmatter.tags.map((tag: string) => (
-                    <span key={tag} className="text-[var(--text-muted)]">
+                    <span key={tag} className="text-[0.96em] text-[var(--text-muted)]">
                       {tag}
                     </span>
                   ))}
@@ -418,14 +418,14 @@ export function NoteDocument({ path }: NoteDocumentProps) {
           )}
 
           {!isEditing && wikilinks.length > 0 ? (
-            <footer className="mt-12 border-t border-border pt-5">
+            <footer className="mt-10 border-t border-border pt-4 sm:mt-12 sm:pt-5">
               <p className="eyebrow">Links out</p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {wikilinks.map((link: string) => (
                   <Link
                     key={link}
                     href={buildVaultHref(resolveVaultLinkTarget(link, files) || link)}
-                    className="sq-control border border-border px-2 py-1 text-[12px] text-[var(--text-muted)] outline-none hover:border-[color-mix(in_oklab,var(--brand),transparent_55%)] hover:text-[var(--brand-deep)]"
+                    className="sq-control border border-border px-2 py-1 text-[11.5px] text-[var(--text-muted)] outline-none hover:border-[color-mix(in_oklab,var(--brand),transparent_55%)] hover:text-[var(--brand-deep)] sm:text-[12px]"
                   >
                     {link}
                   </Link>
