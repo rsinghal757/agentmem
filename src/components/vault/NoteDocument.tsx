@@ -7,7 +7,6 @@ import { useVaultFile, useVaultFiles } from "@/hooks/useVaultFiles";
 import { MarkdownContent } from "@/components/shared/MarkdownContent";
 import {
   EditorRibbon,
-  type EditorMode,
   type RibbonCommand,
 } from "@/components/vault/EditorRibbon";
 import {
@@ -30,23 +29,6 @@ interface NoteDocumentProps {
   path: string;
 }
 
-const INLINE_WRAPPERS: Partial<Record<RibbonCommand, string>> = {
-  bold: "**",
-  italic: "*",
-  strike: "~~",
-  code: "`",
-};
-
-const LINE_PREFIXES: Partial<Record<RibbonCommand, string>> = {
-  body: "",
-  h1: "# ",
-  h2: "## ",
-  h3: "### ",
-  quote: "> ",
-  bullet: "- ",
-  ordered: "1. ",
-};
-
 const VISUAL_BLOCK_TAGS: Partial<Record<RibbonCommand, string>> = {
   body: "p",
   h1: "h1",
@@ -62,14 +44,11 @@ export function NoteDocument({ path }: NoteDocumentProps) {
   const { files, refresh: refreshFiles } = useVaultFiles("", true);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [mode, setMode] = useState<EditorMode>("visual");
-  const [draftBody, setDraftBody] = useState("");
   const [visualHtml, setVisualHtml] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const visualRef = useRef<HTMLDivElement>(null);
-  const markdownRef = useRef<HTMLTextAreaElement>(null);
   // How the file on disk wrapped each block, so an untouched paragraph is
   // written back byte for byte instead of reflowed onto one line.
   const wrapMemoryRef = useRef<WrapMemory>(new Map());
@@ -98,74 +77,15 @@ export function NoteDocument({ path }: NoteDocumentProps) {
 
   useEffect(() => {
     if (isEditing || typeof content !== "string") return;
-    setDraftBody(body);
     setVisualHtml(toVisualHtml(body));
   }, [body, content, isEditing, toVisualHtml]);
 
   useEffect(() => {
-    if (!isEditing || mode !== "visual" || !visualRef.current) return;
+    if (!isEditing || !visualRef.current) return;
     if (visualRef.current.innerHTML !== visualHtml) {
       visualRef.current.innerHTML = visualHtml;
     }
-  }, [isEditing, mode, visualHtml]);
-
-  const applyMarkdownCommand = useCallback((command: RibbonCommand) => {
-    const textarea = markdownRef.current;
-    if (!textarea) return;
-
-    const { selectionStart, selectionEnd, value } = textarea;
-    const selected = value.slice(selectionStart, selectionEnd);
-
-    const wrapper = INLINE_WRAPPERS[command];
-    if (wrapper) {
-      const next = `${value.slice(0, selectionStart)}${wrapper}${selected}${wrapper}${value.slice(selectionEnd)}`;
-      setDraftBody(next);
-      queueMicrotask(() => {
-        textarea.focus();
-        textarea.setSelectionRange(
-          selectionStart + wrapper.length,
-          selectionEnd + wrapper.length,
-        );
-      });
-      return;
-    }
-
-    if (command === "link") {
-      const href = window.prompt("Link to", "https://");
-      if (!href) return;
-      const label = selected || "link";
-      const next = `${value.slice(0, selectionStart)}[${label}](${href})${value.slice(selectionEnd)}`;
-      setDraftBody(next);
-      return;
-    }
-
-    if (command === "divider") {
-      const next = `${value.slice(0, selectionStart)}\n\n---\n\n${value.slice(selectionEnd)}`;
-      setDraftBody(next);
-      return;
-    }
-
-    if (command === "codeblock") {
-      const next = `${value.slice(0, selectionStart)}\n\`\`\`\n${selected}\n\`\`\`\n${value.slice(selectionEnd)}`;
-      setDraftBody(next);
-      return;
-    }
-
-    const prefix = LINE_PREFIXES[command];
-    if (prefix !== undefined) {
-      const lineStart = value.lastIndexOf("\n", selectionStart - 1) + 1;
-      const lineEndIndex = value.indexOf("\n", selectionEnd);
-      const lineEnd = lineEndIndex === -1 ? value.length : lineEndIndex;
-      const block = value.slice(lineStart, lineEnd);
-      const rewritten = block
-        .split("\n")
-        .map((line) => `${prefix}${line.replace(/^(#{1,6}\s+|>\s+|[-*]\s+|\d+\.\s+)/, "")}`)
-        .join("\n");
-
-      setDraftBody(`${value.slice(0, lineStart)}${rewritten}${value.slice(lineEnd)}`);
-      queueMicrotask(() => textarea.focus());
-    }
-  }, []);
+  }, [isEditing, visualHtml]);
 
   const applyVisualCommand = useCallback((command: RibbonCommand) => {
     const editor = visualRef.current;
@@ -201,40 +121,17 @@ export function NoteDocument({ path }: NoteDocumentProps) {
   }, []);
 
   function handleCommand(command: RibbonCommand) {
-    if (mode === "visual") {
-      applyVisualCommand(command);
-      return;
-    }
-    if (command === "undo" || command === "redo") {
-      document.execCommand(command);
-      return;
-    }
-    applyMarkdownCommand(command);
-  }
-
-  function switchMode(next: EditorMode) {
-    if (next === mode) return;
-
-    if (next === "markdown") {
-      setDraftBody(toMarkdown(visualHtml));
-    } else {
-      setVisualHtml(toVisualHtml(draftBody));
-    }
-    setMode(next);
+    applyVisualCommand(command);
   }
 
   function startEditing() {
-    setDraftBody(body);
     setVisualHtml(toVisualHtml(body));
-    setMode("visual");
     setSaveError(null);
     setIsEditing(true);
   }
 
   function discard() {
-    setDraftBody(body);
     setVisualHtml(toVisualHtml(body));
-    setMode("visual");
     setSaveError(null);
     setIsEditing(false);
   }
@@ -244,10 +141,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
     setSaveError(null);
 
     try {
-      const nextBody =
-        mode === "visual"
-          ? toMarkdown(visualHtml)
-          : draftBody;
+      const nextBody = toMarkdown(visualHtml);
 
       const response = await fetch("/api/vault/files", {
         method: "PUT",
@@ -315,8 +209,6 @@ export function NoteDocument({ path }: NoteDocumentProps) {
         <div className="mx-auto w-full max-w-[calc(var(--measure)+2rem)] px-2">
           {isEditing ? (
             <EditorRibbon
-              mode={mode}
-              onModeChange={switchMode}
               onCommand={handleCommand}
               onSave={save}
               onCancel={discard}
@@ -387,24 +279,14 @@ export function NoteDocument({ path }: NoteDocumentProps) {
 
           {isEditing ? (
             <>
-              {mode === "visual" ? (
-                <div
-                  ref={visualRef}
-                  contentEditable
-                  suppressContentEditableWarning
-                  onInput={(event) => setVisualHtml(event.currentTarget.innerHTML)}
-                  data-placeholder="Start writing…"
-                  className="typeset typeset-note min-h-[420px] w-full outline-none"
-                />
-              ) : (
-                <textarea
-                  ref={markdownRef}
-                  value={draftBody}
-                  onChange={(event) => setDraftBody(event.target.value)}
-                  spellCheck={false}
-                  className="sq-control min-h-[420px] w-full resize-y border border-border bg-[var(--surface-sunken)] p-4 font-mono text-[13px] leading-[1.7] text-[var(--text-strong)] outline-none focus:border-ring"
-                />
-              )}
+              <div
+                ref={visualRef}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(event) => setVisualHtml(event.currentTarget.innerHTML)}
+                data-placeholder="Start writing…"
+                className="typeset typeset-note min-h-[420px] w-full outline-none"
+              />
 
               {saveError ? (
                 <p className="mt-4 text-[12.5px] text-destructive">{saveError}</p>

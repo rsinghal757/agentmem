@@ -22,7 +22,7 @@ import {
   Undo2,
   X,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export type RibbonCommand =
   | "undo"
@@ -42,8 +42,6 @@ export type RibbonCommand =
   | "codeblock"
   | "divider";
 
-export type EditorMode = "visual" | "markdown";
-
 function RibbonButton({
   icon: Icon,
   label,
@@ -56,7 +54,7 @@ function RibbonButton({
   disabled?: boolean;
 }) {
   return (
-    <button
+    <Button
       type="button"
       // Keep the caret in the editor: mousedown would blur it before the click.
       onMouseDown={(event) => event.preventDefault()}
@@ -64,15 +62,17 @@ function RibbonButton({
       disabled={disabled}
       title={label}
       aria-label={label}
-      className="sq-control inline-flex h-7 w-7 items-center justify-center text-[var(--text-muted)] outline-none hover:bg-[var(--surface-hover)] hover:text-[var(--text-strong)] disabled:opacity-40"
+      variant="toolbar"
+      size="icon-sm"
+      className="h-7 w-7"
     >
       <Icon className="h-[15px] w-[15px]" strokeWidth={1.6} />
-    </button>
+    </Button>
   );
 }
 
 function Separator() {
-  return <span aria-hidden="true" className="my-2 w-px shrink-0 self-stretch bg-border" />;
+  return <span aria-hidden="true" className="mx-0.5 h-5 w-px shrink-0 bg-border" />;
 }
 
 const INLINE_COMMANDS: Array<[RibbonCommand, LucideIcon, string]> = [
@@ -99,119 +99,77 @@ const LIST_COMMANDS: Array<[RibbonCommand, LucideIcon, string]> = [
 ];
 
 type EditorRibbonProps = {
-  mode: EditorMode;
-  onModeChange: (mode: EditorMode) => void;
   onCommand: (command: RibbonCommand) => void;
   onSave: () => void;
   onCancel: () => void;
   isSaving: boolean;
 };
 
-/**
- * A two-row document ribbon. Row one handles inline marks, row two handles
- * block structure, and the tall group on the right commits or drops the draft.
- */
 export function EditorRibbon({
-  mode,
-  onModeChange,
   onCommand,
   onSave,
   onCancel,
   isSaving,
 }: EditorRibbonProps) {
   return (
-    <div className="flex h-[78px] shrink-0 items-stretch gap-0 overflow-x-auto px-1">
-      <div className="flex flex-col justify-between py-2">
-        <div className="flex items-center">
-          <RibbonButton icon={Undo2} label="Undo" onClick={() => onCommand("undo")} />
-          <RibbonButton icon={Redo2} label="Redo" onClick={() => onCommand("redo")} />
-        </div>
-        <div className="flex items-center">
-          {INLINE_COMMANDS.map(([command, icon, label]) => (
-            <RibbonButton
-              key={command}
-              icon={icon}
-              label={label}
-              onClick={() => onCommand(command)}
-            />
-          ))}
-        </div>
+    <div className="flex h-12 shrink-0 items-center gap-1 overflow-x-auto px-1.5">
+      <div className="sq-control flex items-center gap-0.5 rounded-md border border-border bg-[var(--surface-sunken)] p-0.5">
+        <RibbonButton icon={Undo2} label="Undo" onClick={() => onCommand("undo")} />
+        <RibbonButton icon={Redo2} label="Redo" onClick={() => onCommand("redo")} />
       </div>
 
       <Separator />
 
-      <div className="flex flex-col justify-between py-2">
-        <div className="flex items-center">
-          {BLOCK_COMMANDS.map(([command, icon, label]) => (
-            <RibbonButton
-              key={command}
-              icon={icon}
-              label={label}
-              onClick={() => onCommand(command)}
-            />
-          ))}
-        </div>
-        <div className="flex items-center">
-          {LIST_COMMANDS.map(([command, icon, label]) => (
-            <RibbonButton
-              key={command}
-              icon={icon}
-              label={label}
-              onClick={() => onCommand(command)}
-            />
-          ))}
-        </div>
+      <div className="sq-control flex items-center gap-0.5 rounded-md border border-border bg-[var(--surface-sunken)] p-0.5">
+        {INLINE_COMMANDS.map(([command, icon, label]) => (
+          <RibbonButton
+            key={command}
+            icon={icon}
+            label={label}
+            onClick={() => onCommand(command)}
+          />
+        ))}
       </div>
 
       <Separator />
 
-      <div className="flex flex-col justify-between py-2 pl-1">
-        <span className="px-1 text-[10px] font-semibold uppercase leading-none tracking-[0.1em] text-[var(--text-faint)]">
-          Surface
-        </span>
-        <div className="sq-control flex items-center gap-0.5 bg-[var(--surface-sunken)] p-0.5">
-          {(["visual", "markdown"] as const).map((value) => (
-            <button
-              key={value}
-              type="button"
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => onModeChange(value)}
-              className={cn(
-                "sq-control px-2 py-1 text-[11px] capitalize outline-none",
-                mode === value
-                  ? "bg-card text-[var(--text-strong)] shadow-[var(--shadow-control)]"
-                  : "text-[var(--text-muted)] hover:text-[var(--text-strong)]",
-              )}
-            >
-              {value}
-            </button>
-          ))}
-        </div>
+      <div className="sq-control flex items-center gap-0.5 rounded-md border border-border bg-[var(--surface-sunken)] p-0.5">
+        {BLOCK_COMMANDS.map(([command, icon, label]) => (
+          <RibbonButton
+            key={command}
+            icon={icon}
+            label={label}
+            onClick={() => onCommand(command)}
+          />
+        ))}
       </div>
 
-      <div className="ml-auto flex items-stretch gap-1 pl-2">
-        <button
-          type="button"
-          onClick={onSave}
-          disabled={isSaving}
-          className="sq-control flex w-[62px] shrink-0 flex-col items-center justify-center gap-1 self-stretch border border-[color-mix(in_oklab,var(--brand),var(--text-strong)_26%)] bg-primary text-[11px] text-primary-foreground outline-none transition-[filter] hover:brightness-[1.06] disabled:opacity-60"
-        >
+      <Separator />
+
+      <div className="sq-control flex items-center gap-0.5 rounded-md border border-border bg-[var(--surface-sunken)] p-0.5">
+        {LIST_COMMANDS.map(([command, icon, label]) => (
+          <RibbonButton
+            key={command}
+            icon={icon}
+            label={label}
+            onClick={() => onCommand(command)}
+          />
+        ))}
+      </div>
+
+      <div className="ml-auto flex items-center gap-1.5 pl-2">
+        <Button type="button" onClick={onSave} disabled={isSaving} variant="default" size="sm">
           {isSaving ? (
-            <Loader2 className="h-[18px] w-[18px] animate-spin" strokeWidth={1.6} />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.8} />
           ) : (
-            <Save className="h-[18px] w-[18px]" strokeWidth={1.6} />
+            <Save className="h-3.5 w-3.5" strokeWidth={1.8} />
           )}
-          {isSaving ? "Saving" : "Save"}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isSaving}
-          className="sq-control flex w-[62px] shrink-0 flex-col items-center justify-center gap-1 self-stretch text-[11px] text-[var(--text-muted)] outline-none hover:bg-[var(--surface-hover)] hover:text-[var(--text-strong)] disabled:opacity-60"
-        >
-          <X className="h-[18px] w-[18px]" strokeWidth={1.6} />
+          {isSaving ? "Saving…" : "Save"}
+        </Button>
+        <Button type="button" onClick={onCancel} disabled={isSaving} variant="outline" size="sm">
+          <X className="h-3.5 w-3.5" strokeWidth={1.8} />
           Discard
-        </button>
+        </Button>
       </div>
     </div>
   );
