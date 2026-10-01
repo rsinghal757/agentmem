@@ -43,7 +43,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
     useVaultFile(path);
   const { files, refresh: refreshFiles } = useVaultFiles("", true);
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingPath, setEditingPath] = useState<string | null>(null);
   const [visualHtml, setVisualHtml] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -57,6 +57,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
     () => splitNoteContent(content || ""),
     [content],
   );
+  const isEditing = editingPath === path;
 
   const toVisualHtml = useCallback((markdown: string) => {
     const { html, wrapMemory } = parseMarkdownForEditor(markdown);
@@ -69,16 +70,6 @@ export function NoteDocument({ path }: NoteDocumentProps) {
       htmlToMarkdown(visualRef.current?.innerHTML || fallbackHtml, wrapMemoryRef.current),
     [],
   );
-
-  useEffect(() => {
-    setIsEditing(false);
-    setSaveError(null);
-  }, [path]);
-
-  useEffect(() => {
-    if (isEditing || typeof content !== "string") return;
-    setVisualHtml(toVisualHtml(body));
-  }, [body, content, isEditing, toVisualHtml]);
 
   useEffect(() => {
     if (!isEditing || !visualRef.current) return;
@@ -127,13 +118,13 @@ export function NoteDocument({ path }: NoteDocumentProps) {
   function startEditing() {
     setVisualHtml(toVisualHtml(body));
     setSaveError(null);
-    setIsEditing(true);
+    setEditingPath(path);
   }
 
   function discard() {
     setVisualHtml(toVisualHtml(body));
     setSaveError(null);
-    setIsEditing(false);
+    setEditingPath(null);
   }
 
   async function save() {
@@ -157,7 +148,7 @@ export function NoteDocument({ path }: NoteDocumentProps) {
         throw new Error(data.error || "Could not save this note.");
       }
 
-      setIsEditing(false);
+      setEditingPath(null);
       await Promise.all([refresh(), refreshFiles()]);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Could not save this note.");
