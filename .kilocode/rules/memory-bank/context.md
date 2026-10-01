@@ -7,6 +7,7 @@
 The project has been transformed from a minimal Next.js starter into a full Obsidian Memory Agent — a ChatGPT-style chat interface that autonomously builds and maintains an Obsidian-compatible markdown knowledge vault.
 
 ## Recently Completed
+- [x] Fixed PWA/home-screen branding assets so installed mobile app icons no longer fall back to the blurry Vercel mark. Replaced `src/app/favicon.ico` with a branded icon, generated dedicated high-resolution install assets (`192x192`, `512x512`, maskable variants, and `apple-touch-icon`) under `public/icons/`, added an explicit Next.js `manifest.webmanifest` route with `name`/`short_name` set to `GizzNote`, and wired metadata manifest/icon links in the root layout so Android/iOS install surfaces use sharp GizzNote branding (src/app/layout.tsx, src/app/manifest.ts, src/app/favicon.ico, public/icons/*).
 
 - [x] Polished mobile note reading density for a calmer Kindle-like feel without changing layout/features. Added shared Typeset knobs (`--typeset-mobile-scale`, `--typeset-weight-heading`, `--typeset-weight-strong`) so prose variants can tune phone typography via tokens. Tuned `typeset-note` mobile rhythm/scale/weight in `globals.css`, and refined `NoteDocument` mobile note chrome (card padding, title clamp, metadata rhythm, footer link chip sizing) while preserving desktop breakpoints and structure (src/app/typeset.css, src/app/globals.css, src/components/vault/NoteDocument.tsx).
 

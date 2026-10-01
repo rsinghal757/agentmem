@@ -24,10 +24,18 @@ const sourceCode = Source_Code_Pro({
 
 export const metadata: Metadata = {
   title: "GizzNote — A markdown desk for thinkers",
+  applicationName: "GizzNote",
   description:
     "GizzNote is a markdown notebook where the note stays the centre of the screen and an agent works in the margin.",
+  manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/favicon.ico"],
   },
 };
 
